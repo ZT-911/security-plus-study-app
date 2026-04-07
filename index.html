@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security+ SY0-701 Study App | Carlos Materano</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --surface: #111827;
+  --surface2: #1a2235;
+  --border: #1e2d45;
+  --accent: #00d4ff;
+  --accent2: #7c3aed;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --mono: 'Space Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 20%,rgba(0,212,255,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(124,58,237,0.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+.app{max-width:860px;margin:0 auto;padding:1.5rem;position:relative;z-index:1}
+.screen{display:none}.screen.active{display:block}
+
+/* Header */
+.site-header{text-align:center;padding:2.5rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
+.site-header .tag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px}
+.site-header h1{font-size:clamp(24px,4vw,36px);font-weight:600;color:var(--text);margin-bottom:8px;letter-spacing:-0.5px}
+.site-header p{font-size:15px;color:var(--text2);max-width:500px;margin:0 auto}
+.badge-row{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.pill{font-family:var(--mono);font-size:10px;padding:4px 12px;border-radius:100px;letter-spacing:1px}
+.pill-blue{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid rgba(0,212,255,0.2)}
+.pill-purple{background:rgba(124,58,237,0.1);color:#a78bfa;border:1px solid rgba(124,58,237,0.2)}
+.pill-green{background:rgba(16,185,129,0.1);color:var(--success);border:1px solid rgba(16,185,129,0.2)}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1rem;transition:border-color 0.2s}
+.card:hover{border-color:var(--border)}
+.chapter-card{cursor:pointer;position:relative;overflow:hidden}
+.chapter-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.3s;border-radius:16px}
+.ch1-card::before{background:linear-gradient(135deg,rgba(0,212,255,0.04),transparent)}
+.ch2-card-el::before{background:linear-gradient(135deg,rgba(124,58,237,0.04),transparent)}
+.chapter-card:hover::before{opacity:1}
+.chapter-card.locked{opacity:0.5;cursor:not-allowed}
+.card-inner{position:relative;z-index:1}
+
+/* Progress */
+.progress-bar{width:100%;height:4px;background:var(--border);border-radius:2px;margin:12px 0 4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.5s ease}
+.progress-fill.green{background:var(--success)}
+
+/* Badges */
+.badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:6px;letter-spacing:1px;font-weight:700}
+.badge-ch1{background:rgba(0,212,255,0.15);color:var(--accent);border:1px solid rgba(0,212,255,0.3)}
+.badge-ch2{background:rgba(124,58,237,0.15);color:#a78bfa;border:1px solid rgba(124,58,237,0.3)}
+.badge-lock{background:rgba(100,116,139,0.15);color:var(--text3);border:1px solid var(--border)}
+.badge-done{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
+.badge-ex{background:rgba(245,158,11,0.15);color:var(--warning);border:1px solid rgba(245,158,11,0.3)}
+
+/* Nav bar */
+.nav-bar{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.nav-title{font-size:16px;font-weight:500;color:var(--text)}
+.nav-sub{font-size:12px;color:var(--text3);font-family:var(--mono)}
+
+/* Buttons */
+.btn{border:1px solid var(--border);background:transparent;color:var(--text2);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-family:var(--sans);transition:all 0.15s}
+.btn:hover{background:var(--surface2);color:var(--text);border-color:var(--text3)}
+.btn-primary{background:rgba(0,212,255,0.1);color:var(--accent);border-color:rgba(0,212,255,0.3)}
+.btn-primary:hover{background:rgba(0,212,255,0.2)}
+.btn-purple{background:rgba(124,58,237,0.1);color:#a78bfa;border-color:rgba(124,58,237,0.3)}
+.btn-purple:hover{background:rgba(124,58,237,0.2)}
+.btn-success{background:rgba(16,185,129,0.1);color:var(--success);border-color:rgba(16,185,129,0.3)}
+.btn-success:hover{background:rgba(16,185,129,0.2)}
+.btn-warning{background:rgba(245,158,11,0.1);color:var(--warning);border-color:rgba(245,158,11,0.3)}
+.btn-warning:hover{background:rgba(245,158,11,0.2)}
+
+/* Theory */
+.theory-section{border-left:2px solid var(--accent);padding-left:1rem;margin:1.25rem 0}
+.theory-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px}
+.theory-body{font-size:13px;color:var(--text2);line-height:1.7}
+.tip-box{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:12px;color:var(--warning);font-family:var(--mono);line-height:1.6}
+.tip-box::before{content:'// ';opacity:0.6}
+.table-wrap{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--surface2);padding:8px 10px;text-align:left;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;letter-spacing:0.5px}
+td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
+td strong{color:var(--accent);font-weight:500}
+tr:last-child td{border-bottom:none}
+
+/* Quiz */
+.option-btn{width:100%;text-align:left;padding:12px 16px;margin:6px 0;border:1px solid var(--border);border-radius:10px;cursor:pointer;background:var(--surface2);color:var(--text2);font-size:13px;font-family:var(--sans);transition:all 0.15s}
+.option-btn:hover{border-color:var(--text3);color:var(--text);background:var(--surface)}
+.option-btn.correct{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.4);color:var(--success)}
+.option-btn.wrong{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.4);color:var(--danger)}
+.feedback-box{padding:12px 16px;border-radius:10px;margin-top:12px;font-size:13px;line-height:1.6;font-family:var(--mono)}
+.feedback-correct{background:rgba(16,185,129,0.08);color:var(--success);border:1px solid rgba(16,185,129,0.2)}
+.feedback-wrong{background:rgba(239,68,68,0.08);color:var(--danger);border:1px solid rgba(239,68,68,0.2)}
+.stars{color:var(--warning);letter-spacing:2px}
+.level-tag{font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:10px}
+.q-text{font-size:15px;font-weight:500;color:var(--text);line-height:1.65;margin-bottom:1rem}
+.stats-row{display:flex;gap:16px;font-size:12px;color:var(--text3);font-family:var(--mono);margin-top:8px}
+.stats-row span strong{font-weight:600}
+.stat-correct{color:var(--success)}
+.stat-wrong{color:var(--danger)}
+.stat-level{color:var(--accent)}
+
+/* Exercise */
+.step-dots{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.3s}
+.step-dot.active{background:var(--accent)}
+.step-dot.done{background:var(--success)}
+.scenario-box{background:var(--surface2);border-radius:10px;padding:1rem;margin:1rem 0;font-size:13px;line-height:1.75;color:var(--text2);border-left:3px solid var(--accent)}
+.drag-item{padding:10px 14px;border:1px solid var(--border);border-radius:8px;margin:6px 0;background:var(--surface2);cursor:grab;font-size:12px;color:var(--text2);font-family:var(--mono);transition:all 0.15s}
+.drag-item:active{cursor:grabbing;opacity:0.7;border-color:var(--accent)}
+.drop-zone{padding:10px 14px;border:1.5px dashed var(--border);border-radius:8px;margin:6px 0;min-height:52px;font-size:12px;color:var(--text3);transition:all 0.15s}
+.drop-zone.over{background:rgba(0,212,255,0.05);border-color:var(--accent)}
+.drop-zone.matched{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.4);color:var(--success)}
+.drop-zone.wrong-drop{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.4);color:var(--danger)}
+.drop-label{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px}
+.blank-input{border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:13px;background:var(--surface2);color:var(--text);font-family:var(--mono);min-width:150px;transition:border-color 0.15s}
+.blank-input:focus{outline:none;border-color:var(--accent)}
+.blank-input.correct-input{border-color:rgba(16,185,129,0.5);background:rgba(16,185,129,0.08);color:var(--success)}
+.blank-input.wrong-input{border-color:rgba(239,68,68,0.5);background:rgba(239,68,68,0.08);color:var(--danger)}
+
+/* Score circle */
+.score-circle{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin:0 auto 1.25rem;font-family:var(--mono)}
+.score-pass{background:rgba(16,185,129,0.1);color:var(--success);border:2px solid rgba(16,185,129,0.3)}
+.score-fail{background:rgba(239,68,68,0.1);color:var(--danger);border:2px solid rgba(239,68,68,0.3)}
+
+/* Result complete */
+.complete-icon{font-size:48px;text-align:center;margin-bottom:1rem}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:1.5rem}
+
+/* Section nav */
+.sec-nav{display:flex;justify-content:space-between;margin-top:1.5rem}
+
+/* Chapter meta */
+.ch-meta{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.ch-path{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px}
+
+/* Footer */
+.site-footer{text-align:center;padding:2rem 0 1rem;margin-top:2rem;border-top:1px solid var(--border)}
+.site-footer p{font-size:12px;color:var(--text3);font-family:var(--mono)}
+.site-footer a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HOME -->
+<div id="home-screen" class="screen active">
+  <header class="site-header">
+    <div class="tag">CompTIA Security+ SY0-701</div>
+    <h1>Security+ Study App</h1>
+    <p>Theory → Quiz → Practical Exercises. Score 80%+ to unlock the next chapter.</p>
+    <div class="badge-row">
+      <span class="pill pill-blue">2 Chapters</span>
+      <span class="pill pill-purple">20 Quiz Questions</span>
+      <span class="pill pill-green">8 Exercises</span>
+    </div>
+  </header>
+
+  <div id="ch1-card" class="card chapter-card ch1-card" onclick="startChapter(1)">
+    <div class="card-inner">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <span class="badge badge-ch1">CHAPTER 01</span>
+          <h2 style="font-size:18px;font-weight:600;margin:10px 0 4px;color:var(--text)">General Security Concepts</h2>
+          <p style="font-size:13px;color:var(--text2)">CIA Triad · AAA Framework · Control Types · Zero Trust · Gap Analysis</p>
+        </div>
+        <div id="ch1-status" class="badge badge-ch1">START</div>
+      </div>
+      <div class="progress-bar"><div id="ch1-bar" class="progress-fill" style="width:0%"></div></div>
+      <div class="ch-meta">
+        <span class="ch-path">theory → quiz → exercises</span>
+        <span style="font-size:11px;color:var(--text3)" id="ch1-prog-text">Not started</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="ch2-card" class="card chapter-card ch2-card-el locked" onclick="startChapter(2)">
+    <div class="card-inner">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <span class="badge badge-lock" id="ch2-badge">CHAPTER 02</span>
+          <h2 style="font-size:18px;font-weight:600;margin:10px 0 4px;color:var(--text)">Threat Actors & Deception</h2>
+          <p style="font-size:13px;color:var(--text2)">Threat Actors · Motivations · Vectors · Attack Surfaces · Honeypots</p>
+        </div>
+        <div id="ch2-status" class="badge badge-lock">LOCKED</div>
+      </div>
+      <div class="progress-bar"><div id="ch2-bar" class="progress-fill" style="width:0%;background:var(--text3)"></div></div>
+      <div class="ch-meta">
+        <span class="ch-path">complete chapter 01 to unlock</span>
+        <span style="font-size:11px;color:var(--text3)" id="ch2-prog-text">Locked</span>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>Built by <a href="https://linkedin.com/in/carlos-l-materano-g" target="_blank">Carlos Materano</a> · CompTIA Security+ SY0-701 Study Tool · 2026</p>
+  </footer>
+</div>
+
+<!-- THEORY -->
+<div id="theory-screen" class="screen">
+  <div class="nav-bar">
+    <button class="btn" onclick="showHome()">← Back</button>
+    <div>
+      <div class="nav-title" id="th-title"></div>
+      <div class="nav-sub" id="th-counter"></div>
+    </div>
+  </div>
+  <div class="progress-bar"><div id="th-bar" class="progress-fill" style="width:0%"></div></div>
+  <div id="th-content" style="margin-top:1.5rem"></div>
+  <div class="sec-nav">
+    <button class="btn" id="prev-btn" onclick="prevSec()">← Previous</button>
+    <button class="btn btn-primary" id="next-th-btn" onclick="nextSec()">Next →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-screen" class="screen">
+  <div class="nav-bar">
+    <button class="btn" onclick="showHome()">← Exit</button>
+    <div>
+      <div class="nav-title" id="qz-title"></div>
+      <div class="nav-sub" id="qz-counter"></div>
+    </div>
+  </div>
+  <div class="progress-bar"><div id="qz-bar" class="progress-fill" style="width:0%"></div></div>
+  <div class="card" style="margin-top:1rem">
+    <div class="level-tag"><span class="stars" id="qz-stars"></span> <span id="qz-lvl"></span></div>
+    <p class="q-text" id="qz-q"></p>
+    <div id="qz-opts"></div>
+    <div id="qz-fb" style="display:none"></div>
+    <div style="text-align:right;margin-top:1rem">
+      <button class="btn btn-primary" id="next-q-btn" style="display:none" onclick="nextQ()">Next question →</button>
+    </div>
+  </div>
+  <div class="stats-row">
+    <span>Correct: <strong class="stat-correct" id="cor-cnt">0</strong></span>
+    <span>Wrong: <strong class="stat-wrong" id="wrg-cnt">0</strong></span>
+    <span>Level: <strong class="stat-level" id="cur-lvl">1</strong>/5</span>
+  </div>
+</div>
+
+<!-- EXERCISES -->
+<div id="exercise-screen" class="screen">
+  <div class="nav-bar">
+    <button class="btn" onclick="showHome()">← Exit</button>
+    <div>
+      <div class="nav-title" id="ex-title"></div>
+      <div class="nav-sub" id="ex-counter"></div>
+    </div>
+  </div>
+  <div class="step-dots" id="step-dots"></div>
+  <div id="ex-content"></div>
+</div>
+
+<!-- QUIZ RESULT -->
+<div id="result-screen" class="screen">
+  <div class="nav-bar"><div class="nav-title" id="res-title"></div></div>
+  <div class="card" style="text-align:center;padding:2rem">
+    <div class="score-circle" id="res-circle"><span id="res-pct"></span></div>
+    <h2 style="font-size:20px;font-weight:600;margin-bottom:8px;color:var(--text)" id="res-heading"></h2>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:1.5rem;max-width:460px;margin-left:auto;margin-right:auto" id="res-msg"></p>
+    <div class="btn-row">
+      <button class="btn" onclick="retryQuiz()" id="retry-btn">Retry Quiz</button>
+      <button class="btn btn-warning" id="go-ex-btn" style="display:none" onclick="startExercises()">Start Exercises →</button>
+      <button class="btn" onclick="showHome()">Back to chapters</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXERCISE RESULT -->
+<div id="ex-result-screen" class="screen">
+  <div class="nav-bar"><div class="nav-title" id="exres-title"></div></div>
+  <div class="card" style="text-align:center;padding:2rem">
+    <div class="complete-icon">✦</div>
+    <h2 style="font-size:20px;font-weight:600;margin-bottom:8px;color:var(--text)" id="exres-heading"></h2>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:1.5rem" id="exres-msg"></p>
+    <div class="btn-row">
+      <button class="btn btn-success" onclick="finishChapter()">Complete Chapter ✓</button>
+      <button class="btn" onclick="showHome()">Back to chapters</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CH={
+  1:{
+    title:"Chapter 1: General Security Concepts",
+    unlocked:true,completed:false,quizPassed:false,
+    sections:[
+      {title:"CIA Triad & Non-Repudiation",content:`<div class="theory-section"><div class="theory-title">CIA Triad</div><div class="theory-body">The foundation of information security — three core principles guiding every security decision.</div></div><div class="table-wrap"><table><tr><th>Principle</th><th>Definition</th><th>Exam keyword</th></tr><tr><td><strong>Confidentiality</strong></td><td>Only authorized users can read data</td><td>stolen, intercepted, exposed</td></tr><tr><td><strong>Integrity</strong></td><td>Data not modified without authorization</td><td>altered, tampered, modified</td></tr><tr><td><strong>Availability</strong></td><td>Systems accessible when needed</td><td>downtime, disrupted, unavailable</td></tr></table></div><div class="tip-box">Interception alone = Confidentiality violation. You don't need to read the data to violate it.</div><div class="theory-section"><div class="theory-title">Non-Repudiation</div><div class="theory-body">Ensures someone cannot deny performing an action. Achieved through digital signatures: Message → Hash → Encrypt with PRIVATE KEY. Receiver decrypts with PUBLIC KEY and compares hashes.</div></div><div class="tip-box">Invalid digital signature = message was ALTERED in transit. Not a server or account issue.</div>`},
+      {title:"AAA Framework & Authentication Factors",content:`<div class="theory-section"><div class="theory-title">AAA Framework</div></div><div class="table-wrap"><table><tr><th>Component</th><th>Question</th><th>Keywords</th></tr><tr><td><strong>Authentication</strong></td><td>Who are you?</td><td>login, credentials, biometric, MFA</td></tr><tr><td><strong>Authorization</strong></td><td>What can you do?</td><td>permissions, roles, access control</td></tr><tr><td><strong>Accounting</strong></td><td>What did you do?</td><td>logs, audit trail, SIEM</td></tr></table></div><div class="tip-box">SIEM + logs + audit trail = ALWAYS Accounting. Never Authentication.</div><div class="theory-section"><div class="theory-title">5 Authentication Factors</div></div><div class="table-wrap"><table><tr><th>Factor</th><th>Example</th></tr><tr><td>Something You Know</td><td>Password, PIN, secret question</td></tr><tr><td>Something You Have</td><td>Smartphone, token, key fob, ID badge</td></tr><tr><td>Something You Are</td><td>Fingerprint, facial recognition, retina</td></tr><tr><td>Something You Do</td><td>Typing pattern, handwritten signature</td></tr><tr><td>Somewhere You Are</td><td>GPS location, IP address</td></tr></table></div><div class="tip-box">MFA = 2+ factors from DIFFERENT categories. Key fob = Something You Have. Fingerprint = Something You Are.</div>`},
+      {title:"Security Control Categories & Types",content:`<div class="table-wrap"><table><tr><th>Category</th><th>What it is</th><th>Example</th></tr><tr><td><strong>Technical</strong></td><td>Hardware & software</td><td>Firewalls, IDS, encryption</td></tr><tr><td><strong>Managerial</strong></td><td>Strategy & governance</td><td>Security policies, risk assessments</td></tr><tr><td><strong>Operational</strong></td><td>Daily human actions</td><td>Backups, user training</td></tr><tr><td><strong>Physical</strong></td><td>Tangible measures</td><td>Cameras, locks, badges</td></tr></table></div><div class="theory-section"><div class="theory-title">Control Types</div></div><div class="table-wrap"><table><tr><th>Type</th><th>Function</th><th>Example</th></tr><tr><td><strong>Preventive</strong></td><td>Stops threats before they occur</td><td>Firewall, MFA</td></tr><tr><td><strong>Deterrent</strong></td><td>Discourages attackers externally</td><td>Warning signs, visible cameras</td></tr><tr><td><strong>Detective</strong></td><td>Identifies what already happened</td><td>IDS, logs, SIEM</td></tr><tr><td><strong>Corrective</strong></td><td>Restores after damage</td><td>Backup restoration, AV quarantine</td></tr><tr><td><strong>Compensating</strong></td><td>Alternative when ideal control unavailable</td><td>MFA instead of smart card</td></tr><tr><td><strong>Directive</strong></td><td>Guides internal behavior via policies</td><td>AUP, security training</td></tr></table></div><div class="tip-box">Antivirus BLOCKS before execution = Preventive. Antivirus QUARANTINES after infection = Corrective.</div>`},
+      {title:"IDS vs IPS, Zero Trust & Gap Analysis",content:`<div class="table-wrap"><table><tr><th></th><th>IDS</th><th>IPS</th></tr><tr><td>Control Type</td><td>Detective</td><td>Preventive</td></tr><tr><td>Position</td><td>Out-of-band</td><td>Inline</td></tr><tr><td>Action</td><td>Alerts — does NOT block</td><td>Blocks automatically</td></tr></table></div><div class="tip-box">IPS = Inline + Prevents. Detects AND blocks = always IPS.</div><div class="theory-section"><div class="theory-title">Zero Trust — Trust nothing, verify everything</div><div class="theory-body">Born from deperimeterization — the disappearance of the traditional network perimeter due to cloud, remote work, and mobile devices.</div></div><div class="table-wrap"><table><tr><th>Component</th><th>Role</th></tr><tr><td><strong>Adaptive Identity</strong></td><td>Verifies dynamically based on context, behavior, location</td></tr><tr><td><strong>Policy Engine</strong></td><td>DECIDES — grants or denies access</td></tr><tr><td><strong>Policy Administrator</strong></td><td>COMMUNICATES the decision</td></tr><tr><td><strong>PEP</strong></td><td>EXECUTES — opens or blocks the connection</td></tr></table></div><div class="theory-section"><div class="theory-title">Gap Analysis</div><div class="theory-body">Steps: 1. Define Scope → 2. Gather Data → 3. Analyze Data → 4. Develop Plan → produces POA&M. Types: Technical (tools/infrastructure) and Business (processes).</div></div><div class="tip-box">Five nines (99.999%) = 5.26 min/year. Three nines (99.9%) = 8.76 hours/year. Five nines = gold standard.</div>`}
+    ],
+    questions:[
+      {q:"An attacker intercepts an encrypted email and modifies it before delivery. Which TWO CIA principles were violated?",opts:["Availability and Integrity","Confidentiality and Availability","Confidentiality and Integrity","Integrity only"],correct:2,level:1,exp:"Interception = Confidentiality. Modification = Integrity. Both violated."},
+      {q:"A SOC analyst reviews SIEM logs to trace which files an attacker accessed. Which AAA component is being used?",opts:["Authentication","Authorization","Accounting","Non-repudiation"],correct:2,level:1,exp:"SIEM + logs + tracing actions = always Accounting."},
+      {q:"An employee logs in with password + fingerprint scan. Which MFA factors are combined?",opts:["Something You Know + Something You Have","Something You Know + Something You Are","Something You Have + Something You Are","Something You Are + Somewhere You Are"],correct:1,level:2,exp:"Password = Something You Know. Fingerprint = Something You Are. Two different types = MFA."},
+      {q:"A security policy requires annual cybersecurity training and a clean desk policy. What type and category?",opts:["Preventive — Technical","Deterrent — Physical","Directive — Managerial","Compensating — Operational"],correct:2,level:2,exp:"Policies instructing internal behavior = Directive. From management = Managerial."},
+      {q:"A network device inline drops malicious payloads automatically before reaching the server. What is this?",opts:["IDS — Detective","Firewall — Preventive","IPS — Preventive","SIEM — Detective"],correct:2,level:2,exp:"Inline + automatically blocks = IPS. Preventive control type."},
+      {q:"Cannot implement biometric scanners due to budget. Key fobs deployed instead. What type of control and factor?",opts:["Compensating — Something You Know","Preventive — Something You Have","Compensating — Something You Have","Directive — Something You Are"],correct:2,level:3,exp:"Cannot implement ideal → alternative = Compensating. Key fob = physical device = Something You Have."},
+      {q:"Antivirus detects ransomware that ALREADY encrypted files and quarantines it. What control type?",opts:["Preventive","Detective","Corrective","Compensating"],correct:2,level:3,exp:"Malware already infected. Quarantine AFTER infection = Corrective, not Preventive."},
+      {q:"SLA guarantees 99.999% uptime. Service was down 8 minutes last year. What is correct?",opts:["Met SLA — 8 minutes is acceptable","Violated SLA — 99.999% allows only 5.26 minutes/year","Met SLA — 99.999% allows 8.76 hours","Violated SLA — any downtime is unacceptable"],correct:1,level:3,exp:"Five nines = 5.26 minutes/year. 8 minutes > 5.26 minutes = SLA violated."},
+      {q:"Zero Trust system evaluates identity, device health, location and behavior dynamically. Which component?",opts:["Policy Enforcement Point","Policy Administrator","Adaptive Identity","Threat Scope Reduction"],correct:2,level:4,exp:"Dynamic verification based on identity, device, location, behavior = Adaptive Identity."},
+      {q:"Security team finds SIEM cannot correlate cloud events, documents the gap, creates remediation plan. What type and document?",opts:["Business Gap Analysis — SLA","Technical Gap Analysis — POA&M","Business Gap Analysis — POA&M","Technical Gap Analysis — Audit Trail"],correct:1,level:4,exp:"SIEM = technical tool → Technical Gap Analysis. Remediation plan with deadlines = POA&M."}
+    ],
+    exercises:[
+      {type:"scenario",title:"Exercise 1 — Real-World Scenario",instruction:"Read the scenario carefully and identify the correct security concepts.",scenario:"A hospital's IT team discovers that an attacker breached their network three weeks ago. The attacker read patient records without modifying anything. The security team reviews the SIEM logs to reconstruct exactly what happened, which files were accessed, and from where. The hospital is also required by HIPAA to maintain these logs for 6 years.",questions:[{q:"Which CIA Triad principle was violated?",opts:["Integrity","Availability","Confidentiality","Non-repudiation"],correct:2,exp:"The attacker READ records without modifying them = Confidentiality violation."},{q:"Which AAA function is the security team performing by reviewing SIEM logs?",opts:["Authentication","Authorization","Accounting","Adaptive Identity"],correct:2,exp:"Reviewing logs to reconstruct what happened = Accounting (Forensic Analysis)."},{q:"The legal requirement to keep logs for 6 years represents which Accounting function?",opts:["Forensic Analysis","User Accountability","Regulatory Compliance","Resource Optimization"],correct:2,exp:"Legal/regulatory requirement to maintain records = Regulatory Compliance."}]},
+      {type:"dragdrop",title:"Exercise 2 — Match the Control Type",instruction:"Drag each example to its correct control type.",pairs:[{item:"Warning sign: 'CCTV in operation'",zone:"Deterrent"},{item:"Restore from backup after ransomware",zone:"Corrective"},{item:"Firewall blocking port 23",zone:"Preventive"},{item:"IDS alerting on suspicious traffic",zone:"Detective"}]},
+      {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence with the correct term.",blanks:[{before:"In Zero Trust, the component that decides whether to grant access is the",after:".",answer:"Policy Engine",hint:"Policy E"},{before:"Five nines (99.999%) uptime allows a maximum of",after:"of downtime per year.",answer:"5.26 minutes",hint:"5.2"},{before:"When a company cannot implement smart cards and uses MFA instead, this is a",after:"control.",answer:"Compensating",hint:"Com"}]},
+      {type:"scenario",title:"Exercise 4 — Attack Chain Analysis",instruction:"Analyze this attack chain and answer the questions.",scenario:"An employee receives an email with a PDF attachment titled 'Invoice_Q1.pdf'. When opened, malware silently installs and establishes persistence for 2 months. During this time the attacker reads and copies R&D data. The IT team only discovers the breach when an IDS alert fires. They review logs and restore affected systems from a clean backup.",questions:[{q:"What threat vector was used for initial access?",opts:["Voice Calls (Vishing)","Messages — Phishing with malicious file","Removable Devices — Baiting","Unsecured Networks"],correct:1,exp:"Email with malicious PDF = Messages threat vector (Phishing)."},{q:"What control TYPE is the IDS alert?",opts:["Preventive","Compensating","Detective","Corrective"],correct:2,exp:"IDS alerts but does not block = Detective control."},{q:"What control TYPE is restoring from backup?",opts:["Preventive","Detective","Directive","Corrective"],correct:3,exp:"Restoring systems after damage = Corrective control."}]}
+    ]
+  },
+  2:{
+    title:"Chapter 2: Threat Actors & Deception",
+    unlocked:false,completed:false,quizPassed:false,
+    sections:[
+      {title:"Threat Actors Overview & Motivations",content:`<div class="theory-section"><div class="theory-title">What is a Threat Actor?</div><div class="theory-body">Any individual or entity responsible for security incidents. Three key attributes: Resources + Sophistication + Motivation.</div></div><div class="table-wrap"><table><tr><th>Motivation</th><th>Description</th><th>Typical Actor</th></tr><tr><td><strong>Financial Gain</strong></td><td>Ransomware, fraud, identity theft</td><td>Organized Crime</td></tr><tr><td><strong>Ideological</strong></td><td>Social or political causes</td><td>Hacktivist</td></tr><tr><td><strong>Strategic</strong></td><td>Espionage, infrastructure disruption</td><td>Nation-State</td></tr><tr><td><strong>Revenge</strong></td><td>Targeting those who wronged them</td><td>Insider Threat</td></tr><tr><td><strong>Thrill</strong></td><td>Recognition, curiosity</td><td>Script Kiddie</td></tr></table></div><div class="tip-box">Financial = Organized Crime | Ideological = Hacktivist | Strategic = Nation-State</div>`},
+      {title:"Script Kiddies, Hacktivists & Organized Crime",content:`<div class="table-wrap"><table><tr><th>Actor</th><th>Skills</th><th>Motivation</th><th>Example</th></tr><tr><td><strong>Script Kiddie</strong></td><td>Low — uses LOIC and pre-made tools</td><td>Thrill, recognition</td><td>DDoS on gaming servers</td></tr><tr><td><strong>Hacktivist</strong></td><td>Variable — can be advanced</td><td>Ideological, political</td><td>Anonymous, LulzSec</td></tr><tr><td><strong>Organized Crime</strong></td><td>High — custom malware</td><td>Financial only</td><td>FIN7, Carbanak ($1B+ from banks)</td></tr></table></div><div class="tip-box">Hacktivist techniques: Website defacement, DDoS, Doxxing, Data leaks. No financial demand = Hacktivist.</div>`},
+      {title:"Nation-State Actors & Insider Threats",content:`<div class="table-wrap"><table><tr><th>Actor</th><th>Sophistication</th><th>Key Concept</th></tr><tr><td><strong>Nation-State</strong></td><td>Maximum — APTs</td><td>False Flag Attacks, unlimited resources, government-sponsored</td></tr><tr><td><strong>Insider Threat</strong></td><td>Variable</td><td>Legitimate access + internal knowledge = most dangerous</td></tr></table></div><div class="tip-box">APT = long-term + silent + persistent + evades detection. Stuxnet = famous Nation-State APT.</div><div class="tip-box">False Flag = disguise attack origin to frame another country.</div><div class="theory-section"><div class="theory-title">Insider Threat vs Shadow IT</div></div><div class="table-wrap"><table><tr><th></th><th>Insider Threat</th><th>Shadow IT</th></tr><tr><td>Intent</td><td>Deliberate malicious</td><td>No malicious intent</td></tr><tr><td>Risk</td><td>Sabotage, theft, destruction</td><td>Compliance, accidental breach</td></tr><tr><td>Example</td><td>Edward Snowden, Twitter 2020</td><td>Using personal Dropbox for work</td></tr></table></div>`},
+      {title:"Threat Vectors, Attack Surfaces & Deception",content:`<div class="table-wrap"><table><tr><th>Vector</th><th>Description</th><th>Attack Type</th></tr><tr><td><strong>Messages</strong></td><td>Email, SMS, IM</td><td>Phishing</td></tr><tr><td><strong>Voice Calls</strong></td><td>Phone impersonation</td><td>Vishing</td></tr><tr><td><strong>Removable Devices</strong></td><td>USB drives</td><td>Baiting</td></tr><tr><td><strong>Images</strong></td><td>Malicious code in image files</td><td>Embedded malware</td></tr><tr><td><strong>Unsecured Networks</strong></td><td>Rogue access points</td><td>Evil twin WiFi</td></tr></table></div><div class="theory-section"><div class="theory-title">Deception Technologies</div></div><div class="table-wrap"><table><tr><th>Technology</th><th>What it is</th><th>Alert triggered when</th></tr><tr><td><strong>Honeypot</strong></td><td>ONE single decoy system</td><td>Attacker connects to it</td></tr><tr><td><strong>Honeynet</strong></td><td>NETWORK of multiple honeypots</td><td>Attacker navigates fake network</td></tr><tr><td><strong>Honeyfile</strong></td><td>ONE fake decoy file</td><td>File is accessed or opened</td></tr><tr><td><strong>Honeytoken</strong></td><td>Fake credentials or data</td><td>Fake data is used</td></tr></table></div><div class="tip-box">"Multiple systems" or "entire network environment" = ALWAYS Honeynet. FILE = Honeyfile. CREDENTIALS inside = Honeytoken.</div>`}
+    ],
+    questions:[
+      {q:"Which threat actor uses pre-made tools, has low technical skills, and is motivated by thrill?",opts:["Hacktivist","Script Kiddie","Insider Threat","Nation-State Actor"],correct:1,level:1,exp:"Limited skills + pre-made tools + thrill motivation = Script Kiddie."},
+      {q:"A group defaces a corporation website and leaks documents to protest environmental policies. No payment demanded. What type?",opts:["Organized Crime","Nation-State Actor","Hacktivist","Insider Threat"],correct:2,level:1,exp:"No financial demand + social/political cause + defacement/leaks = Hacktivist."},
+      {q:"What is the PRIMARY difference between a Threat Vector and an Attack Surface?",opts:["Threat vector is where attacks happen; attack surface is how","Threat vector is the method of delivery; attack surface is all potential entry points","Threat vector is internal; attack surface is external","Threat vector is malware; attack surface is a vulnerability"],correct:1,level:2,exp:"Threat Vector = the HOW. Attack Surface = the WHERE (all potential entry points)."},
+      {q:"Employee uses personal Dropbox and unauthorized router for work — no malicious intent. What concept and risk?",opts:["Insider Threat — data theft","Shadow IT — data breach and non-compliance","BYOD — loss of device control","Nation-State — espionage"],correct:1,level:2,exp:"Unauthorized IT + no malicious intent = Shadow IT. Risk = compliance & accidental breach."},
+      {q:"Attackers infiltrate a network, stay undetected for 14 months, slowly exfiltrate classified data. Which concept?",opts:["DDoS Attack","False Flag Attack","Advanced Persistent Threat (APT)","Baiting"],correct:2,level:3,exp:"Long-term + silent + persistent + evades detection = APT."},
+      {q:"Cyber unit attacks a power grid but plants North Korean code signatures to avoid attribution. What tactic?",opts:["Shadow IT","Baiting","Doxxing","False Flag Attack"],correct:3,level:3,exp:"Disguising attack origin to frame another country = False Flag Attack."},
+      {q:"USB drive labeled 'Q1 Salary Report' left in parking lot. Employee plugs it in, malware executes. Which vector and technique?",opts:["Messages — Phishing","Files — Doxxing","Removable Devices — Baiting","Voice Calls — Vishing"],correct:2,level:3,exp:"USB drive = Removable Devices. Enticing label to trigger curiosity = Baiting."},
+      {q:"Multiple interconnected decoy servers and workstations with fake data deployed to monitor attackers. What technology?",opts:["Honeypot","Honeyfile","Honeynet","Honeytoken"],correct:2,level:4,exp:"Multiple interconnected systems simulating entire network = Honeynet (not a single Honeypot)."},
+      {q:"Fake admin credentials embedded inside a configuration file. Alert triggers if credentials are used. Which TWO technologies?",opts:["Honeypot and Honeynet","Honeyfile and Honeytoken","Honeynet and Honeypot","Honeytoken and Honeypot"],correct:1,level:4,exp:"The configuration FILE = Honeyfile. The fake CREDENTIALS inside = Honeytoken."},
+      {q:"Attacker calls employee impersonating IT support to steal credentials. Contractor introduced unauthorized backup software. Which vector and concept?",opts:["Phishing email — Insider Threat","Vishing (Voice Call) — Shadow IT","Removable Device — BYOD","Unsecured Network — APT"],correct:1,level:5,exp:"Phone call impersonation = Vishing. Unauthorized software without malicious intent = Shadow IT."}
+    ],
+    exercises:[
+      {type:"scenario",title:"Exercise 1 — Real-World Scenario",instruction:"Read the scenario and identify the correct concepts.",scenario:"A disgruntled ex-system administrator, fired 2 weeks ago, still has active credentials. Using these, they log in at 2AM and delete critical database backups. Meanwhile, another employee has been using their personal iPhone to access corporate email and installed Dropbox on their work laptop without IT approval — purely to be more productive.",questions:[{q:"The ex-admin deleting backups represents which threat actor type?",opts:["Script Kiddie","Shadow IT","Insider Threat","Hacktivist"],correct:2,exp:"Deliberate malicious intent + legitimate (not revoked) credentials = Insider Threat."},{q:"The employee using personal iPhone and Dropbox represents which concept?",opts:["Insider Threat","Nation-State espionage","Shadow IT and BYOD","Organized Crime"],correct:2,exp:"Unauthorized tools/devices without malicious intent = Shadow IT and BYOD."},{q:"What is the PRIMARY risk of the employee's behavior?",opts:["Data theft","Data breach and non-compliance","Sabotage","DDoS attack"],correct:1,exp:"Shadow IT without malicious intent = compliance risk and accidental data breach."}]},
+      {type:"dragdrop",title:"Exercise 2 — Match the Threat Actor",instruction:"Drag each description to its correct threat actor.",pairs:[{item:"Uses LOIC, motivated by thrill, no advanced skills",zone:"Script Kiddie"},{item:"Custom malware, structured hierarchy, financial only",zone:"Organized Crime"},{item:"APTs, false flag attacks, government-sponsored",zone:"Nation-State Actor"},{item:"Website defacement, data leaks, ideological motivation",zone:"Hacktivist"}]},
+      {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence with the correct term.",blanks:[{before:"A cyber attack disguised to appear as if it came from another country is called a",after:"attack.",answer:"False Flag",hint:"False F"},{before:"When multiple interconnected decoy systems simulate an entire corporate network, this is called a",after:".",answer:"Honeynet",hint:"Honey"},{before:"An employee receiving a phone call from someone impersonating IT support is being targeted by",after:".",answer:"Vishing",hint:"Vish"}]},
+      {type:"scenario",title:"Exercise 4 — Attack Chain Analysis",instruction:"Analyze this full attack and answer the questions.",scenario:"A hacker group with a structured organization and financial motivation targets a retail company. They send a spear phishing email with a malicious image attachment to the CFO. The malware executes when the image is opened and remains undetected for 3 months. A honeyfile placed in the finance folder triggers an alert when accessed. The team deploys fake credentials in a config file as an additional trap.",questions:[{q:"What type of threat actor is MOST likely responsible?",opts:["Script Kiddie","Hacktivist","Organized Crime","Nation-State Actor"],correct:2,exp:"Structured organization + financial motivation + targeting retail = Organized Crime (FIN7 profile)."},{q:"What threat vector was used for initial access?",opts:["Voice Calls — Vishing","Removable Devices — Baiting","Images — malicious image file","Unsecured Networks"],correct:2,exp:"Malicious code embedded in an image file = Images threat vector."},{q:"The honeyfile and fake credentials in config file represent which TWO deception technologies?",opts:["Honeypot and Honeynet","Honeyfile and Honeytoken","Honeynet and Honeypot","Honeytoken and Honeypot"],correct:1,exp:"The FILE = Honeyfile. The fake CREDENTIALS inside the config file = Honeytoken."}]}
+    ]
+  }
+};
+
+let curCh=1,curSec=0,curQ=0,correct=0,wrong=0,curLvl=1,answered=false,exIdx=0;
+
+function showHome(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('home-screen').classList.add('active');
+  updateHome();
+}
+
+function updateHome(){
+  const c2=document.getElementById('ch2-card');
+  if(CH[1].completed){
+    CH[2].unlocked=true;c2.classList.remove('locked');
+    document.getElementById('ch2-status').textContent=CH[2].completed?'DONE':'START';
+    document.getElementById('ch2-status').className='badge '+(CH[2].completed?'badge-done':'badge-ch2');
+    document.getElementById('ch2-badge').className='badge '+(CH[2].completed?'badge-done':'badge-ch2');
+    document.getElementById('ch2-prog-text').textContent=CH[2].completed?'Completed':'Unlocked';
+    document.getElementById('ch2-bar').style.background='';
+  }
+  if(CH[1].completed){document.getElementById('ch1-status').textContent='DONE';document.getElementById('ch1-status').className='badge badge-done';}
+}
+
+function startChapter(n){if(!CH[n].unlocked)return;curCh=n;curSec=0;showTheory();}
+
+function showTheory(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('theory-screen').classList.add('active');
+  document.getElementById('th-title').textContent=CH[curCh].title;
+  renderSec();
+}
+
+function renderSec(){
+  const ch=CH[curCh];const sec=ch.sections[curSec];const tot=ch.sections.length;
+  document.getElementById('th-counter').textContent=`section_${curSec+1}_of_${tot}`;
+  document.getElementById('th-bar').style.width=((curSec+1)/tot*100)+'%';
+  document.getElementById('th-content').innerHTML=`<div class="card"><h2 style="font-size:18px;font-weight:600;margin-bottom:1.25rem;color:var(--text)">${sec.title}</h2>${sec.content}</div>`;
+  document.getElementById('prev-btn').style.display=curSec===0?'none':'inline-block';
+  document.getElementById('next-th-btn').textContent=curSec===tot-1?'Start Quiz →':'Next →';
+}
+
+function nextSec(){const ch=CH[curCh];if(curSec<ch.sections.length-1){curSec++;renderSec();}else startQuiz();}
+function prevSec(){if(curSec>0){curSec--;renderSec();}}
+
+function startQuiz(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('quiz-screen').classList.add('active');
+  document.getElementById('qz-title').textContent=CH[curCh].title+' — Quiz';
+  curQ=0;correct=0;wrong=0;curLvl=1;renderQ();
+}
+function retryQuiz(){startQuiz();}
+
+function renderQ(){
+  const qs=CH[curCh].questions;if(curQ>=qs.length){showResult();return;}
+  const q=qs[curQ];const tot=qs.length;
+  const stars=['★','★★','★★★','★★★★','★★★★★'];
+  const labels=['Easy','Medium','Medium-Hard','Hard','Expert'];
+  document.getElementById('qz-counter').textContent=`question_${curQ+1}_of_${tot}`;
+  document.getElementById('qz-bar').style.width=((curQ+1)/tot*100)+'%';
+  document.getElementById('qz-stars').textContent=stars[Math.min(curLvl-1,4)];
+  document.getElementById('qz-lvl').textContent=`level_${curLvl} // ${labels[Math.min(curLvl-1,4)]}`;
+  document.getElementById('qz-q').textContent=q.q;
+  document.getElementById('qz-fb').style.display='none';
+  document.getElementById('next-q-btn').style.display='none';
+  document.getElementById('cor-cnt').textContent=correct;
+  document.getElementById('wrg-cnt').textContent=wrong;
+  document.getElementById('cur-lvl').textContent=curLvl;
+  const od=document.getElementById('qz-opts');od.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='option-btn';b.textContent=['A) ','B) ','C) ','D) '][i]+opt;
+    b.onclick=()=>selectA(i);od.appendChild(b);
+  });
+  answered=false;
+}
+
+function selectA(idx){
+  if(answered)return;answered=true;
+  const q=CH[curCh].questions[curQ];
+  document.querySelectorAll('.option-btn').forEach((b,i)=>{b.onclick=null;if(i===q.correct)b.classList.add('correct');else if(i===idx&&idx!==q.correct)b.classList.add('wrong');});
+  const ok=idx===q.correct;
+  const fb=document.getElementById('qz-fb');
+  fb.style.display='block';fb.className='feedback-box '+(ok?'feedback-correct':'feedback-wrong');
+  fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+q.exp;
+  if(ok){correct++;curLvl=Math.min(curLvl+1,5);}else{wrong++;curLvl=Math.max(curLvl-1,1);}
+  document.getElementById('cor-cnt').textContent=correct;
+  document.getElementById('wrg-cnt').textContent=wrong;
+  document.getElementById('cur-lvl').textContent=curLvl;
+  document.getElementById('next-q-btn').style.display='inline-block';
+}
+function nextQ(){curQ++;renderQ();}
+
+function showResult(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('result-screen').classList.add('active');
+  const tot=CH[curCh].questions.length;
+  const pct=Math.round(correct/tot*100);
+  const passed=pct>=80;
+  CH[curCh].quizPassed=passed;
+  document.getElementById('res-title').textContent='Chapter '+curCh+' — Quiz Results';
+  document.getElementById('res-pct').textContent=pct+'%';
+  const rc=document.getElementById('res-circle');
+  rc.className='score-circle '+(passed?'score-pass':'score-fail');
+  document.getElementById('res-heading').textContent=passed?'Quiz Passed!':'Not quite yet';
+  document.getElementById('res-msg').textContent=passed?`You scored ${correct}/${tot} — ${pct}%. Now complete the practical exercises to finish the chapter.`:`You scored ${correct}/${tot} — ${pct}%. You need 80%+ to pass. Review the theory and try again.`;
+  document.getElementById('go-ex-btn').style.display=passed?'inline-block':'none';
+  document.getElementById('retry-btn').style.display=passed?'none':'inline-block';
+}
+
+function startExercises(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('exercise-screen').classList.add('active');
+  exIdx=0;
+  document.getElementById('ex-title').textContent=CH[curCh].title+' — Exercises';
+  renderExDots();renderEx();
+}
+
+function renderExDots(){
+  const exs=CH[curCh].exercises;
+  const d=document.getElementById('step-dots');d.innerHTML='';
+  exs.forEach((_,i)=>{const dot=document.createElement('div');dot.className='step-dot'+(i===exIdx?' active':i<exIdx?' done':'');d.appendChild(dot);});
+}
+
+function renderEx(){
+  const ex=CH[curCh].exercises[exIdx];
+  document.getElementById('ex-counter').textContent=`exercise_${exIdx+1}_of_${CH[curCh].exercises.length}`;
+  renderExDots();
+  const c=document.getElementById('ex-content');
+  if(ex.type==='scenario')renderScenario(ex,c);
+  else if(ex.type==='dragdrop')renderDragDrop(ex,c);
+  else if(ex.type==='blank')renderBlank(ex,c);
+}
+
+function renderScenario(ex,c){
+  c.innerHTML=`<div class="card"><span class="badge badge-ex">SCENARIO</span><h2 style="font-size:16px;font-weight:600;margin:10px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:12px">${ex.instruction}</p><div class="scenario-box">${ex.scenario}</div><div id="sc-qs"></div></div>`;
+  let qIdx=0;let sc=0;
+  function renderSQ(){
+    if(qIdx>=ex.questions.length){
+      const pct=Math.round(sc/ex.questions.length*100);
+      document.getElementById('sc-qs').innerHTML=`<div class="feedback-box ${pct>=66?'feedback-correct':'feedback-wrong'}" style="text-align:center;margin-top:1rem"><strong>Score: ${sc}/${ex.questions.length} — ${pct}%</strong></div><div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`;
+      return;
+    }
+    const q=ex.questions[qIdx];
+    let opts=q.opts.map((o,i)=>`<button class="option-btn" onclick="pickSQ(${i})">${['A) ','B) ','C) ','D) '][i]}${o}</button>`).join('');
+    document.getElementById('sc-qs').innerHTML=`<p style="font-size:14px;font-weight:500;color:var(--text);margin:1.25rem 0 8px">Q${qIdx+1}: ${q.q}</p>${opts}<div id="sc-fb" style="display:none"></div><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" id="sc-next" style="display:none" onclick="advSQ()">Next →</button></div>`;
+    window.pickSQ=function(idx){
+      document.querySelectorAll('.option-btn').forEach((b,i)=>{b.onclick=null;if(i===q.correct)b.classList.add('correct');else if(i===idx&&idx!==q.correct)b.classList.add('wrong');});
+      const ok=idx===q.correct;if(ok)sc++;
+      const fb=document.getElementById('sc-fb');fb.style.display='block';
+      fb.className='feedback-box '+(ok?'feedback-correct':'feedback-wrong');
+      fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+q.exp;
+      document.getElementById('sc-next').style.display='inline-block';
+    };
+    window.advSQ=function(){qIdx++;renderSQ();};
+  }
+  renderSQ();
+}
+
+function renderDragDrop(ex,c){
+  const pairs=[...ex.pairs];
+  const items=pairs.map(p=>p.item);items.sort(()=>Math.random()-0.5);
+  let html=`<div class="card"><span class="badge badge-ex">DRAG & DROP</span><h2 style="font-size:16px;font-weight:600;margin:10px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:12px">${ex.instruction}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div><p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:8px;letter-spacing:1px">// ITEMS</p><div id="drag-items">`;
+  items.forEach((item,i)=>{html+=`<div class="drag-item" draggable="true" id="di-${i}" data-item="${item}">${item}</div>`;});
+  html+=`</div></div><div><p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:8px;letter-spacing:1px">// DROP ZONES</p>`;
+  pairs.forEach((p,i)=>{html+=`<div class="drop-zone" id="dz-${i}" data-zone="${p.zone}"><div class="drop-label">${p.zone}</div><div id="dzc-${i}" style="font-size:11px;color:var(--text2);margin-top:2px"></div></div>`;});
+  html+=`</div></div><div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" onclick="checkDrag()">Check Answers →</button></div></div>`;
+  c.innerHTML=html;
+  let dragSrc=null;
+  document.querySelectorAll('.drag-item').forEach(el=>{
+    el.addEventListener('dragstart',e=>{dragSrc=el;e.dataTransfer.effectAllowed='move';});
+  });
+  document.querySelectorAll('.drop-zone').forEach(zone=>{
+    zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over');});
+    zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+    zone.addEventListener('drop',e=>{
+      e.preventDefault();zone.classList.remove('over');
+      if(dragSrc){
+        const prev=zone.getAttribute('data-dropped');
+        if(prev){const old=[...document.querySelectorAll('.drag-item')].find(d=>d.getAttribute('data-item')===prev);if(old)old.style.display='block';}
+        zone.setAttribute('data-dropped',dragSrc.getAttribute('data-item'));
+        document.getElementById('dzc-'+zone.id.split('-')[1]).textContent=dragSrc.getAttribute('data-item');
+        dragSrc.style.display='none';dragSrc=null;
+      }
+    });
+  });
+  window.checkDrag=function(){
+    let sc=0;
+    pairs.forEach((p,i)=>{
+      const zone=document.getElementById('dz-'+i);
+      const dropped=zone.getAttribute('data-dropped')||'';
+      if(dropped===p.item){sc++;zone.classList.add('matched');}else zone.classList.add('wrong-drop');
+    });
+    const pct=Math.round(sc/pairs.length*100);
+    const fb=document.createElement('div');
+    fb.className='feedback-box '+(pct>=75?'feedback-correct':'feedback-wrong');
+    fb.innerHTML=`<strong>// Score: ${sc}/${pairs.length} — ${pct}%</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`;
+    document.querySelector('.card').appendChild(fb);
+    document.querySelector('[onclick="checkDrag()"]').remove();
+  };
+}
+
+function renderBlank(ex,c){
+  let html=`<div class="card"><span class="badge badge-ex">FILL IN THE BLANK</span><h2 style="font-size:16px;font-weight:600;margin:10px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:12px">${ex.instruction}</p>`;
+  ex.blanks.forEach((b,i)=>{html+=`<div style="margin:1rem 0;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--surface2)"><p style="font-size:14px;color:var(--text2);line-height:1.9">${b.before} <input class="blank-input" id="bl-${i}" placeholder="${b.hint}..." type="text"> ${b.after}</p></div>`;});
+  html+=`<div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" onclick="checkBlanks()">Check Answers →</button></div></div>`;
+  c.innerHTML=html;
+  window.checkBlanks=function(){
+    let sc=0;
+    ex.blanks.forEach((b,i)=>{
+      const inp=document.getElementById('bl-'+i);
+      const val=inp.value.trim().toLowerCase();
+      const ans=b.answer.toLowerCase();
+      if(val===ans||ans.includes(val)&&val.length>=3){sc++;inp.classList.add('correct-input');}
+      else{inp.classList.add('wrong-input');inp.value=b.answer;}
+    });
+    const pct=Math.round(sc/ex.blanks.length*100);
+    const fb=document.createElement('div');
+    fb.className='feedback-box '+(pct>=66?'feedback-correct':'feedback-wrong');
+    fb.innerHTML=`<strong>// Score: ${sc}/${ex.blanks.length} — ${pct}%</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`;
+    document.querySelector('.card').appendChild(fb);
+    document.querySelector('[onclick="checkBlanks()"]').remove();
+  };
+}
+
+function nextEx(){exIdx++;if(exIdx>=CH[curCh].exercises.length)showExResult();else renderEx();}
+
+function showExResult(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('ex-result-screen').classList.add('active');
+  document.getElementById('exres-title').textContent='Chapter '+curCh+' — Complete';
+  document.getElementById('exres-heading').textContent='All exercises completed!';
+  document.getElementById('exres-msg').textContent='You have finished the theory, quiz and all 4 practical exercises for Chapter '+curCh+'. Click below to complete the chapter and '+(curCh===1?'unlock Chapter 2.':'finish the course.');
+}
+
+function finishChapter(){CH[curCh].completed=true;if(curCh===1){CH[2].unlocked=true;}showHome();}
+
+showHome();
+</script>
+</body>
+</html>
