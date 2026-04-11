@@ -118,19 +118,11 @@ tr:last-child td{border-bottom:none}
       <span class="pill pill-orange">Adaptive Difficulty</span>
     </div>
   </header>
+
+  <!-- CHAPTER CARDS (rendered by JS) -->
   <div id="chapters-list"></div>
 
-  <!-- WEEK CODE UNLOCK -->
-  <div id="week-unlock-section" class="card" style="margin-top:0.5rem;border-color:rgba(0,212,255,0.2)">
-    <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:2px;margin-bottom:10px">// UNLOCK NEXT WEEK — ENTER YOUR CODE</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <input id="week-code-input" type="text" placeholder="SEC+-W2-2026-ALPHA-07" style="flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:13px">
-      <button class="btn btn-primary" onclick="checkWeekCode()">Unlock →</button>
-    </div>
-    <div id="code-feedback" style="margin-top:8px"></div>
-  </div>
-
-  <!-- FINAL CHALLENGE CARD -->
+  <!-- FINAL CHALLENGE CARD (shown after all chapters done) -->
   <div id="final-challenge-card" class="card" style="display:none;margin-top:0.5rem;cursor:pointer;border-color:rgba(245,158,11,0.3);background:linear-gradient(135deg,rgba(245,158,11,0.05),var(--surface))" onclick="showFinalChallenge()">
     <div style="display:flex;justify-content:space-between;align-items:flex-start">
       <div>
@@ -146,6 +138,17 @@ tr:last-child td{border-bottom:none}
       <span style="font-size:11px;color:var(--warning)">⭐⭐ → ⭐⭐⭐⭐⭐⭐</span>
     </div>
   </div>
+
+  <!-- WEEK CODE UNLOCK (always at bottom) -->
+  <div id="week-unlock-section" class="card" style="margin-top:0.75rem;border-color:rgba(0,212,255,0.15)">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:2px;margin-bottom:10px">// UNLOCK NEXT WEEK — ENTER YOUR CODE</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <input id="week-code-input" type="text" placeholder="Enter your unlock code here..." style="flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:13px">
+      <button class="btn btn-primary" onclick="checkWeekCode()">Unlock →</button>
+    </div>
+    <div id="code-feedback" style="margin-top:8px"></div>
+  </div>
+
   <footer class="site-footer">
     <p>Built by <a href="https://linkedin.com/in/carlos-l-materano-g" target="_blank">Carlos Materano</a> · CompTIA Security+ SY0-701 · 2026</p>
   </footer>
