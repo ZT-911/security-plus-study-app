@@ -285,9 +285,9 @@ const TEXT_COLORS = {b1:"var(--accent)",b2:"#a78bfa",b3:"var(--success)",b4:"var
 const BORDER_COLORS = {b1:"rgba(0,212,255,0.3)",b2:"rgba(124,58,237,0.3)",b3:"rgba(16,185,129,0.3)",b4:"rgba(245,158,11,0.3)",b5:"rgba(239,68,68,0.3)"};
 
 let curCh=1,curSec=0,curQ=0,correct=0,wrong=0,curLvl=1,answered=false;
-let exIdx=0,exAttempt=0;
-// Randomize starting attempt so questions differ on every page load
-let quizAttempt=Math.floor(Math.random()*40);
+// Seed all attempts randomly so every page load gives different questions/exercises
+const _seed = Math.floor(Math.random()*80)+1;
+let exIdx=0, exAttempt=_seed, quizAttempt=_seed;
 let currentQuestions=[],currentExercises=[];
 let chState={1:{unlocked:true,completed:false},2:{unlocked:false,completed:false},3:{unlocked:false,completed:false},4:{unlocked:false,completed:false},5:{unlocked:false,completed:false}};
 
@@ -391,8 +391,9 @@ async function startQuiz(){
   document.getElementById('quiz-content').style.display='none';
   curQ=0;correct=0;wrong=0;curLvl=1;
   const ctx=getCtx(quizAttempt);
+  const ts=Date.now(); // unique timestamp prevents any caching
   try{
-    const d=await callClaude(`You are a CompTIA Security+ SY0-701 exam question writer. Generate exactly 10 UNIQUE multiple choice questions for attempt ${quizAttempt} about: ${CHAPTERS[curCh].topics}\n\nCRITICAL:\n- Attempt ${quizAttempt} uses these contexts: ${ctx[0]}\n- Key rules: ${CHAPTERS[curCh].keyRules}\n- Q1-3 easy, Q4-6 medium, Q7-8 hard, Q9-10 expert\n- Each question has exactly 4 options (A,B,C,D), only ONE correct (0-indexed)\n\nReturn ONLY valid JSON:\n{"questions":[{"q":"question","opts":["A","B","C","D"],"correct":0,"level":1,"exp":"explanation"}]}`);
+    const d=await callClaude(`You are a CompTIA Security+ SY0-701 exam question writer. Session: ${ts}. Generate exactly 10 UNIQUE multiple choice questions for attempt ${quizAttempt} about: ${CHAPTERS[curCh].topics}\n\nCRITICAL:\n- This is attempt ${quizAttempt} with session ${ts} — ALL questions must be DIFFERENT from any previous attempt\n- Use these real-world contexts: ${ctx[0]}\n- Key rules: ${CHAPTERS[curCh].keyRules}\n- Q1-3 easy, Q4-6 medium, Q7-8 hard, Q9-10 expert\n- Each question has exactly 4 options (A,B,C,D), only ONE correct (0-indexed)\n\nReturn ONLY valid JSON:\n{"questions":[{"q":"question","opts":["A","B","C","D"],"correct":0,"level":1,"exp":"explanation"}]}`);
     currentQuestions=d.questions;
   }catch(e){currentQuestions=getFallbackQ(curCh);}
   document.getElementById('quiz-loading').style.display='none';
@@ -465,8 +466,9 @@ async function startExercises(){
   document.getElementById('ex-content').innerHTML='';
   exIdx=0;
   const ctx=getCtx(exAttempt);
+  const ts=Date.now();
   try{
-    const d=await callClaude(`You are a CompTIA Security+ SY0-701 exercise designer. Generate exactly 4 UNIQUE exercises for attempt ${exAttempt} about: ${CHAPTERS[curCh].topics}\n\nCRITICAL:\n- Attempt ${exAttempt} uses these contexts: ${ctx[1]}\n- Apply rules: ${CHAPTERS[curCh].keyRules}\n- Exercise types in order: scenario, dragdrop, blank, scenario\n- Each must be COMPLETELY DIFFERENT from previous attempts\n\nReturn ONLY valid JSON:\n{"exercises":[{"type":"scenario","title":"Exercise 1 — title","instruction":"text","scenario":"detailed scenario","questions":[{"q":"question","opts":["A","B","C","D"],"correct":0,"exp":"explanation"}]},{"type":"dragdrop","title":"Exercise 2 — title","instruction":"text","pairs":[{"item":"description","zone":"category"}]},{"type":"blank","title":"Exercise 3 — title","instruction":"text","blanks":[{"before":"text","after":"text","answer":"answer","hint":"hint"}]},{"type":"scenario","title":"Exercise 4 — title","instruction":"text","scenario":"detailed scenario","questions":[{"q":"question","opts":["A","B","C","D"],"correct":0,"exp":"explanation"}]}]}`);
+    const d=await callClaude(`You are a CompTIA Security+ SY0-701 exercise designer. Session: ${ts}. Generate exactly 4 UNIQUE exercises for attempt ${exAttempt} about: ${CHAPTERS[curCh].topics}\n\nCRITICAL:\n- Session ${ts} attempt ${exAttempt} — ALL exercises must be COMPLETELY DIFFERENT from any previous attempt\n- Use these contexts: ${ctx[1]}\n- Apply rules: ${CHAPTERS[curCh].keyRules}\n- Exercise types in order: scenario, dragdrop, blank, scenario\n\nReturn ONLY valid JSON:\n{"exercises":[{"type":"scenario","title":"Exercise 1 — title","instruction":"text","scenario":"detailed scenario","questions":[{"q":"question","opts":["A","B","C","D"],"correct":0,"exp":"explanation"}]},{"type":"dragdrop","title":"Exercise 2 — title","instruction":"text","pairs":[{"item":"description","zone":"category"}]},{"type":"blank","title":"Exercise 3 — title","instruction":"text","blanks":[{"before":"text","after":"text","answer":"answer","hint":"hint"}]},{"type":"scenario","title":"Exercise 4 — title","instruction":"text","scenario":"detailed scenario","questions":[{"q":"question","opts":["A","B","C","D"],"correct":0,"exp":"explanation"}]}]}`);
     currentExercises=d.exercises;
   }catch(e){currentExercises=getFallbackEx(curCh);}
   document.getElementById('ex-loading').style.display='none';
@@ -733,7 +735,10 @@ function getFallbackQ(ch){
       {q:"Attackers use PowerShell and WMI (Windows Management Instrumentation) — legitimate system tools — to conduct malicious activities, making detection very difficult. What technique?",opts:["Fileless Malware","Living Off the Land","Process Hollowing","DLL Injection"],correct:1,level:5,exp:"Using legitimate system tools (PowerShell, WMI) for malicious activities=Living Off the Land. Very hard to detect."}
     ]
   };
-  return banks[ch]||banks[1];
+  // Shuffle so every page load shows questions in different order
+  const pool = (banks[ch]||banks[1]);
+  const shuffled = [...pool].sort(()=>Math.random()-0.5);
+  return shuffled;
 }
 
 // ─── FALLBACK EXERCISES ──────────────────────────────────────────────────────
@@ -770,7 +775,16 @@ function getFallbackEx(ch){
       {type:"scenario",title:"Exercise 4 — Advanced Malware Attack",instruction:"Analyze this attack chain.",scenario:"A threat actor compromises a company through a phishing email. Stage 1: Employee opens PDF, a dropper installs silently. Stage 2: Dropper downloads a RAT giving attacker full remote control. Attacker uses PowerShell commands (standard Windows tool) to move laterally. After 2 months, they encrypt all files demanding ransom. All event logs from this period are missing.",questions:[{q:"What is the dropper in Stage 1 classified as?",opts:["Worm — self-replicates after installation","Trojan — disguised as legitimate PDF","Rootkit — operates in kernel mode","Logic Bomb — waits for condition"],correct:1,exp:"File disguised as legitimate (PDF) that installs malware=Trojan. Dropper is a type of Trojan."},{q:"The attacker using PowerShell for malicious activities is what technique?",opts:["Fileless Malware","DLL Injection","Living Off the Land","Process Hollowing"],correct:2,exp:"Using legitimate system tools (PowerShell) for malicious purposes=Living Off the Land. Very hard to detect."},{q:"Missing event logs from the 2-month period represent which IoC and what mitigation?",opts:["Out-of-Cycle Logging — schedule regular backups","Missing Logs — implement tamper-proof logging and SIEM monitoring","Resource Consumption — add more CPU","Impossible Travel — implement geofencing"],correct:1,exp:"Missing Logs=attacker deleted evidence. Mitigation=tamper-proof logging systems and SIEM with real-time monitoring."}]}
     ]
   };
-  return exMap[ch]||exMap[1];
+  // Shuffle exercises order on every page load for variety
+  const pool = exMap[ch]||exMap[1];
+  // Keep exercise types in correct order (scenario, dragdrop, blank, scenario)
+  // but randomize which scenario/blank content appears by picking random items
+  const shuffled = [...pool];
+  // Swap the two scenario exercises randomly
+  if(Math.random()>0.5 && shuffled.length===4){
+    [shuffled[0], shuffled[3]] = [shuffled[3], shuffled[0]];
+  }
+  return shuffled;
 }
 
 showHome();
