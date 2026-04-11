@@ -499,16 +499,88 @@ function renderScenario(ex,c){
 }
 
 function renderDragDrop(ex,c){
-  const pairs=[...ex.pairs];const items=pairs.map(p=>p.item);items.sort(()=>Math.random()-0.5);
-  c.innerHTML=`<div class="card"><span class="badge badge-ex">DRAG & DROP</span><span class="ai-tag">// ai_generated</span><h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div><p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">// ITEMS</p><div id="drag-items">${items.map((item,i)=>`<div class="drag-item" draggable="true" id="di-${i}" data-item="${item}">${item}</div>`).join('')}</div></div><div><p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">// DROP ZONES</p>${pairs.map((p,i)=>`<div class="drop-zone" id="dz-${i}" data-zone="${p.zone}"><div style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700;margin-bottom:3px">${p.zone}</div><div id="dzc-${i}" style="font-size:11px;color:var(--text2)"></div></div>`).join('')}</div></div><div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" onclick="checkDrag()">Check Answers →</button></div></div>`;
+  const pairs=[...ex.pairs];
+  const items=pairs.map((p,i)=>({text:p.item,origIdx:i}));
+  items.sort(()=>Math.random()-0.5);
+
+  let html=`<div class="card">
+    <span class="badge badge-ex">DRAG & DROP</span><span class="ai-tag">// ai_generated</span>
+    <h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2>
+    <p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div>
+        <p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">// ITEMS — drag these</p>
+        <div id="drag-items">
+          ${items.map((it,i)=>`<div class="drag-item" draggable="true" id="di-${i}" data-idx="${it.origIdx}">${it.text}</div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">// DROP ZONES</p>
+        ${pairs.map((p,i)=>`<div class="drop-zone" id="dz-${i}" data-zone-idx="${i}">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700;margin-bottom:3px">${p.zone}</div>
+          <div id="dzc-${i}" style="font-size:11px;color:var(--text2);min-height:14px;font-style:italic;color:var(--text3)">drop here...</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div style="text-align:right;margin-top:1rem">
+      <button class="btn btn-primary" id="check-drag-btn" onclick="checkDrag()">Check Answers →</button>
+    </div>
+    <div id="drag-fb"></div>
+  </div>`;
+
+  c.innerHTML=html;
+
   let dragSrc=null;
-  document.querySelectorAll('.drag-item').forEach(el=>{el.addEventListener('dragstart',e=>{dragSrc=el;e.dataTransfer.effectAllowed='move';});});
+
+  document.querySelectorAll('#drag-items .drag-item').forEach(el=>{
+    el.addEventListener('dragstart',e=>{
+      dragSrc=el;
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain', el.id);
+    });
+    el.addEventListener('dragend',()=>{ dragSrc=null; });
+  });
+
   document.querySelectorAll('.drop-zone').forEach(zone=>{
     zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over');});
     zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
-    zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('over');if(dragSrc){const prev=zone.getAttribute('data-dropped');if(prev){const old=[...document.querySelectorAll('.drag-item')].find(d=>d.getAttribute('data-item')===prev);if(old)old.style.display='block';}zone.setAttribute('data-dropped',dragSrc.getAttribute('data-item'));document.getElementById('dzc-'+zone.id.split('-')[1]).textContent=dragSrc.getAttribute('data-item');dragSrc.style.display='none';dragSrc=null;}});
+    zone.addEventListener('drop',e=>{
+      e.preventDefault();
+      zone.classList.remove('over');
+      if(!dragSrc) return;
+      const zoneIdx = zone.getAttribute('data-zone-idx');
+      // Return previous item to source if zone already had one
+      const prevId = zone.getAttribute('data-dropped-id');
+      if(prevId){
+        const oldEl = document.getElementById(prevId);
+        if(oldEl) oldEl.style.display='block';
+      }
+      // Place new item
+      zone.setAttribute('data-dropped-id', dragSrc.id);
+      zone.setAttribute('data-dropped-orig', dragSrc.getAttribute('data-idx'));
+      document.getElementById('dzc-'+zoneIdx).textContent = dragSrc.textContent;
+      document.getElementById('dzc-'+zoneIdx).style.color='var(--text2)';
+      document.getElementById('dzc-'+zoneIdx).style.fontStyle='normal';
+      dragSrc.style.display='none';
+      dragSrc=null;
+    });
   });
-  window.checkDrag=function(){let sc=0;pairs.forEach((p,i)=>{const zone=document.getElementById('dz-'+i);const dropped=zone.getAttribute('data-dropped')||'';if(dropped===p.item){sc++;zone.classList.add('matched');}else zone.classList.add('wrong-drop');});const pct=Math.round(sc/pairs.length*100);const fb=document.createElement('div');fb.className='feedback-box '+(pct>=75?'feedback-correct':'feedback-wrong');fb.innerHTML=`<strong>// Score: ${sc}/${pairs.length} — ${pct}%</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`;document.querySelector('.card').appendChild(fb);document.querySelector('[onclick="checkDrag()"]').remove();};
+
+  window.checkDrag=function(){
+    let sc=0;
+    pairs.forEach((p,i)=>{
+      const zone=document.getElementById('dz-'+i);
+      const droppedOrigIdx = zone.getAttribute('data-dropped-orig');
+      const correct = droppedOrigIdx!==null && parseInt(droppedOrigIdx)===i;
+      if(correct){sc++;zone.classList.add('matched');}
+      else{zone.classList.add('wrong-drop');}
+    });
+    const pct=Math.round(sc/pairs.length*100);
+    const fb=document.getElementById('drag-fb');
+    fb.className='feedback-box '+(pct>=75?'feedback-correct':'feedback-wrong');
+    fb.innerHTML=`<strong>// Score: ${sc}/${pairs.length} — ${pct}%</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`;
+    document.getElementById('check-drag-btn').remove();
+  };
 }
 
 function renderBlank(ex,c){
