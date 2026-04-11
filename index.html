@@ -285,7 +285,9 @@ const TEXT_COLORS = {b1:"var(--accent)",b2:"#a78bfa",b3:"var(--success)",b4:"var
 const BORDER_COLORS = {b1:"rgba(0,212,255,0.3)",b2:"rgba(124,58,237,0.3)",b3:"rgba(16,185,129,0.3)",b4:"rgba(245,158,11,0.3)",b5:"rgba(239,68,68,0.3)"};
 
 let curCh=1,curSec=0,curQ=0,correct=0,wrong=0,curLvl=1,answered=false;
-let exIdx=0,quizAttempt=0,exAttempt=0;
+let exIdx=0,exAttempt=0;
+// Randomize starting attempt so questions differ on every page load
+let quizAttempt=Math.floor(Math.random()*40);
 let currentQuestions=[],currentExercises=[];
 let chState={1:{unlocked:true,completed:false},2:{unlocked:false,completed:false},3:{unlocked:false,completed:false},4:{unlocked:false,completed:false},5:{unlocked:false,completed:false}};
 
@@ -489,7 +491,22 @@ function renderScenario(ex,c){
   c.innerHTML=`<div class="card"><span class="badge badge-ex">SCENARIO</span><span class="ai-tag">// ai_generated</span><h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p><div class="scenario-box">${ex.scenario}</div><div id="sc-qs"></div></div>`;
   let qIdx=0,sc=0;
   function renderSQ(){
-    if(qIdx>=ex.questions.length){const pct=Math.round(sc/ex.questions.length*100);document.getElementById('sc-qs').innerHTML=`<div class="feedback-box ${pct>=66?'feedback-correct':'feedback-wrong'}" style="text-align:center;margin-top:1rem"><strong>// Score: ${sc}/${ex.questions.length} — ${pct}%</strong></div><div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`;return;}
+    if(qIdx>=ex.questions.length){
+      const pct=Math.round(sc/ex.questions.length*100);
+      const passed=pct>=66;
+      document.getElementById('sc-qs').innerHTML=`
+        <div class="feedback-box ${passed?'feedback-correct':'feedback-wrong'}" style="text-align:center;margin-top:1rem">
+          <strong>// Score: ${sc}/${ex.questions.length} — ${pct}%</strong>
+          ${!passed?`<br><span style="font-size:11px;opacity:0.8">Need 66%+ to pass. A new version of this exercise will be generated.</span>`:''}
+        </div>
+        <div style="text-align:right;margin-top:1rem">
+          ${passed
+            ?`<button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button>`
+            :`<button class="btn btn-danger" onclick="retryCurrentEx()">Retry this exercise →</button>`
+          }
+        </div>`;
+      return;
+    }
     const q=ex.questions[qIdx];
     document.getElementById('sc-qs').innerHTML=`<p style="font-size:14px;font-weight:500;color:var(--text);margin:1rem 0 8px">Q${qIdx+1}: ${q.q}</p>${q.opts.map((o,i)=>`<button class="option-btn" onclick="pickSQ(${i})">${['A) ','B) ','C) ','D) '][i]}${o}</button>`).join('')}<div id="sc-fb" style="display:none"></div><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" id="sc-next" style="display:none" onclick="advSQ()">Next →</button></div>`;
     window.pickSQ=function(idx){document.querySelectorAll('.option-btn').forEach((b,i)=>{b.onclick=null;if(i===q.correct)b.classList.add('correct');else if(i===idx&&idx!==q.correct)b.classList.add('wrong');});const ok=idx===q.correct;if(ok)sc++;const fb=document.getElementById('sc-fb');fb.style.display='block';fb.className='feedback-box '+(ok?'feedback-correct':'feedback-wrong');fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+q.exp;document.getElementById('sc-next').style.display='inline-block';};
@@ -576,19 +593,60 @@ function renderDragDrop(ex,c){
       else{zone.classList.add('wrong-drop');}
     });
     const pct=Math.round(sc/pairs.length*100);
+    const passed=pct>=75;
     const fb=document.getElementById('drag-fb');
-    fb.className='feedback-box '+(pct>=75?'feedback-correct':'feedback-wrong');
-    fb.innerHTML=`<strong>// Score: ${sc}/${pairs.length} — ${pct}%</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`;
+    fb.className='feedback-box '+(passed?'feedback-correct':'feedback-wrong');
+    if(passed){
+      fb.innerHTML=`<strong>// Score: ${sc}/${pairs.length} — ${pct}% ✓</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`;
+    } else {
+      fb.innerHTML=`<strong>// Score: ${sc}/${pairs.length} — ${pct}%</strong><br><span style="font-size:11px;opacity:0.8">Need 75%+ to pass. A new version of this exercise will be generated.</span><div style="text-align:right;margin-top:8px"><button class="btn btn-danger" onclick="retryCurrentEx()">Retry this exercise →</button></div>`;
+    }
     document.getElementById('check-drag-btn').remove();
   };
 }
 
 function renderBlank(ex,c){
-  c.innerHTML=`<div class="card"><span class="badge badge-ex">FILL IN THE BLANK</span><span class="ai-tag">// ai_generated</span><h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p>${ex.blanks.map((b,i)=>`<div style="margin:1rem 0;padding:12px;border:1px solid var(--border);border-radius:9px;background:var(--surface2)"><p style="font-size:14px;color:var(--text2);line-height:1.9">${b.before} <input class="blank-input" id="bl-${i}" placeholder="${b.hint}..." type="text"> ${b.after}</p></div>`).join('')}<div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" onclick="checkBlanks()">Check Answers →</button></div></div>`;
-  window.checkBlanks=function(){let sc=0;ex.blanks.forEach((b,i)=>{const inp=document.getElementById('bl-'+i);const val=inp.value.trim().toLowerCase();const ans=b.answer.toLowerCase();if(val===ans||(ans.includes(val)&&val.length>=3)){sc++;inp.classList.add('correct-input');}else{inp.classList.add('wrong-input');inp.value=b.answer;}});const pct=Math.round(sc/ex.blanks.length*100);const fb=document.createElement('div');fb.className='feedback-box '+(pct>=66?'feedback-correct':'feedback-wrong');fb.innerHTML=`<strong>// Score: ${sc}/${ex.blanks.length} — ${pct}%</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`;document.querySelector('.card').appendChild(fb);document.querySelector('[onclick="checkBlanks()"]').remove();};
+  c.innerHTML=`<div class="card"><span class="badge badge-ex">FILL IN THE BLANK</span><span class="ai-tag">// ai_generated</span><h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p>${ex.blanks.map((b,i)=>`<div style="margin:1rem 0;padding:12px;border:1px solid var(--border);border-radius:9px;background:var(--surface2)"><p style="font-size:14px;color:var(--text2);line-height:1.9">${b.before} <input class="blank-input" id="bl-${i}" placeholder="${b.hint}..." type="text"> ${b.after}</p></div>`).join('')}<div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" id="check-blanks-btn" onclick="checkBlanks()">Check Answers →</button></div><div id="blank-fb"></div></div>`;
+  window.checkBlanks=function(){
+    let sc=0;
+    ex.blanks.forEach((b,i)=>{
+      const inp=document.getElementById('bl-'+i);
+      const val=inp.value.trim().toLowerCase();
+      const ans=b.answer.toLowerCase();
+      if(val===ans||(ans.includes(val)&&val.length>=3)){sc++;inp.classList.add('correct-input');}
+      else{inp.classList.add('wrong-input');inp.value=b.answer;}
+    });
+    const pct=Math.round(sc/ex.blanks.length*100);
+    const passed=pct>=66;
+    const fb=document.getElementById('blank-fb');
+    fb.className='feedback-box '+(passed?'feedback-correct':'feedback-wrong');
+    if(passed){
+      fb.innerHTML=`<strong>// Score: ${sc}/${ex.blanks.length} — ${pct}% ✓</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`;
+    } else {
+      fb.innerHTML=`<strong>// Score: ${sc}/${ex.blanks.length} — ${pct}%</strong><br><span style="font-size:11px;opacity:0.8">Correct answers shown above in red. Review them and try again.</span><div style="text-align:right;margin-top:8px"><button class="btn btn-danger" onclick="retryCurrentEx()">Retry this exercise →</button></div>`;
+    }
+    document.getElementById('check-blanks-btn').remove();
+  };
 }
 
 function nextEx(){exIdx++;if(exIdx>=currentExercises.length)showExResult();else renderEx();}
+
+// Retry the current failed exercise with a fresh AI-generated version
+async function retryCurrentEx(){
+  exAttempt++;
+  document.getElementById('ex-attempt-badge').textContent=`attempt_${exAttempt}`;
+  document.getElementById('ex-loading').style.display='block';
+  document.getElementById('ex-content').innerHTML='';
+  const ctx=getCtx(exAttempt);
+  const exType=currentExercises[exIdx].type;
+  try{
+    const d=await callClaude(`You are a CompTIA Security+ SY0-701 exercise designer. Generate exactly 1 UNIQUE exercise of type "${exType}" for attempt ${exAttempt} about: ${CHAPTERS[curCh].topics}\n\nCRITICAL:\n- Use context: ${ctx[1]}\n- Apply rules: ${CHAPTERS[curCh].keyRules}\n- Must be COMPLETELY DIFFERENT from previous attempts\n\nReturn ONLY valid JSON with a single exercise:\n{"exercise":{"type":"${exType}","title":"Exercise — title","instruction":"text"${exType==='dragdrop'?',"pairs":[{"item":"description","zone":"category"}]':exType==='blank'?',"blanks":[{"before":"text","after":"text","answer":"answer","hint":"hint"}]':',"scenario":"detailed scenario","questions":[{"q":"question","opts":["A","B","C","D"],"correct":0,"exp":"explanation"}]'}}}`);
+    if(d.exercise) currentExercises[exIdx]=d.exercise;
+  }catch(e){/* keep current exercise */}
+  document.getElementById('ex-loading').style.display='none';
+  renderExDots();
+  renderEx();
+}
 
 function showExResult(){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
