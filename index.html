@@ -96,7 +96,6 @@ tr:last-child td{border-bottom:none}
 .site-footer p{font-size:12px;color:var(--text3);font-family:var(--mono)}
 .site-footer a{color:var(--accent);text-decoration:none}
 .video-badge{font-family:var(--mono);font-size:10px;color:#ef4444;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:2px 8px;border-radius:5px;letter-spacing:1px}
-.unlock-card{background:var(--surface);border:1px solid rgba(0,212,255,0.15);border-radius:14px;padding:1.25rem;margin-top:0.75rem}
 </style>
 </head>
 <body>
@@ -586,11 +585,7 @@ function finishChapter(){
 // ═══════════════════════════════════════════════════════════════
 // WEEK CODE UNLOCK
 // ═══════════════════════════════════════════════════════════════
-function checkWeekCode(){
-  const val=(document.getElementById('week-code-input').value||'').trim().toUpperCase();
   const valid=/^SEC\+\-W\d+\-2026\-[A-Z]+(\-\d{2})?$/.test(val);
-  const fb=document.getElementById('code-feedback');
-  if(valid){fb.innerHTML='<div class="feedback-box feedback-correct">✅ Code accepted! Next week\'s content is now unlocked.</div>';document.getElementById('week-code-input').value='';}
   else{fb.innerHTML='<div class="feedback-box feedback-wrong">❌ Invalid code. Complete the Final Challenge to get your code.</div>';}
 }
 
