@@ -138,19 +138,26 @@ tr:last-child td{border-bottom:none}
 <!-- ══ INTRO VIDEO SCREEN ═══════════════════════════════════════ -->
 <div id="intro-screen" class="screen">
   <div class="nav-bar">
-    <button class="btn" onclick="showHome()">← Back</button>
-    <div><div class="nav-title" id="intro-title"></div><div class="nav-sub">intro_video // watch before starting</div></div>
+    <button class="btn" onclick="showHome()">☰ Chapters</button>
+    <div><div class="nav-title" id="intro-title"></div><div class="nav-sub">optional intro video</div></div>
   </div>
   <div class="card" style="cursor:default">
-    <div style="font-family:var(--mono);font-size:10px;color:#ef4444;letter-spacing:2px;margin-bottom:12px">▶ INTRO VIDEO</div>
-    <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:10px;overflow:hidden;background:#000;margin-bottom:1rem">
+    <div style="font-family:var(--mono);font-size:10px;color:#ef4444;letter-spacing:2px;margin-bottom:4px">▶ INTRO VIDEO — OPTIONAL</div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Watch before starting, or skip directly to the theory.</p>
+    <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:10px;overflow:hidden;background:#000;margin-bottom:12px">
       <iframe id="intro-iframe" src="" title="Chapter intro" frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%"></iframe>
     </div>
-    <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:1.25rem">Watch this introductory video to get an overview before diving into the theory sections. You can skip it if you've already watched it.</p>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;background:var(--surface2);border-radius:8px;padding:8px 12px">
+      <span style="font-size:16px">📺</span>
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;color:#ef4444;letter-spacing:1px;margin-bottom:2px">YOUTUBE LINK</div>
+        <a id="intro-yt-link" href="#" target="_blank" style="font-size:12px;color:var(--accent);text-decoration:none">Watch on YouTube later →</a>
+      </div>
+    </div>
     <div style="display:flex;gap:10px;justify-content:flex-end">
-      <button class="btn" onclick="skipToTheory()">Skip →</button>
+      <button class="btn" onclick="skipToTheory()">Skip video →</button>
       <button class="btn btn-primary" onclick="skipToTheory()">Start Theory →</button>
     </div>
   </div>
@@ -159,7 +166,7 @@ tr:last-child td{border-bottom:none}
 <!-- ══ THEORY SCREEN ════════════════════════════════════════════ -->
 <div id="theory-screen" class="screen">
   <div class="nav-bar">
-    <button class="btn" onclick="showHome()">← Back</button>
+    <button class="btn" onclick="showHome()">☰ Chapters</button>
     <div><div class="nav-title" id="th-title"></div><div class="nav-sub" id="th-counter"></div></div>
   </div>
   <div class="progress-bar"><div id="th-bar" class="progress-fill" style="width:0%"></div></div>
@@ -370,6 +377,8 @@ function startChapter(n){
     document.getElementById('intro-title').textContent=ch.name;
     const videoId=ch.video.replace('https://youtu.be/','').replace(/\?.*/,'');
     document.getElementById('intro-iframe').src=`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
+    document.getElementById('intro-yt-link').href=ch.video;
+    document.getElementById('intro-yt-link').textContent=`Watch "${ch.name.split(':')[1].trim()}" on YouTube →`;
   } else { showTheory(); }
 }
 
@@ -580,13 +589,6 @@ function finishChapter(){
   chState[curCh].completed=true;
   if(curCh<5)chState[curCh+1].unlocked=true;
   showHome();
-}
-
-// ═══════════════════════════════════════════════════════════════
-// WEEK CODE UNLOCK
-// ═══════════════════════════════════════════════════════════════
-  const valid=/^SEC\+\-W\d+\-2026\-[A-Z]+(\-\d{2})?$/.test(val);
-  else{fb.innerHTML='<div class="feedback-box feedback-wrong">❌ Invalid code. Complete the Final Challenge to get your code.</div>';}
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1075,9 +1077,9 @@ function shareResult(code,score,total){
 }
 
 // ═══════════════════════════════════════════════════════════════
-// INIT
+// INIT — Start directly at Chapter 1
 // ═══════════════════════════════════════════════════════════════
-showHome();
+startChapter(1);
 </script>
 </body>
 </html>
