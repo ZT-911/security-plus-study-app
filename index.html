@@ -2,316 +2,1084 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Security+ Training Pro</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security+ SY0-701 Study App | Carlos Materano</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-body {
-  font-family: Arial;
-  background: #0d1117;
-  color: white;
-  margin: 0;
-}
-
-header {
-  padding: 10px;
-  background: #161b22;
-  position: fixed;
-  width: 100%;
-  top: 0;
-}
-
-button {
-  padding: 10px;
-  margin: 5px;
-  cursor: pointer;
-}
-
-.container {
-  padding: 80px 20px;
-}
-
-.hidden { display: none; }
-
-.progress {
-  height: 10px;
-  background: green;
-  width: 0%;
-}
-
-.locked { opacity: 0.4; pointer-events: none; }
-
-.question { margin: 20px 0; }
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--border:#1e2d45;--accent:#00d4ff;--accent2:#7c3aed;--success:#10b981;--danger:#ef4444;--warning:#f59e0b;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 20%,rgba(0,212,255,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(124,58,237,0.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+.app{max-width:860px;margin:0 auto;padding:1.5rem;position:relative;z-index:1}
+.screen{display:none}.screen.active{display:block}
+.site-header{text-align:center;padding:2rem 0 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.site-header .tag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:3px;margin-bottom:12px}
+.site-header h1{font-size:clamp(22px,4vw,34px);font-weight:600;color:var(--text);margin-bottom:8px}
+.site-header p{font-size:14px;color:var(--text2);max-width:520px;margin:0 auto}
+.badge-row{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.pill{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:100px;letter-spacing:1px}
+.pill-blue{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid rgba(0,212,255,0.2)}
+.pill-purple{background:rgba(124,58,237,0.1);color:#a78bfa;border:1px solid rgba(124,58,237,0.2)}
+.pill-green{background:rgba(16,185,129,0.1);color:var(--success);border:1px solid rgba(16,185,129,0.2)}
+.pill-orange{background:rgba(245,158,11,0.1);color:var(--warning);border:1px solid rgba(245,158,11,0.2)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:0.75rem}
+.chapter-card{cursor:pointer;transition:border-color 0.2s,transform 0.15s}
+.chapter-card:hover{border-color:rgba(0,212,255,0.3);transform:translateY(-1px)}
+.chapter-card.locked{opacity:0.5;cursor:not-allowed}
+.chapter-card.locked:hover{transform:none;border-color:var(--border)}
+.progress-bar{width:100%;height:4px;background:var(--border);border-radius:2px;margin:10px 0 3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.5s}
+.badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:5px;letter-spacing:1px;font-weight:700}
+.done{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
+.block{background:rgba(100,116,139,0.15);color:var(--text3);border:1px solid var(--border)}
+.badge-ex{background:rgba(245,158,11,0.15);color:var(--warning);border:1px solid rgba(245,158,11,0.3)}
+.ch-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.ch-path{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px}
+.nav-bar{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.nav-title{font-size:15px;font-weight:500;color:var(--text)}
+.nav-sub{font-size:11px;color:var(--text3);font-family:var(--mono)}
+.btn{border:1px solid var(--border);background:transparent;color:var(--text2);padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-family:var(--sans);transition:all 0.15s}
+.btn:hover{background:var(--surface2);color:var(--text)}
+.btn-primary{background:rgba(0,212,255,0.1);color:var(--accent);border-color:rgba(0,212,255,0.3)}
+.btn-primary:hover{background:rgba(0,212,255,0.2)}
+.btn-success{background:rgba(16,185,129,0.1);color:var(--success);border-color:rgba(16,185,129,0.3)}
+.btn-warning{background:rgba(245,158,11,0.1);color:var(--warning);border-color:rgba(245,158,11,0.3)}
+.btn-danger{background:rgba(239,68,68,0.1);color:var(--danger);border-color:rgba(239,68,68,0.3)}
+.theory-section{border-left:2px solid var(--accent);padding-left:1rem;margin:1rem 0}
+.theory-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px}
+.theory-body{font-size:13px;color:var(--text2);line-height:1.7}
+.tip-box{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:9px 12px;margin:8px 0;font-size:12px;color:var(--warning);font-family:var(--mono);line-height:1.6}
+.tip-box::before{content:'// ';opacity:0.6}
+.table-wrap{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--surface2);padding:7px 9px;text-align:left;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px}
+td{padding:7px 9px;border-bottom:1px solid var(--border);color:var(--text2)}
+td strong{color:var(--accent);font-weight:500}
+tr:last-child td{border-bottom:none}
+.option-btn{width:100%;text-align:left;padding:11px 14px;margin:5px 0;border:1px solid var(--border);border-radius:9px;cursor:pointer;background:var(--surface2);color:var(--text2);font-size:13px;font-family:var(--sans);transition:all 0.15s}
+.option-btn:hover{border-color:var(--text3);color:var(--text)}
+.option-btn.correct{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.4);color:var(--success)}
+.option-btn.wrong{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.4);color:var(--danger)}
+.feedback-box{padding:11px 14px;border-radius:9px;margin-top:10px;font-size:13px;line-height:1.6;font-family:var(--mono)}
+.feedback-correct{background:rgba(16,185,129,0.08);color:var(--success);border:1px solid rgba(16,185,129,0.2)}
+.feedback-wrong{background:rgba(239,68,68,0.08);color:var(--danger);border:1px solid rgba(239,68,68,0.2)}
+.stars{color:var(--warning);letter-spacing:2px}
+.stats-row{display:flex;gap:14px;font-size:12px;color:var(--text3);font-family:var(--mono);margin-top:8px;flex-wrap:wrap}
+.step-dots{display:flex;gap:7px;margin-bottom:1.25rem}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.3s}
+.step-dot.active{background:var(--accent)}
+.step-dot.done{background:var(--success)}
+.scenario-box{background:var(--surface2);border-radius:9px;padding:1rem;margin:1rem 0;font-size:13px;line-height:1.75;color:var(--text2);border-left:3px solid var(--accent)}
+.drag-item{padding:9px 12px;border:1px solid var(--border);border-radius:7px;margin:5px 0;background:var(--surface2);cursor:grab;font-size:12px;color:var(--text2);font-family:var(--mono);transition:all 0.15s;user-select:none}
+.drag-item:active{cursor:grabbing;opacity:0.7;border-color:var(--accent)}
+.drop-zone{padding:9px 12px;border:1.5px dashed var(--border);border-radius:7px;margin:5px 0;min-height:52px;font-size:12px;color:var(--text3);transition:all 0.15s}
+.drop-zone.over{background:rgba(0,212,255,0.05);border-color:var(--accent)}
+.drop-zone.matched{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.4);color:var(--success)}
+.drop-zone.wrong-drop{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.4);color:var(--danger)}
+.blank-input{border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:13px;background:var(--surface2);color:var(--text);font-family:var(--mono);min-width:130px;transition:border-color 0.15s}
+.blank-input:focus{outline:none;border-color:var(--accent)}
+.blank-input.correct-input{border-color:rgba(16,185,129,0.5);background:rgba(16,185,129,0.08);color:var(--success)}
+.blank-input.wrong-input{border-color:rgba(239,68,68,0.5);background:rgba(239,68,68,0.08);color:var(--danger)}
+.score-circle{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;margin:0 auto 1rem;font-family:var(--mono)}
+.score-pass{background:rgba(16,185,129,0.1);color:var(--success);border:2px solid rgba(16,185,129,0.3)}
+.score-fail{background:rgba(239,68,68,0.1);color:var(--danger);border:2px solid rgba(239,68,68,0.3)}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:1.25rem}
+.sec-nav{display:flex;justify-content:space-between;margin-top:1.25rem}
+.loading-box{background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:12px;padding:2rem;text-align:center;margin:1rem 0}
+.loading-spinner{width:36px;height:36px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:var(--mono);font-size:13px;color:var(--accent);margin-bottom:4px}
+.loading-sub{font-size:12px;color:var(--text3)}
+.attempt-badge{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(245,158,11,0.1);color:var(--warning);border:1px solid rgba(245,158,11,0.2)}
+.ai-tag{font-family:var(--mono);font-size:10px;color:#a78bfa;margin-left:6px}
+.site-footer{text-align:center;padding:1.5rem 0 1rem;margin-top:1.5rem;border-top:1px solid var(--border)}
+.site-footer p{font-size:12px;color:var(--text3);font-family:var(--mono)}
+.site-footer a{color:var(--accent);text-decoration:none}
+.video-badge{font-family:var(--mono);font-size:10px;color:#ef4444;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:2px 8px;border-radius:5px;letter-spacing:1px}
 </style>
 </head>
-
 <body>
+<div class="app">
 
-<header>
-<button onclick="showMenu()">☰ Chapters</button>
-</header>
-
-<div class="container">
-
-<!-- MENU -->
-<div id="menu"></div>
-
-<!-- VIDEO -->
-<div id="videoSection" class="hidden">
-<h2 id="chapterTitle"></h2>
-<iframe id="videoFrame" width="100%" height="400"></iframe>
-
-<button onclick="startTheory()">Skip</button>
-<button onclick="startTheory()">Start Theory</button>
-
-<p><a id="ytLink" target="_blank">Watch later</a></p>
+<!-- ══ HOME SCREEN ══════════════════════════════════════════════ -->
+<div id="home-screen" class="screen">
+  <header class="site-header">
+    <div class="tag">CompTIA Security+ SY0-701</div>
+    <h1>Security+ Study App</h1>
+    <p>Theory → Quiz → Exercises. Score 80%+ to unlock the next chapter.</p>
+    <div class="badge-row">
+      <span class="pill pill-blue">5 Chapters</span>
+      <span class="pill pill-purple">30 Questions / Chapter</span>
+      <span class="pill pill-green">20 Exercises</span>
+      <span class="pill pill-orange">Adaptive Difficulty</span>
+    </div>
+  </header>
+  <div id="chapters-list"></div>
+  <div id="final-challenge-card" style="display:none;cursor:pointer;background:var(--surface);border:1px solid rgba(245,158,11,0.3);border-radius:14px;padding:1.25rem;margin-bottom:0.75rem" onclick="showFinalChallenge()">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <span class="badge" style="background:rgba(245,158,11,0.15);color:var(--warning);border:1px solid rgba(245,158,11,0.3)">🏆 FINAL CHALLENGE</span>
+        <h2 style="font-size:16px;font-weight:600;margin:8px 0 3px;color:var(--text)">Security+ Master Challenge</h2>
+        <p style="font-size:12px;color:var(--text2)">5 expert scenarios · Visual diagnosis · Drag & drop · Generates unlock code</p>
+      </div>
+      <span class="badge" style="background:rgba(245,158,11,0.15);color:var(--warning);border:1px solid rgba(245,158,11,0.3)">START</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,var(--warning),#f59e0b)"></div></div>
+    <div class="ch-meta">
+      <span class="ch-path">scenario · drag&drop · visual · combo · expert</span>
+      <span style="font-size:11px;color:var(--warning)">⭐⭐ → ⭐⭐⭐⭐⭐⭐</span>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <p>Built by <a href="https://linkedin.com/in/carlos-l-materano-g" target="_blank">Carlos Materano</a> · CompTIA Security+ SY0-701 · 2026</p>
+  </footer>
 </div>
 
-<!-- THEORY -->
-<div id="theorySection" class="hidden">
-<div class="progress" id="progressBar"></div>
-<p id="theoryContent"></p>
-<button onclick="prevTheory()">Previous</button>
-<button onclick="nextTheory()">Next</button>
+<!-- ══ INTRO VIDEO SCREEN ═══════════════════════════════════════ -->
+<div id="intro-screen" class="screen">
+  <div class="nav-bar">
+    <button class="btn" onclick="showHome()">☰ Chapters</button>
+    <div><div class="nav-title" id="intro-title"></div><div class="nav-sub">optional intro video</div></div>
+  </div>
+  <div class="card" style="cursor:default">
+    <div style="font-family:var(--mono);font-size:10px;color:#ef4444;letter-spacing:2px;margin-bottom:4px">▶ INTRO VIDEO — OPTIONAL</div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Watch before starting, or skip directly to the theory.</p>
+    <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:10px;overflow:hidden;background:#000;margin-bottom:12px">
+      <iframe id="intro-iframe" src="" title="Chapter intro" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%"></iframe>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;background:var(--surface2);border-radius:8px;padding:8px 12px">
+      <span style="font-size:16px">📺</span>
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;color:#ef4444;letter-spacing:1px;margin-bottom:2px">YOUTUBE LINK</div>
+        <a id="intro-yt-link" href="#" target="_blank" style="font-size:12px;color:var(--accent);text-decoration:none">Watch on YouTube later →</a>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn" onclick="skipToTheory()">Skip video →</button>
+      <button class="btn btn-primary" onclick="skipToTheory()">Start Theory →</button>
+    </div>
+  </div>
 </div>
 
-<!-- QUIZ -->
-<div id="quizSection" class="hidden">
-<h2>Quiz</h2>
-<div id="quizContainer"></div>
-<button onclick="submitQuiz()">Submit</button>
+<!-- ══ THEORY SCREEN ════════════════════════════════════════════ -->
+<div id="theory-screen" class="screen">
+  <div class="nav-bar">
+    <button class="btn" onclick="showHome()">☰ Chapters</button>
+    <div><div class="nav-title" id="th-title"></div><div class="nav-sub" id="th-counter"></div></div>
+  </div>
+  <div class="progress-bar"><div id="th-bar" class="progress-fill" style="width:0%"></div></div>
+  <div id="th-content" style="margin-top:1.25rem"></div>
+  <div class="sec-nav">
+    <button class="btn" id="prev-btn" onclick="prevSec()">← Previous</button>
+    <button class="btn btn-primary" id="next-th-btn" onclick="nextSec()">Next →</button>
+  </div>
 </div>
 
-<!-- EXERCISES -->
-<div id="exerciseSection" class="hidden">
-<h2>Exercises</h2>
-<div id="exerciseContainer"></div>
+<!-- ══ QUIZ SCREEN ══════════════════════════════════════════════ -->
+<div id="quiz-screen" class="screen">
+  <div class="nav-bar">
+    <button class="btn" onclick="showHome()">← Exit</button>
+    <div><div class="nav-title" id="qz-title"></div><div class="nav-sub" id="qz-counter"></div></div>
+    <span class="attempt-badge" id="attempt-badge">attempt_1</span>
+  </div>
+  <div class="progress-bar"><div id="qz-bar" class="progress-fill" style="width:0%"></div></div>
+  <div id="quiz-loading" class="loading-box" style="display:none">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Generating new questions...</div>
+    <div class="loading-sub">AI is creating a fresh unique set</div>
+  </div>
+  <div id="quiz-content">
+    <div class="card" style="margin-top:1rem">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px"><span class="stars" id="qz-stars"></span> <span id="qz-lvl"></span></div>
+      <p style="font-size:15px;font-weight:500;color:var(--text);line-height:1.65;margin-bottom:1rem" id="qz-q"></p>
+      <div id="qz-opts"></div>
+      <div id="qz-fb" style="display:none"></div>
+      <div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" id="next-q-btn" style="display:none" onclick="nextQ()">Next question →</button></div>
+    </div>
+    <div class="stats-row">
+      <span>Correct: <strong style="color:var(--success)" id="cor-cnt">0</strong></span>
+      <span>Wrong: <strong style="color:var(--danger)" id="wrg-cnt">0</strong></span>
+      <span>Level: <strong style="color:var(--accent)" id="cur-lvl">1</strong>/5</span>
+    </div>
+  </div>
 </div>
 
-<!-- FINAL -->
-<div id="finalSection" class="hidden">
-<h2>Final Scenarios</h2>
-<div id="finalExercises"></div>
+<!-- ══ QUIZ RESULT ══════════════════════════════════════════════ -->
+<div id="result-screen" class="screen">
+  <div class="nav-bar"><div class="nav-title" id="res-title"></div></div>
+  <div class="card" style="text-align:center;padding:2rem">
+    <div class="score-circle" id="res-circle"><span id="res-pct"></span></div>
+    <h2 style="font-size:18px;font-weight:600;margin-bottom:8px;color:var(--text)" id="res-heading"></h2>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:0.5rem" id="res-msg"></p>
+    <p style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:1.5rem" id="res-attempt-msg"></p>
+    <div class="btn-row">
+      <button class="btn btn-danger" onclick="retryQuiz()" id="retry-btn" style="display:none">Retry with new questions →</button>
+      <button class="btn btn-warning" id="go-ex-btn" style="display:none" onclick="startExercises()">Start Exercises →</button>
+      <button class="btn" onclick="showHome()">Back to chapters</button>
+    </div>
+  </div>
 </div>
 
-<!-- CODE -->
-<div id="codeSection" class="hidden">
-<h2>🎉 Congratulations</h2>
-<p>Your unlock code:</p>
-<h1 id="finalCode"></h1>
+<!-- ══ EXERCISE SCREEN ══════════════════════════════════════════ -->
+<div id="exercise-screen" class="screen">
+  <div class="nav-bar">
+    <button class="btn" onclick="showHome()">← Exit</button>
+    <div><div class="nav-title" id="ex-title"></div><div class="nav-sub" id="ex-counter"></div></div>
+    <span class="attempt-badge" id="ex-attempt-badge">attempt_1</span>
+  </div>
+  <div class="step-dots" id="step-dots"></div>
+  <div id="ex-loading" class="loading-box" style="display:none">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Generating exercises...</div>
+    <div class="loading-sub">AI is creating fresh scenarios</div>
+  </div>
+  <div id="ex-content"></div>
 </div>
 
+<!-- ══ EXERCISE RESULT ══════════════════════════════════════════ -->
+<div id="ex-result-screen" class="screen">
+  <div class="nav-bar"><div class="nav-title" id="exres-title"></div></div>
+  <div class="card" style="text-align:center;padding:2rem">
+    <div style="font-size:44px;margin-bottom:1rem">✦</div>
+    <h2 style="font-size:18px;font-weight:600;margin-bottom:8px;color:var(--text)" id="exres-heading"></h2>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:1.5rem" id="exres-msg"></p>
+    <div class="btn-row">
+      <button class="btn btn-success" onclick="finishChapter()">Complete Chapter ✓</button>
+      <button class="btn" onclick="showHome()">Back to chapters</button>
+    </div>
+  </div>
 </div>
+
+<!-- ══ CHALLENGE SCREEN ═════════════════════════════════════════ -->
+<div id="challenge-screen" class="screen"></div>
+
+</div><!-- end .app -->
 
 <script>
+// ═══════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════
+const BADGE_COLORS={b1:"rgba(0,212,255,0.15)",b2:"rgba(124,58,237,0.15)",b3:"rgba(16,185,129,0.15)",b4:"rgba(245,158,11,0.15)",b5:"rgba(239,68,68,0.15)"};
+const TEXT_COLORS={b1:"var(--accent)",b2:"#a78bfa",b3:"var(--success)",b4:"var(--warning)",b5:"var(--danger)"};
+const BORDER_COLORS={b1:"rgba(0,212,255,0.3)",b2:"rgba(124,58,237,0.3)",b3:"rgba(16,185,129,0.3)",b4:"rgba(245,158,11,0.3)",b5:"rgba(239,68,68,0.3)"};
 
-// ================= DATA =================
-
-let currentChapter = 1;
-let theoryStep = 0;
-
-const videos = {
-1:"https://www.youtube.com/embed/jcvwsAYRqh8",
-2:"https://www.youtube.com/embed/bD2EMsKlJoY",
-3:"https://www.youtube.com/embed/vaI7aCsLDbI",
-4:"https://www.youtube.com/embed/hnrCYOQiTiM",
-5:"https://www.youtube.com/embed/rF_gEMy8iG8"
+const CHAPTERS={
+  1:{name:"Chapter 1: General Security Concepts",color:"b1",video:"https://youtu.be/jcvwsAYRqh8",
+    topics:"CIA Triad, Non-repudiation, digital signatures, AAA Framework, 5 authentication factors, MFA, Security control categories (Technical/Managerial/Operational/Physical), Security control types (Preventive/Deterrent/Detective/Corrective/Compensating/Directive), IDS vs IPS, Zero Trust (Policy Engine/Administrator/PEP/Adaptive Identity), Gap Analysis (Technical vs Business/POA&M), The Nines (99.9%=8.76hrs/99.999%=5.26min)",
+    keyRules:"Interception=Confidentiality|SIEM/logs=Accounting|Antivirus quarantine after=Corrective|Key fob=Something You Have|Five nines=5.26min|Shadow IT not Insider Threat|Multiple systems=Honeynet|Policy Engine DECIDES PEP EXECUTES",
+    sections:[
+      {title:"CIA Triad & Non-Repudiation",content:`<div class="theory-section"><div class="theory-title">CIA Triad</div><div class="theory-body">The foundation of information security — three core principles.</div></div><div class="table-wrap"><table><tr><th>Principle</th><th>Definition</th><th>Exam keyword</th></tr><tr><td><strong>Confidentiality</strong></td><td>Only authorized users can read data</td><td>stolen, intercepted, exposed</td></tr><tr><td><strong>Integrity</strong></td><td>Data not modified without authorization</td><td>altered, tampered, modified</td></tr><tr><td><strong>Availability</strong></td><td>Systems accessible when needed</td><td>downtime, disrupted, unavailable</td></tr></table></div><div class="tip-box">Interception alone = Confidentiality violation — no need to read data to violate it.</div><div class="theory-section"><div class="theory-title">Non-Repudiation</div><div class="theory-body">Cannot deny performing an action. Message → Hash → Encrypt with PRIVATE KEY. Receiver decrypts with PUBLIC KEY and compares hashes.</div></div><div class="tip-box">Invalid digital signature = message was ALTERED in transit.</div>`},
+      {title:"AAA Framework & MFA",content:`<div class="table-wrap"><table><tr><th>Component</th><th>Question</th><th>Keywords</th></tr><tr><td><strong>Authentication</strong></td><td>Who are you?</td><td>login, credentials, biometric, MFA</td></tr><tr><td><strong>Authorization</strong></td><td>What can you do?</td><td>permissions, roles, access control</td></tr><tr><td><strong>Accounting</strong></td><td>What did you do?</td><td>logs, audit trail, SIEM</td></tr></table></div><div class="tip-box">SIEM + logs + audit trail = ALWAYS Accounting. Never Authentication.</div><div class="theory-section"><div class="theory-title">5 Authentication Factors</div></div><div class="table-wrap"><table><tr><th>Factor</th><th>Example</th></tr><tr><td>Something You Know</td><td>Password, PIN</td></tr><tr><td>Something You Have</td><td>Token, key fob, smartphone</td></tr><tr><td>Something You Are</td><td>Fingerprint, facial recognition</td></tr><tr><td>Something You Do</td><td>Typing pattern, signature</td></tr><tr><td>Somewhere You Are</td><td>GPS, IP address</td></tr></table></div><div class="tip-box">Key fob = Something You Have. MFA = 2+ DIFFERENT factor types.</div>`},
+      {title:"Control Categories & Types",content:`<div class="table-wrap"><table><tr><th>Category</th><th>Example</th></tr><tr><td><strong>Technical</strong></td><td>Firewalls, IDS, encryption</td></tr><tr><td><strong>Managerial</strong></td><td>Security policies, risk assessments</td></tr><tr><td><strong>Operational</strong></td><td>Backups, user training</td></tr><tr><td><strong>Physical</strong></td><td>Cameras, locks, badges</td></tr></table></div><div class="table-wrap"><table><tr><th>Type</th><th>Function</th><th>Example</th></tr><tr><td><strong>Preventive</strong></td><td>Stops threats before they occur</td><td>Firewall, MFA</td></tr><tr><td><strong>Deterrent</strong></td><td>Discourages attackers</td><td>Warning signs</td></tr><tr><td><strong>Detective</strong></td><td>Identifies what happened</td><td>IDS, SIEM, logs</td></tr><tr><td><strong>Corrective</strong></td><td>Restores after damage</td><td>Backup restore, AV quarantine</td></tr><tr><td><strong>Compensating</strong></td><td>Alternative when ideal unavailable</td><td>MFA instead of smart card</td></tr><tr><td><strong>Directive</strong></td><td>Guides internal behavior</td><td>AUP, security training</td></tr></table></div><div class="tip-box">Antivirus BLOCKS = Preventive. Antivirus QUARANTINES after infection = Corrective.</div>`},
+      {title:"IDS/IPS, Zero Trust & Gap Analysis",content:`<div class="table-wrap"><table><tr><th></th><th>IDS</th><th>IPS</th></tr><tr><td>Control</td><td>Detective</td><td>Preventive</td></tr><tr><td>Position</td><td>Out-of-band</td><td>Inline</td></tr><tr><td>Action</td><td>Alerts only</td><td>Blocks automatically</td></tr></table></div><div class="tip-box">IPS = Inline + Prevents. Detects AND blocks = IPS.</div><div class="theory-section"><div class="theory-title">Zero Trust Components</div></div><div class="table-wrap"><table><tr><th>Component</th><th>Role</th></tr><tr><td><strong>Adaptive Identity</strong></td><td>Verifies dynamically based on context</td></tr><tr><td><strong>Policy Engine</strong></td><td>DECIDES access</td></tr><tr><td><strong>Policy Administrator</strong></td><td>COMMUNICATES decision</td></tr><tr><td><strong>PEP</strong></td><td>EXECUTES — opens or blocks</td></tr></table></div><div class="tip-box">Five nines (99.999%) = 5.26 min/year downtime. Three nines (99.9%) = 8.76 hrs/year.</div>`}
+    ]},
+  2:{name:"Chapter 2: Threat Actors & Deception",color:"b2",video:"https://youtu.be/bD2EMsKlJoY",
+    topics:"Threat actor categories (Script Kiddies/Hacktivists/Organized Crime/Nation-State/Insider Threats/Shadow IT), motivations, APTs, False Flag attacks, Threat vectors (Messages/Voice/Removable/Images/Unsecured Networks), Attack Surfaces, Deception technologies (Honeypot/Honeynet/Honeyfile/Honeytoken)",
+    keyRules:"No financial demand+ideology=Hacktivist|Limited skills+tools+thrill=Script Kiddie|Financial+structured+custom malware=Organized Crime|APT=long-term+silent+persistent|False Flag=disguised origin|Shadow IT=no malicious intent|Phone call=Vishing|USB+enticing label=Baiting|ONE system=Honeypot|MULTIPLE=Honeynet|FILE=Honeyfile|Credentials inside=Honeytoken",
+    sections:[
+      {title:"Threat Actors & Motivations",content:`<div class="table-wrap"><table><tr><th>Actor</th><th>Skills</th><th>Motivation</th><th>Example</th></tr><tr><td><strong>Script Kiddie</strong></td><td>Low</td><td>Thrill, recognition</td><td>DDoS gaming servers</td></tr><tr><td><strong>Hacktivist</strong></td><td>Variable</td><td>Ideological — no financial demand</td><td>Anonymous</td></tr><tr><td><strong>Organized Crime</strong></td><td>High — custom malware</td><td>Financial only</td><td>FIN7, Carbanak</td></tr><tr><td><strong>Nation-State</strong></td><td>Maximum — APTs</td><td>Strategic/political</td><td>Stuxnet</td></tr><tr><td><strong>Insider Threat</strong></td><td>Variable</td><td>Deliberate malicious intent</td><td>Snowden</td></tr><tr><td><strong>Shadow IT</strong></td><td>N/A</td><td>No malicious intent — compliance risk</td><td>Personal Dropbox at work</td></tr></table></div><div class="tip-box">Financial=Organized Crime | Ideological=Hacktivist | Strategic=Nation-State | Shadow IT ≠ Insider Threat.</div>`},
+      {title:"APTs, False Flags & Shadow IT",content:`<div class="theory-section"><div class="theory-title">Advanced Persistent Threats (APTs)</div><div class="theory-body">Long-term + silent + persistent + evades detection. Nation-State or sophisticated Organized Crime.</div></div><div class="theory-section"><div class="theory-title">False Flag Attacks</div><div class="theory-body">Disguise attack origin to frame another country/group. Classic nation-state tactic.</div></div><div class="table-wrap"><table><tr><th>Concept</th><th>Insider Threat</th><th>Shadow IT</th></tr><tr><td>Intent</td><td>Deliberate malicious</td><td>No malicious intent</td></tr><tr><td>Risk</td><td>Sabotage, theft</td><td>Compliance, accidental breach</td></tr></table></div><div class="tip-box">APT = long-term + silent + persistent. Shadow IT ≠ Insider Threat — no malicious intent.</div>`},
+      {title:"Threat Vectors & Attack Surfaces",content:`<div class="table-wrap"><table><tr><th>Vector</th><th>Attack</th><th>Example</th></tr><tr><td><strong>Messages</strong></td><td>Phishing</td><td>Malicious PDF via email</td></tr><tr><td><strong>Voice Calls</strong></td><td>Vishing</td><td>Fake IT support call</td></tr><tr><td><strong>Removable Devices</strong></td><td>Baiting</td><td>USB with enticing label in parking lot</td></tr><tr><td><strong>Images</strong></td><td>Embedded malware</td><td>Malicious code in JPG file</td></tr><tr><td><strong>Unsecured Networks</strong></td><td>Evil twin WiFi</td><td>Rogue access point in cafe</td></tr></table></div><div class="tip-box">Phone call = Vishing (not Phishing). USB + enticing label = Baiting.</div>`},
+      {title:"Deception Technologies",content:`<div class="table-wrap"><table><tr><th>Technology</th><th>What it is</th><th>Alert triggered when</th></tr><tr><td><strong>Honeypot</strong></td><td>ONE single decoy system</td><td>Attacker connects to it</td></tr><tr><td><strong>Honeynet</strong></td><td>NETWORK of multiple honeypots</td><td>Attacker navigates fake network</td></tr><tr><td><strong>Honeyfile</strong></td><td>ONE fake decoy file</td><td>File is accessed or opened</td></tr><tr><td><strong>Honeytoken</strong></td><td>Fake credentials or data</td><td>Fake data is used</td></tr></table></div><div class="tip-box">"Multiple systems" = ALWAYS Honeynet. FILE = Honeyfile. CREDENTIALS inside = Honeytoken.</div>`}
+    ]},
+  3:{name:"Chapter 3: Physical Security",color:"b3",video:"https://youtu.be/vaI7aCsLDbI",
+    topics:"Physical security goals, Fencing vs Bollards, Brute force physical attacks, Surveillance systems (video/guards/lighting/sensors), Bypassing surveillance, Access control vestibules, Piggybacking vs Tailgating, Door locks (padlocks/pin&tumbler/electronic/biometric/cipher), FAR/FRR/CER biometrics, Badge cloning RFID/NFC",
+    keyRules:"Bollards=anti-VEHICLE|Fencing=perimeter enclosure|Tailgating=WITHOUT knowledge|Piggybacking=WITH consent|High FAR=DANGEROUS|Low CER=better system|Lighting=Deterrent+Physical|Video=Detective+Technical|Vestibule=Preventive+Physical|EM jamming=wired cameras+encrypted signals|Badge cloning: Scan→Extract→Write→Use",
+    sections:[
+      {title:"Perimeter Controls & Brute Force",content:`<div class="table-wrap"><table><tr><th></th><th>Fencing</th><th>Bollards</th></tr><tr><td>Purpose</td><td>Perimeter control + visual deterrent</td><td>Anti-vehicle barrier (post-9/11)</td></tr><tr><td>Control type</td><td>Preventive + Physical</td><td>Preventive + Physical</td></tr></table></div><div class="tip-box">Bollards = stop VEHICLES. Fencing = perimeter enclosure. Never mix them up.</div><div class="theory-section"><div class="theory-title">Brute Force Physical Attacks</div></div><div class="table-wrap"><table><tr><th>Attack</th><th>Mitigation</th></tr><tr><td>Forcible Entry</td><td>Reinforced materials, steel doors</td></tr><tr><td>Tampering with Devices</td><td>Redundant security systems</td></tr><tr><td>Confronting Personnel</td><td>Conflict resolution training</td></tr><tr><td>Vehicle Ramming</td><td>Bollards at critical points</td></tr></table></div>`},
+      {title:"Surveillance & Bypass Techniques",content:`<div class="table-wrap"><table><tr><th>Type</th><th>Control Type</th></tr><tr><td>Video Surveillance</td><td>Detective + Technical</td></tr><tr><td>Security Guards</td><td>Deterrent + Preventive</td></tr><tr><td>Lighting</td><td>Deterrent + Physical</td></tr><tr><td>Sensors (infrared/pressure/microwave)</td><td>Detective + Technical</td></tr></table></div><div class="tip-box">Lighting = Deterrent (discourages). NOT Detective — it doesn't identify or alert.</div><div class="table-wrap"><table><tr><th>Bypass Technique</th><th>Countermeasure</th></tr><tr><td>Visual Obstruction (spray paint)</td><td>Tamper alarms on cameras</td></tr><tr><td>Blinding (lasers/lights)</td><td>Anti-glare filters</td></tr><tr><td>EM Interference (jamming)</td><td>Wired cameras + encrypted signals</td></tr><tr><td>Physical Attack (cut cables)</td><td>Backup power + redundancy</td></tr></table></div>`},
+      {title:"Vestibules, Locks & Biometrics",content:`<div class="theory-section"><div class="theory-title">Access Control Vestibule</div><div class="theory-body">Double-door system — only ONE opens at a time. Traps individual until identity verified. Prevents BOTH tailgating and piggybacking.</div></div><div class="table-wrap"><table><tr><th>Concept</th><th>Key difference</th></tr><tr><td><strong>Tailgating</strong></td><td>WITHOUT authorized person's knowledge</td></tr><tr><td><strong>Piggybacking</strong></td><td>WITH authorized person's consent (accomplice)</td></tr></table></div><div class="table-wrap"><table><tr><th>Metric</th><th>What it measures</th><th>Impact</th></tr><tr><td><strong>FAR</strong></td><td>Accepts unauthorized users</td><td>DANGEROUS — security risk</td></tr><tr><td><strong>FRR</strong></td><td>Rejects authorized users</td><td>Inconvenient — not a risk</td></tr><tr><td><strong>CER</strong></td><td>Point where FAR = FRR</td><td>Lower = better system</td></tr></table></div><div class="tip-box">High FAR = accepts wrong people = DANGEROUS. Lower CER = better biometric system.</div>`},
+      {title:"Badge Cloning & Summary",content:`<div class="theory-section"><div class="theory-title">Badge Cloning (RFID/NFC)</div><div class="theory-body">Steps: 1. Scan → 2. Extract credentials → 3. Write to blank card → 4. Use for unauthorized access.</div></div><div class="table-wrap"><table><tr><th>Mitigation</th><th>How it helps</th></tr><tr><td>MFA</td><td>Cloned badge alone is not enough</td></tr><tr><td>Shielded wallets</td><td>Block wireless RFID scanning</td></tr><tr><td>Advanced encryption</td><td>Captured data unusable</td></tr><tr><td>Monitor access logs</td><td>Detect suspicious patterns</td></tr></table></div><div class="tip-box">Badge cloning mitigation: MFA + shielded wallets + encryption + access log monitoring.</div>`}
+    ]},
+  4:{name:"Chapter 4: Social Engineering",color:"b4",video:"https://youtu.be/hnrCYOQiTiM",
+    topics:"Social engineering, 6 motivational triggers (Authority/Urgency/Social Proof/Scarcity/Likability/Fear), Impersonation types (Brand/Typosquatting/Watering Hole), Pretexting, Phishing types (Phishing/Spear Phishing/Whaling/BEC/Vishing/Smishing), Anti-phishing campaigns, Fraud vs Identity Theft, Misinformation vs Disinformation, Other attacks (Shoulder Surfing/Dumpster Diving/Baiting/Eavesdropping)",
+    keyRules:"Whaling=Spear Phishing+C-Suite|BEC=hijacked legitimate email=hardest to detect|Typosquatting=URL hijacking|Watering Hole=indirect attack|Pretexting=fabricated scenario|Misinformation=no intent|Disinformation=deliberate|Authority+Urgency=most dangerous combo|Primary defense=security awareness training",
+    sections:[
+      {title:"Social Engineering & Triggers",content:`<div class="theory-section"><div class="theory-title">What is Social Engineering?</div><div class="theory-body">Manipulates human psychology to gain unauthorized access. Attacks PEOPLE, not systems. Primary defense = security awareness training.</div></div><div class="table-wrap"><table><tr><th>Trigger</th><th>Description</th><th>Example</th></tr><tr><td><strong>Authority</strong></td><td>Impersonate authoritative figures</td><td>Fake IRS agent demanding payment</td></tr><tr><td><strong>Urgency</strong></td><td>Create false immediacy</td><td>"Account closes in 2 hours"</td></tr><tr><td><strong>Social Proof</strong></td><td>Fake endorsements</td><td>Fake reviews for scam</td></tr><tr><td><strong>Scarcity</strong></td><td>Fear of missing out</td><td>"Only 2 spots left"</td></tr><tr><td><strong>Likability</strong></td><td>Friendly to lower defenses</td><td>Attacker befriends employee first</td></tr><tr><td><strong>Fear</strong></td><td>Threaten serious consequences</td><td>"You have a virus — call now"</td></tr></table></div><div class="tip-box">Authority + Urgency = most effective and dangerous combination.</div>`},
+      {title:"Impersonation & Pretexting",content:`<div class="table-wrap"><table><tr><th>Type</th><th>Description</th></tr><tr><td><strong>Impersonation</strong></td><td>Assume identity of IT/auditor/vendor</td></tr><tr><td><strong>Brand Impersonation</strong></td><td>Fake emails/accounts as real companies</td></tr><tr><td><strong>Typosquatting</strong></td><td>Similar domains (goog1e.com) exploiting typos</td></tr><tr><td><strong>Watering Hole</strong></td><td>Compromise website frequented by target</td></tr></table></div><div class="tip-box">Watering Hole = indirect — no direct contact with victim. Typosquatting = URL hijacking.</div><div class="theory-section"><div class="theory-title">Pretexting</div><div class="theory-body">Creates a fabricated scenario to extract information. Process: Research → Build pretext → Contact → Extract → Exploit.</div></div><div class="tip-box">Defense: ALWAYS verify identity before sharing ANY information.</div>`},
+      {title:"Phishing Types & Prevention",content:`<div class="table-wrap"><table><tr><th>Type</th><th>Target</th><th>Danger</th></tr><tr><td><strong>Phishing</strong></td><td>Any user — mass</td><td>Medium</td></tr><tr><td><strong>Spear Phishing</strong></td><td>Specific employee — personalized</td><td>High</td></tr><tr><td><strong>Whaling</strong></td><td>C-Suite executives</td><td>Very High</td></tr><tr><td><strong>BEC</strong></td><td>Finance staff — real hijacked email</td><td>Very High</td></tr><tr><td><strong>Vishing</strong></td><td>Any user — via phone</td><td>Medium-High</td></tr><tr><td><strong>Smishing</strong></td><td>Mobile users — via SMS</td><td>Medium</td></tr></table></div><div class="tip-box">BEC = hardest to detect — uses REAL hijacked email. Whaling = Spear Phishing + C-Suite.</div>`},
+      {title:"Fraud, Influence & Other Attacks",content:`<div class="table-wrap"><table><tr><th>Concept</th><th>Definition</th></tr><tr><td><strong>Misinformation</strong></td><td>False info shared WITHOUT harmful intent</td></tr><tr><td><strong>Disinformation</strong></td><td>False info INTENTIONALLY created to deceive</td></tr><tr><td>Identity Theft</td><td>Completely assuming another person's identity</td></tr><tr><td>Invoice Scam</td><td>Fake invoices for non-existent services</td></tr></table></div><div class="tip-box">Misinformation = no intent. Disinformation = DELIBERATE deception.</div><div class="table-wrap"><table><tr><th>Attack</th><th>Mitigation</th></tr><tr><td>Shoulder Surfing</td><td>Privacy screens</td></tr><tr><td>Dumpster Diving</td><td>Shredding + clean desk policy</td></tr><tr><td>Baiting (USB)</td><td>NEVER connect unknown devices</td></tr><tr><td>Eavesdropping</td><td>Encrypted channels</td></tr></table></div>`}
+    ]},
+  5:{name:"Chapter 5: Malware",color:"b5",video:"https://youtu.be/rF_gEMy8iG8",
+    topics:"Malware types (Virus/Worm/Trojan/Ransomware/Spyware/Rootkit/Botnet/Keylogger/Bloatware/Logic Bomb), 10 virus types, Worms self-replication, RATs, Ransomware response, Botnets and C2, Rootkit permission rings and DLL injection, Backdoors and Logic Bombs, Software vs Hardware keyloggers, Fileless malware, Living Off the Land, Two-stage deployment, IoC indicators",
+    keyRules:"Virus=needs user action|Worm=spreads ALONE|Trojan=tricks user+does NOT replicate|RAT=Remote Access Trojan|Polymorphic=changes signature|Metamorphic=completely rewrites itself|Rootkit=Ring 0=traditional AV FAILS=boot from external|Logic Bomb=activated by condition NOT immediately|Zombie=individual device|Botnet=network of zombies|C2=Command and Control|Fileless=RAM only|Living Off the Land=PowerShell/WMI|DO NOT pay ransomware ransom|Impossible Travel=compromised account",
+    sections:[
+      {title:"Malware Types & Viruses",content:`<div class="table-wrap"><table><tr><th>Type</th><th>Key Characteristic</th><th>Needs user?</th></tr><tr><td><strong>Virus</strong></td><td>Attaches to files, spreads when executed</td><td>YES</td></tr><tr><td><strong>Worm</strong></td><td>Self-replicates across networks</td><td>NO</td></tr><tr><td><strong>Trojan</strong></td><td>Disguises as legit software — does NOT replicate</td><td>Tricks user</td></tr><tr><td><strong>Ransomware</strong></td><td>Encrypts data, demands ransom</td><td>Usually YES</td></tr><tr><td><strong>Rootkit</strong></td><td>Hidden admin control — operates in kernel</td><td>Via other malware</td></tr></table></div><div class="table-wrap"><table><tr><th>Virus Type</th><th>Key characteristic</th></tr><tr><td>Boot Sector</td><td>Loads at boot — before OS</td></tr><tr><td>Macro</td><td>Embedded in documents</td></tr><tr><td>Polymorphic</td><td>Changes signature each execution</td></tr><tr><td>Metamorphic</td><td>Completely rewrites itself</td></tr><tr><td>Stealth</td><td>Actively hides from AV</td></tr><tr><td>Armored</td><td>Protective layers confuse analysts</td></tr></table></div><div class="tip-box">Polymorphic = changes signature. Metamorphic = COMPLETELY rewrites itself.</div>`},
+      {title:"Worms, Trojans & Ransomware",content:`<div class="theory-section"><div class="theory-title">Worms — Self-replicating</div><div class="theory-body">Spread WITHOUT user action. Exploit network vulnerabilities. Nimda: 22 min. Conficker: millions of machines. WannaCry: 200,000+ systems in 150 countries.</div></div><div class="tip-box">Worm defense = patch management. Does NOT need user action.</div><div class="theory-section"><div class="theory-title">Trojans & RATs</div><div class="theory-body">Disguises as useful software. Does NOT replicate. RAT = Remote Access Trojan = full remote control.</div></div><div class="table-wrap"><table><tr><th>Ransomware Response Step</th><th>Action</th></tr><tr><td>1</td><td>Disconnect infected systems immediately</td></tr><tr><td>2</td><td>DO NOT pay ransom</td></tr><tr><td>3</td><td>Notify authorities</td></tr><tr><td>4</td><td>Eradicate ransomware completely</td></tr><tr><td>5</td><td>Restore from clean verified backups</td></tr></table></div><div class="tip-box">Ransomware: Regular Backups + Updates + Security Training + MFA = best prevention.</div>`},
+      {title:"Botnets, Rootkits & Other Malware",content:`<div class="table-wrap"><table><tr><th>Concept</th><th>Definition</th></tr><tr><td><strong>Botnet</strong></td><td>Network of compromised devices controlled remotely</td></tr><tr><td><strong>Zombie</strong></td><td>Individual compromised device within a botnet</td></tr><tr><td><strong>C2 Node</strong></td><td>Command & Control — the botnet's brain</td></tr></table></div><div class="tip-box">Botnet uses: DDoS, spam, crypto mining, click fraud.</div><div class="theory-section"><div class="theory-title">Rootkits</div><div class="theory-body">Hidden admin control. Operate in Ring 0 (kernel). DLL Injection + Shims. Traditional AV FAILS. Detection: boot from external device.</div></div><div class="table-wrap"><table><tr><th>Concept</th><th>When it activates</th></tr><tr><td><strong>Backdoor</strong></td><td>Always available persistent access</td></tr><tr><td><strong>Logic Bomb</strong></td><td>Specific condition (date/event) — NOT immediately</td></tr><tr><td><strong>Keylogger SW</strong></td><td>Installed via phishing</td></tr><tr><td><strong>Keylogger HW</strong></td><td>Physical device — requires physical access</td></tr></table></div><div class="tip-box">Logic Bomb activates on CONDITION. Backdoor = always available.</div>`},
+      {title:"Attack Techniques & IoC Indicators",content:`<div class="table-wrap"><table><tr><th>Technique</th><th>Description</th></tr><tr><td><strong>Fileless Malware</strong></td><td>Executes in RAM only — no files on disk — evades AV</td></tr><tr><td><strong>Living Off the Land</strong></td><td>Uses legitimate tools (PowerShell, WMI) — hard to detect</td></tr><tr><td><strong>DLL Injection</strong></td><td>Inserts code into legitimate processes</td></tr><tr><td><strong>Process Hollowing</strong></td><td>Creates legit process, injects malicious code</td></tr><tr><td><strong>Two-Stage Deployment</strong></td><td>Stage 1: Dropper → Stage 2: RAT</td></tr></table></div><div class="tip-box">Living Off the Land = uses LEGITIMATE system tools = very hard to detect.</div><div class="table-wrap"><table><tr><th>IoC Indicator</th><th>What it signals</th></tr><tr><td>Account Lockouts</td><td>Credential theft or brute force</td></tr><tr><td>Impossible Travel</td><td>Account in 2 countries simultaneously = compromised</td></tr><tr><td>Resource Consumption spikes</td><td>Cryptominer or botnet</td></tr><tr><td>Missing Logs</td><td>Attacker erasing tracks — critical red flag</td></tr><tr><td>Resource Inaccessibility + ransom</td><td>Ransomware indicator</td></tr></table></div><div class="tip-box">Missing Logs = someone DELETED evidence. Impossible Travel = account compromised.</div>`}
+    ]}
 };
 
-const theory = {
-1:["CIA","AAA","Controls","Zero Trust"],
-2:["Actors","Motivation","Vectors","Deception"],
-3:["Physical","Surveillance","Access","Biometrics"],
-4:["Phishing","Triggers","Pretexting","Fraud"],
-5:["Malware","Ransomware","Rootkits","IoC"]
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+const _seed=Math.floor(Math.random()*80)+1;
+let curCh=1,curSec=0,curQ=0,correct=0,wrong=0,curLvl=1,answered=false;
+let exIdx=0,exAttempt=_seed,quizAttempt=_seed;
+let currentQuestions=[],currentExercises=[];
+let chState={1:{unlocked:true,completed:false},2:{unlocked:false,completed:false},3:{unlocked:false,completed:false},4:{unlocked:false,completed:false},5:{unlocked:false,completed:false}};
+
+// ═══════════════════════════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════════════════════════
+function showHome(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('home-screen').classList.add('active');
+  renderHome();
+}
+
+function renderHome(){
+  const list=document.getElementById('chapters-list');
+  list.innerHTML='';
+  Object.entries(CHAPTERS).forEach(([num,ch])=>{
+    const n=parseInt(num);
+    const unlocked=chState[n].unlocked;
+    const completed=chState[n].completed;
+    const bc=BADGE_COLORS[ch.color],tc=TEXT_COLORS[ch.color],brd=BORDER_COLORS[ch.color];
+    const div=document.createElement('div');
+    div.className='card chapter-card'+(unlocked?'':' locked');
+    div.onclick=()=>startChapter(n);
+    div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <span class="badge" style="background:${bc};color:${tc};border:1px solid ${brd}">CHAPTER 0${num}</span>
+        <h2 style="font-size:16px;font-weight:600;margin:8px 0 3px;color:var(--text)">${ch.name.split(':')[1].trim()}</h2>
+        <p style="font-size:12px;color:var(--text2)">${ch.sections.map(s=>s.title.split('&')[0].split(',')[0].trim()).join(' · ')}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="badge ${completed?'done':unlocked?'':'block'}">${completed?'DONE':unlocked?'START':'LOCKED'}</div>
+        ${unlocked&&ch.video?`<span class="video-badge">▶ VIDEO</span>`:''}
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${completed?100:0}%;background:${completed?'var(--success)':tc}"></div></div>
+    <div class="ch-meta">
+      <span class="ch-path">${unlocked?'theory → quiz → exercises':'complete chapter '+(num-1)+' to unlock'}</span>
+      <span style="font-size:11px;color:var(--text3)">${completed?'Completed':unlocked?'Not started':'Locked'}</span>
+    </div>`;
+    list.appendChild(div);
+  });
+  const allDone=Object.values(chState).every(s=>s.completed);
+  document.getElementById('final-challenge-card').style.display=allDone?'block':'none';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INTRO VIDEO
+// ═══════════════════════════════════════════════════════════════
+function startChapter(n){
+  if(!chState[n].unlocked)return;
+  curCh=n;curSec=0;
+  const ch=CHAPTERS[n];
+  if(ch.video){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('intro-screen').classList.add('active');
+    document.getElementById('intro-title').textContent=ch.name;
+    const videoId=ch.video.replace('https://youtu.be/','').replace(/\?.*/,'');
+    document.getElementById('intro-iframe').src=`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
+    document.getElementById('intro-yt-link').href=ch.video;
+    document.getElementById('intro-yt-link').textContent=`Watch "${ch.name.split(':')[1].trim()}" on YouTube →`;
+  } else { showTheory(); }
+}
+
+function skipToTheory(){
+  document.getElementById('intro-iframe').src='';
+  showTheory();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// THEORY
+// ═══════════════════════════════════════════════════════════════
+function showTheory(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('theory-screen').classList.add('active');
+  document.getElementById('th-title').textContent=CHAPTERS[curCh].name;
+  renderSec();
+}
+
+function renderSec(){
+  const secs=CHAPTERS[curCh].sections,sec=secs[curSec],tot=secs.length;
+  document.getElementById('th-counter').textContent=`section_${curSec+1}_of_${tot}`;
+  document.getElementById('th-bar').style.width=((curSec+1)/tot*100)+'%';
+  document.getElementById('th-content').innerHTML=`<div class="card"><h2 style="font-size:17px;font-weight:600;margin-bottom:1rem;color:var(--text)">${sec.title}</h2>${sec.content}</div>`;
+  document.getElementById('prev-btn').style.display=curSec===0?'none':'inline-block';
+  document.getElementById('next-th-btn').textContent=curSec===tot-1?'Start Quiz →':'Next →';
+}
+function nextSec(){const s=CHAPTERS[curCh].sections;if(curSec<s.length-1){curSec++;renderSec();}else startQuiz();}
+function prevSec(){if(curSec>0){curSec--;renderSec();}}
+
+// ═══════════════════════════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════════════════════════
+async function callClaude(prompt){
+  const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
+  const d=await r.json();
+  return JSON.parse(d.content.map(i=>i.text||"").join("").replace(/```json|```/g,"").trim());
+}
+
+function getCtx(n){return[["healthcare hospital, bank branch, retail store","hospital breach, bank insider, retail phishing"],["law firm, government agency, university","government espionage, university shadow IT, law firm leak"],["manufacturing, airline, insurance firm","factory attack, airline social engineering, insurance fraud"],["tech startup, energy company, logistics","startup ransomware, energy APT, logistics attack"]][(n-1)%4];}
+
+async function startQuiz(){
+  quizAttempt++;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('quiz-screen').classList.add('active');
+  document.getElementById('qz-title').textContent=CHAPTERS[curCh].name+' — Quiz';
+  document.getElementById('attempt-badge').textContent=`attempt_${quizAttempt}`;
+  document.getElementById('quiz-loading').style.display='block';
+  document.getElementById('quiz-content').style.display='none';
+  curQ=0;correct=0;wrong=0;curLvl=1;
+  const ctx=getCtx(quizAttempt),ts=Date.now();
+  try{
+    const d=await callClaude(`CompTIA Security+ SY0-701 exam. Session:${ts} attempt:${quizAttempt}. Generate 10 UNIQUE multiple choice questions about: ${CHAPTERS[curCh].topics}\nUse contexts: ${ctx[0]}\nRules: ${CHAPTERS[curCh].keyRules}\nQ1-3 easy, Q4-6 medium, Q7-8 hard, Q9-10 expert. 4 options each, ONE correct (0-indexed).\nReturn ONLY JSON: {"questions":[{"q":"","opts":["","","",""],"correct":0,"level":1,"exp":""}]}`);
+    currentQuestions=d.questions;
+  }catch(e){currentQuestions=getFallbackQ(curCh);}
+  document.getElementById('quiz-loading').style.display='none';
+  document.getElementById('quiz-content').style.display='block';
+  renderQ();
+}
+function retryQuiz(){startQuiz();}
+
+function renderQ(){
+  if(curQ>=currentQuestions.length){showResult();return;}
+  const q=currentQuestions[curQ],tot=currentQuestions.length;
+  const stars=['★','★★','★★★','★★★★','★★★★★'],labels=['Easy','Medium','Medium-Hard','Hard','Expert'];
+  document.getElementById('qz-counter').textContent=`question_${curQ+1}_of_${tot}`;
+  document.getElementById('qz-bar').style.width=((curQ+1)/tot*100)+'%';
+  document.getElementById('qz-stars').textContent=stars[Math.min(curLvl-1,4)];
+  document.getElementById('qz-lvl').textContent=`level_${curLvl} // ${labels[Math.min(curLvl-1,4)]}`;
+  document.getElementById('qz-q').textContent=q.q;
+  document.getElementById('qz-fb').style.display='none';
+  document.getElementById('next-q-btn').style.display='none';
+  document.getElementById('cor-cnt').textContent=correct;
+  document.getElementById('wrg-cnt').textContent=wrong;
+  document.getElementById('cur-lvl').textContent=curLvl;
+  const od=document.getElementById('qz-opts');od.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const b=document.createElement('button');b.className='option-btn';
+    b.textContent=['A) ','B) ','C) ','D) '][i]+opt;
+    b.onclick=()=>{
+      document.querySelectorAll('.option-btn').forEach((btn,j)=>{btn.onclick=null;if(j===q.correct)btn.classList.add('correct');else if(j===i&&i!==q.correct)btn.classList.add('wrong');});
+      const ok=i===q.correct;if(ok){correct++;curLvl=Math.min(curLvl+1,5);}else{wrong++;curLvl=Math.max(curLvl-1,1);}
+      const fb=document.getElementById('qz-fb');fb.style.display='block';fb.className='feedback-box '+(ok?'feedback-correct':'feedback-wrong');fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+q.exp;
+      document.getElementById('cor-cnt').textContent=correct;document.getElementById('wrg-cnt').textContent=wrong;document.getElementById('cur-lvl').textContent=curLvl;
+      document.getElementById('next-q-btn').style.display='inline-block';
+    };
+    od.appendChild(b);
+  });
+}
+function nextQ(){curQ++;renderQ();}
+
+function showResult(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('result-screen').classList.add('active');
+  const tot=currentQuestions.length,pct=Math.round(correct/tot*100),passed=pct>=80;
+  document.getElementById('res-title').textContent='Chapter '+curCh+' — Quiz Results';
+  document.getElementById('res-pct').textContent=pct+'%';
+  document.getElementById('res-circle').className='score-circle '+(passed?'score-pass':'score-fail');
+  document.getElementById('res-heading').textContent=passed?'Quiz Passed!':'Not quite yet';
+  document.getElementById('res-msg').textContent=passed?`Scored ${correct}/${tot} — ${pct}%. Ready for exercises!`:`Scored ${correct}/${tot} — ${pct}%. Need 80%+ to pass.`;
+  document.getElementById('res-attempt-msg').textContent=passed?`// passed on attempt_${quizAttempt}`:`// attempt_${quizAttempt} — retry generates completely new questions`;
+  document.getElementById('go-ex-btn').style.display=passed?'inline-block':'none';
+  document.getElementById('retry-btn').style.display=passed?'none':'inline-block';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EXERCISES
+// ═══════════════════════════════════════════════════════════════
+async function startExercises(){
+  exAttempt++;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('exercise-screen').classList.add('active');
+  document.getElementById('ex-title').textContent=CHAPTERS[curCh].name+' — Exercises';
+  document.getElementById('ex-attempt-badge').textContent=`attempt_${exAttempt}`;
+  document.getElementById('ex-loading').style.display='block';
+  document.getElementById('ex-content').innerHTML='';
+  exIdx=0;
+  const ctx=getCtx(exAttempt),ts=Date.now();
+  try{
+    const d=await callClaude(`CompTIA Security+ SY0-701. Session:${ts} attempt:${exAttempt}. Generate 4 UNIQUE exercises about: ${CHAPTERS[curCh].topics}\nContexts: ${ctx[1]}\nRules: ${CHAPTERS[curCh].keyRules}\nTypes in order: scenario, dragdrop, blank, scenario. ALL different from any previous attempt.\nReturn ONLY JSON: {"exercises":[{"type":"scenario","title":"Exercise 1 — title","instruction":"text","scenario":"text","questions":[{"q":"","opts":["","","",""],"correct":0,"exp":""}]},{"type":"dragdrop","title":"Exercise 2 — title","instruction":"text","pairs":[{"item":"","zone":""}]},{"type":"blank","title":"Exercise 3 — title","instruction":"text","blanks":[{"before":"","after":"","answer":"","hint":""}]},{"type":"scenario","title":"Exercise 4 — title","instruction":"text","scenario":"text","questions":[{"q":"","opts":["","","",""],"correct":0,"exp":""}]}]}`);
+    currentExercises=d.exercises;
+  }catch(e){currentExercises=getFallbackEx(curCh);}
+  document.getElementById('ex-loading').style.display='none';
+  renderExDots();renderEx();
+}
+
+function renderExDots(){
+  const d=document.getElementById('step-dots');d.innerHTML='';
+  currentExercises.forEach((_,i)=>{const dot=document.createElement('div');dot.className='step-dot'+(i===exIdx?' active':i<exIdx?' done':'');d.appendChild(dot);});
+  document.getElementById('ex-counter').textContent=`exercise_${exIdx+1}_of_${currentExercises.length}`;
+}
+
+function renderEx(){renderExDots();const ex=currentExercises[exIdx],c=document.getElementById('ex-content');if(ex.type==='multiselect4')renderMultiselect4(ex.ch,c);else if(ex.type==='scenario')renderScenario(ex,c);else if(ex.type==='dragdrop')renderDragDrop(ex,c);else if(ex.type==='blank')renderBlank(ex,c);}
+
+function renderScenario(ex,c){
+  c.innerHTML=`<div class="card"><span class="badge badge-ex">SCENARIO</span><span class="ai-tag">// ai_generated</span><h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p><div class="scenario-box">${ex.scenario}</div><div id="sc-qs"></div></div>`;
+  let qIdx=0,sc=0;
+  function renderSQ(){
+    if(qIdx>=ex.questions.length){const pct=Math.round(sc/ex.questions.length*100),passed=pct>=66;document.getElementById('sc-qs').innerHTML=`<div class="feedback-box ${passed?'feedback-correct':'feedback-wrong'}" style="text-align:center;margin-top:1rem"><strong>// Score: ${sc}/${ex.questions.length} — ${pct}%</strong>${!passed?'<br><span style="font-size:11px;opacity:0.8">Need 66%+ to pass.</span>':''}</div><div style="text-align:right;margin-top:1rem">${passed?`<button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button>`:`<button class="btn btn-danger" onclick="retryCurrentEx()">Retry this exercise →</button>`}</div>`;return;}
+    const q=ex.questions[qIdx];
+    document.getElementById('sc-qs').innerHTML=`<p style="font-size:14px;font-weight:500;color:var(--text);margin:1rem 0 8px">Q${qIdx+1}: ${q.q}</p>${q.opts.map((o,i)=>`<button class="option-btn" onclick="pickSQ(${i})">${['A) ','B) ','C) ','D) '][i]}${o}</button>`).join('')}<div id="sc-fb" style="display:none"></div><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" id="sc-next" style="display:none" onclick="advSQ()">Next →</button></div>`;
+    window.pickSQ=function(idx){document.querySelectorAll('.option-btn').forEach((b,i)=>{b.onclick=null;if(i===q.correct)b.classList.add('correct');else if(i===idx&&idx!==q.correct)b.classList.add('wrong');});const ok=idx===q.correct;if(ok)sc++;const fb=document.getElementById('sc-fb');fb.style.display='block';fb.className='feedback-box '+(ok?'feedback-correct':'feedback-wrong');fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+q.exp;document.getElementById('sc-next').style.display='inline-block';};
+    window.advSQ=function(){qIdx++;renderSQ();};
+  }
+  renderSQ();
+}
+
+function renderDragDrop(ex,c){
+  const pairs=[...ex.pairs];
+  const items=pairs.map((p,i)=>({text:p.item,origIdx:i}));
+  items.sort(()=>Math.random()-0.5);
+  let html=`<div class="card"><span class="badge badge-ex">DRAG & DROP</span><span class="ai-tag">// ai_generated</span><h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div><p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">// ITEMS — drag these</p><div id="drag-items">${items.map((it,i)=>`<div class="drag-item" draggable="true" id="di-${i}" data-idx="${it.origIdx}">${it.text}</div>`).join('')}</div></div><div><p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">// DROP ZONES</p>${pairs.map((p,i)=>`<div class="drop-zone" id="dz-${i}" data-zone-idx="${i}"><div style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700;margin-bottom:3px">${p.zone}</div><div id="dzc-${i}" style="font-size:11px;color:var(--text3);font-style:italic;min-height:14px">drop here...</div></div>`).join('')}</div></div><div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" id="check-drag-btn" onclick="checkDrag()">Check Answers →</button></div><div id="drag-fb"></div></div>`;
+  c.innerHTML=html;
+  let dragSrc=null;
+  document.querySelectorAll('#drag-items .drag-item').forEach(el=>{el.addEventListener('dragstart',()=>{dragSrc=el;});el.addEventListener('dragend',()=>{dragSrc=null;});});
+  document.querySelectorAll('.drop-zone').forEach(zone=>{
+    zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over');});
+    zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+    zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('over');if(!dragSrc)return;const zIdx=zone.getAttribute('data-zone-idx');const prev=zone.getAttribute('data-dropped-id');if(prev){const old=document.getElementById(prev);if(old)old.style.display='block';}zone.setAttribute('data-dropped-id',dragSrc.id);zone.setAttribute('data-dropped-orig',dragSrc.getAttribute('data-idx'));document.getElementById('dzc-'+zIdx).textContent=dragSrc.textContent;document.getElementById('dzc-'+zIdx).style.fontStyle='normal';document.getElementById('dzc-'+zIdx).style.color='var(--text2)';dragSrc.style.display='none';dragSrc=null;});
+  });
+  window.checkDrag=function(){
+    let sc=0;
+    pairs.forEach((p,i)=>{const zone=document.getElementById('dz-'+i);const droppedOrig=zone.getAttribute('data-dropped-orig');const ok=droppedOrig!==null&&parseInt(droppedOrig)===i;if(ok){sc++;zone.classList.add('matched');}else zone.classList.add('wrong-drop');});
+    const pct=Math.round(sc/pairs.length*100),passed=pct>=75;
+    const fb=document.getElementById('drag-fb');fb.className='feedback-box '+(passed?'feedback-correct':'feedback-wrong');
+    fb.innerHTML=passed?`<strong>// Score: ${sc}/${pairs.length} — ${pct}% ✓</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`:`<strong>// Score: ${sc}/${pairs.length} — ${pct}%</strong><br><span style="font-size:11px;opacity:0.8">Need 75%+ to pass.</span><div style="text-align:right;margin-top:8px"><button class="btn btn-danger" onclick="retryCurrentEx()">Retry this exercise →</button></div>`;
+    document.getElementById('check-drag-btn').remove();
+  };
+}
+
+function renderBlank(ex,c){
+  c.innerHTML=`<div class="card"><span class="badge badge-ex">FILL IN THE BLANK</span><span class="ai-tag">// ai_generated</span><h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p>${ex.blanks.map((b,i)=>`<div style="margin:1rem 0;padding:12px;border:1px solid var(--border);border-radius:9px;background:var(--surface2)"><p style="font-size:14px;color:var(--text2);line-height:1.9">${b.before} <input class="blank-input" id="bl-${i}" placeholder="${b.hint}..." type="text"> ${b.after}</p></div>`).join('')}<div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" id="check-blanks-btn" onclick="checkBlanks()">Check Answers →</button></div><div id="blank-fb"></div></div>`;
+  window.checkBlanks=function(){
+    let sc=0;
+    ex.blanks.forEach((b,i)=>{const inp=document.getElementById('bl-'+i);const val=inp.value.trim().toLowerCase();const ans=b.answer.toLowerCase();if(val===ans||(ans.includes(val)&&val.length>=3)){sc++;inp.classList.add('correct-input');}else{inp.classList.add('wrong-input');inp.value=b.answer;}});
+    const pct=Math.round(sc/ex.blanks.length*100),passed=pct>=66;
+    const fb=document.getElementById('blank-fb');fb.className='feedback-box '+(passed?'feedback-correct':'feedback-wrong');
+    fb.innerHTML=passed?`<strong>// Score: ${sc}/${ex.blanks.length} — ${pct}% ✓</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`:`<strong>// Score: ${sc}/${ex.blanks.length} — ${pct}%</strong><br><span style="font-size:11px;opacity:0.8">Need 66%+ to pass. Correct answers shown above.</span><div style="text-align:right;margin-top:8px"><button class="btn btn-danger" onclick="retryCurrentEx()">Retry this exercise →</button></div>`;
+    document.getElementById('check-blanks-btn').remove();
+  };
+}
+
+function nextEx(){exIdx++;if(exIdx>=currentExercises.length)showExResult();else renderEx();}
+
+async function retryCurrentEx(){
+  exAttempt++;
+  document.getElementById('ex-attempt-badge').textContent=`attempt_${exAttempt}`;
+  document.getElementById('ex-loading').style.display='block';
+  document.getElementById('ex-content').innerHTML='';
+  const ctx=getCtx(exAttempt),exType=currentExercises[exIdx].type,ts=Date.now();
+  try{
+    const d=await callClaude(`CompTIA Security+ SY0-701. Session:${ts}. Generate 1 UNIQUE exercise of type "${exType}" about: ${CHAPTERS[curCh].topics}\nContext: ${ctx[1]}\nRules: ${CHAPTERS[curCh].keyRules}\nReturn ONLY JSON: {"exercise":{"type":"${exType}","title":"Exercise — title","instruction":"text"${exType==='dragdrop'?',"pairs":[{"item":"","zone":""}]':exType==='blank'?',"blanks":[{"before":"","after":"","answer":"","hint":""}]':',"scenario":"text","questions":[{"q":"","opts":["","","",""],"correct":0,"exp":""}]'}}}`);
+    if(d.exercise)currentExercises[exIdx]=d.exercise;
+  }catch(e){}
+  document.getElementById('ex-loading').style.display='none';
+  renderExDots();renderEx();
+}
+
+function showExResult(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('ex-result-screen').classList.add('active');
+  document.getElementById('exres-title').textContent='Chapter '+curCh+' — Complete';
+  document.getElementById('exres-heading').textContent='All exercises completed!';
+  const msgs={1:'Chapter 2 is now unlocked!',2:'Chapter 3 is now unlocked!',3:'Chapter 4 is now unlocked!',4:'Chapter 5 is now unlocked!',5:'Congratulations — all 5 chapters complete!'};
+  document.getElementById('exres-msg').textContent=`Chapter ${curCh} theory, quiz and exercises complete. ${msgs[curCh]}`;
+}
+
+function finishChapter(){
+  chState[curCh].completed=true;
+  if(curCh<5)chState[curCh+1].unlocked=true;
+  showHome();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FALLBACK QUESTIONS (30 per chapter, 10 picked randomly)
+// ═══════════════════════════════════════════════════════════════
+function getFallbackQ(ch){
+  const banks={
+    1:[
+      {q:"An attacker intercepts an encrypted email without reading it. Which CIA principle was violated?",opts:["Integrity","Availability","Confidentiality","Non-repudiation"],correct:2,level:1,exp:"Interception alone=Confidentiality. Don't need to read data to violate it."},
+      {q:"SOC analyst reviews SIEM logs to trace what an attacker accessed. Which AAA component?",opts:["Authentication","Authorization","Accounting","Non-repudiation"],correct:2,level:1,exp:"SIEM+logs+tracing=always Accounting."},
+      {q:"Employee logs in with password + fingerprint. Which MFA factors?",opts:["Something You Know + Something You Have","Something You Know + Something You Are","Something You Have + Something You Are","Something You Are + Somewhere You Are"],correct:1,level:1,exp:"Password=Something You Know. Fingerprint=Something You Are."},
+      {q:"Annual cybersecurity training and clean desk policy. What control type and category?",opts:["Preventive — Technical","Deterrent — Physical","Directive — Managerial","Compensating — Operational"],correct:2,level:1,exp:"Policies instructing internal behavior=Directive. From management=Managerial."},
+      {q:"Network device inline drops malicious payloads automatically. What is this?",opts:["IDS — Detective","Firewall — Preventive","IPS — Preventive","SIEM — Detective"],correct:2,level:2,exp:"Inline+automatically blocks=IPS. Preventive control type."},
+      {q:"Cannot implement biometric scanners. Key fobs deployed instead. What type and factor?",opts:["Compensating — Something You Know","Preventive — Something You Have","Compensating — Something You Have","Directive — Something You Are"],correct:2,level:2,exp:"Cannot implement ideal=Compensating. Key fob=Something You Have."},
+      {q:"Antivirus detects ransomware ALREADY installed and quarantines it. What control type?",opts:["Preventive","Detective","Corrective","Compensating"],correct:2,level:2,exp:"Already infected. Quarantine AFTER=Corrective."},
+      {q:"SLA guarantees 99.999% uptime. Service was down 8 minutes. What is correct?",opts:["Met SLA","Violated SLA — only 5.26 minutes allowed per year","Met SLA — 8.76 hours allowed","Violated — any downtime fails"],correct:1,level:2,exp:"Five nines=5.26 minutes/year. 8 minutes>5.26=SLA violated."},
+      {q:"Zero Trust evaluates identity, device health, location and behavior dynamically. Which component?",opts:["Policy Enforcement Point","Policy Administrator","Adaptive Identity","Threat Scope Reduction"],correct:2,level:3,exp:"Dynamic contextual verification=Adaptive Identity."},
+      {q:"SIEM cannot correlate cloud events. Team documents gap and creates remediation plan. What type and output?",opts:["Business Gap Analysis — SLA","Technical Gap Analysis — POA&M","Business Gap Analysis — POA&M","Technical — Audit Trail"],correct:1,level:3,exp:"SIEM=technical tool=Technical Gap Analysis. Remediation plan=POA&M."},
+      {q:"A warning sign 'CCTV in operation' is placed at entrance. What control type?",opts:["Preventive — Technical","Detective — Physical","Deterrent — Physical","Directive — Managerial"],correct:2,level:1,exp:"Warning sign discourages attackers=Deterrent. Physical object=Physical category."},
+      {q:"Firewall blocks all traffic on port 23 (Telnet). What control type and category?",opts:["Detective — Technical","Preventive — Technical","Corrective — Operational","Deterrent — Physical"],correct:1,level:1,exp:"Blocks before attack occurs=Preventive. Software/hardware=Technical category."},
+      {q:"Employee uses company badge to enter building. Which AAA component?",opts:["Accounting","Authorization","Authentication","Availability"],correct:2,level:1,exp:"Verifying identity at entry=Authentication. Who are you?"},
+      {q:"Which Zero Trust component EXECUTES the access decision?",opts:["Policy Engine","Policy Administrator","Policy Enforcement Point (PEP)","Adaptive Identity"],correct:2,level:3,exp:"Policy Engine DECIDES. Policy Administrator COMMUNICATES. PEP EXECUTES."},
+      {q:"Company backs up all data every night at 2AM. What control type?",opts:["Preventive — Technical","Detective — Operational","Corrective — Operational","Directive — Managerial"],correct:2,level:2,exp:"Backups allow recovery after damage=Corrective. Human daily procedure=Operational."},
+      {q:"Digital signature verification fails. What does this indicate?",opts:["Server is down","Sender's account was hacked","Message was altered in transit — Integrity violated","Recipient lacks authorization"],correct:2,level:3,exp:"Invalid digital signature=message was ALTERED. Non-repudiation detects tampering."},
+      {q:"Attacker modifies financial record in database without being detected. Which CIA principle?",opts:["Confidentiality","Availability","Integrity","Non-repudiation"],correct:2,level:1,exp:"Unauthorized modification of data=Integrity violation."},
+      {q:"DDoS attack takes down hospital patient record system for 6 hours. Which CIA principle?",opts:["Confidentiality","Integrity","Availability","Authentication"],correct:2,level:1,exp:"System inaccessible when needed=Availability violation."},
+      {q:"Employee uses their smartphone for MFA. Which authentication factor?",opts:["Something You Know","Something You Have","Something You Are","Somewhere You Are"],correct:1,level:1,exp:"Smartphone/token/OTP=Something You Have."},
+      {q:"IDS generates an alert but does NOT block traffic. What control type?",opts:["Preventive","Deterrent","Detective","Corrective"],correct:2,level:2,exp:"IDS alerts but does NOT block=Detective. IPS blocks=Preventive."},
+      {q:"Three nines (99.9%) uptime. How much downtime is allowed per year?",opts:["5.26 minutes","52.6 minutes","8.76 hours","87.6 hours"],correct:2,level:2,exp:"Three nines=8.76 hours downtime/year. Five nines=5.26 min/year."},
+      {q:"Retina scan is used to verify employee identity. Which factor?",opts:["Something You Know","Something You Have","Something You Are","Something You Do"],correct:2,level:1,exp:"Biometric=Something You Are. Includes fingerprint, retina, facial recognition."},
+      {q:"Cannot afford full Zero Trust so implements enhanced MFA instead. What control type?",opts:["Preventive","Detective","Corrective","Compensating"],correct:3,level:3,exp:"Alternative when ideal cannot be implemented=Compensating control."},
+      {q:"SIEM logs reviewed 6 months later as evidence in court case. Which AAA function?",opts:["Authentication","Authorization","Accounting","Adaptive Identity"],correct:2,level:2,exp:"Log review for accountability and evidence=Accounting."},
+      {q:"User types PIN on numeric keypad to enter secure room. Which factor?",opts:["Something You Have","Something You Are","Something You Know","Somewhere You Are"],correct:2,level:1,exp:"PIN=Something You Know."},
+      {q:"Security cameras record all movements in data center 24/7. What control type and category?",opts:["Preventive — Technical","Deterrent — Physical","Detective — Technical","Corrective — Operational"],correct:2,level:2,exp:"Cameras record what happened=Detective. Hardware technology=Technical."},
+      {q:"Gap Analysis reveals security policies are outdated and don't cover cloud. What type?",opts:["Technical Gap Analysis","Business Gap Analysis","POA&M","Risk Assessment"],correct:1,level:3,exp:"Policy/process gaps=Business Gap Analysis. SIEM/tool gaps=Technical Gap Analysis."},
+      {q:"Employee GPS location used as part of MFA. Which factor?",opts:["Something You Know","Something You Have","Something You Are","Somewhere You Are"],correct:3,level:2,exp:"Location-based verification=Somewhere You Are factor."},
+      {q:"After ransomware attack IT restores all systems from last night's backup. What control type?",opts:["Preventive","Deterrent","Detective","Corrective"],correct:3,level:2,exp:"Restoring systems after damage=Corrective control."},
+      {q:"Security policy states employees must lock screens when leaving desks. What control type?",opts:["Preventive — Technical","Directive — Managerial","Deterrent — Physical","Compensating — Operational"],correct:1,level:2,exp:"Policy guiding internal behavior=Directive. From management=Managerial."}
+    ],
+    2:[
+      {q:"Which threat actor uses pre-made tools, low skills, motivated by thrill?",opts:["Hacktivist","Script Kiddie","Insider Threat","Nation-State Actor"],correct:1,level:1,exp:"Limited skills+pre-made tools+thrill=Script Kiddie."},
+      {q:"Group defaces website and leaks documents to protest policies. No payment demanded. What type?",opts:["Organized Crime","Nation-State Actor","Hacktivist","Insider Threat"],correct:2,level:1,exp:"No financial demand+social cause+defacement=Hacktivist."},
+      {q:"Employee uses personal Dropbox for corporate files. No malicious intent. What and risk?",opts:["Insider Threat — data theft","Shadow IT — breach and non-compliance","BYOD — loss of control","Nation-State — espionage"],correct:1,level:1,exp:"Unauthorized IT+no malicious intent=Shadow IT. Risk=compliance breach."},
+      {q:"Attackers infiltrate network, stay 14 months undetected, exfiltrate classified data. What?",opts:["DDoS Attack","False Flag Attack","Advanced Persistent Threat","Baiting"],correct:2,level:2,exp:"Long-term+silent+persistent+evades detection=APT."},
+      {q:"Cyber unit attacks power grid but plants North Korean signatures. What tactic?",opts:["Shadow IT","Baiting","Doxxing","False Flag Attack"],correct:3,level:2,exp:"Disguising attack origin to frame another country=False Flag Attack."},
+      {q:"USB labeled 'Q1 Salary Report' left in parking lot. Employee plugs it in. Which vector?",opts:["Messages — Phishing","Files — Doxxing","Removable Devices — Baiting","Voice Calls — Vishing"],correct:2,level:2,exp:"USB drive=Removable Devices vector. Enticing label=Baiting technique."},
+      {q:"Multiple interconnected decoy servers deployed to monitor attackers. What technology?",opts:["Honeypot","Honeyfile","Honeynet","Honeytoken"],correct:2,level:2,exp:"Multiple interconnected systems=Honeynet. Single system=Honeypot."},
+      {q:"Fake admin credentials embedded in configuration file. Alert if used. Which TWO?",opts:["Honeypot and Honeynet","Honeyfile and Honeytoken","Honeynet and Honeypot","Honeytoken and Honeypot"],correct:1,level:3,exp:"The FILE=Honeyfile. Credentials INSIDE=Honeytoken."},
+      {q:"Attacker calls employee impersonating IT support to steal credentials. Which vector?",opts:["Phishing — Messages","Vishing — Voice Calls","Removable Device — Baiting","Unsecured Network"],correct:1,level:2,exp:"Phone call impersonation=Vishing (Voice Calls vector)."},
+      {q:"Financially motivated group uses custom malware to attack banks. What type of actor?",opts:["Hacktivist","Script Kiddie","Organized Crime","Nation-State"],correct:2,level:2,exp:"Financial motivation+structured+custom malware=Organized Crime."},
+      {q:"Single decoy system deployed to attract and monitor attackers. What technology?",opts:["Honeynet","Honeyfile","Honeytoken","Honeypot"],correct:3,level:1,exp:"Single decoy system=Honeypot. Multiple systems=Honeynet."},
+      {q:"Attacker sends malicious SMS claiming to be from victim's bank. Which attack?",opts:["Phishing","Vishing","Smishing","Spear Phishing"],correct:2,level:2,exp:"Malicious SMS=Smishing. Phone call=Vishing. Email=Phishing."},
+      {q:"Edward Snowden copied classified NSA documents using legitimate access. What type?",opts:["Hacktivist","Shadow IT","Script Kiddie","Insider Threat"],correct:3,level:2,exp:"Legitimate access+deliberate malicious intent=Insider Threat."},
+      {q:"Threat actor with unlimited government resources conducts long-term espionage. What type?",opts:["Organized Crime","Hacktivist","Nation-State Actor","Insider Threat"],correct:2,level:2,exp:"Government-sponsored+unlimited resources+strategic motive=Nation-State Actor."},
+      {q:"Attacker compromises coffee shop website visited by target employees. What attack?",opts:["Phishing","Pretexting","Vishing","Watering Hole"],correct:3,level:3,exp:"Compromising frequently visited site to infect targets=Watering Hole attack."},
+      {q:"Decoy file named 'employee_salaries.xlsx' triggers alert when opened. What technology?",opts:["Honeypot","Honeynet","Honeyfile","Honeytoken"],correct:2,level:2,exp:"Decoy FILE that triggers alert when accessed=Honeyfile."},
+      {q:"Rogue WiFi access point in hotel lobby mimicking hotel network. Which threat vector?",opts:["Messages","Voice Calls","Removable Devices","Unsecured Networks — Evil Twin"],correct:3,level:2,exp:"Rogue access point=Evil Twin WiFi=Unsecured Networks threat vector."},
+      {q:"Attack appears to come from China but was actually from Russia. What concept?",opts:["APT","Hacktivist technique","False Flag Attack","Supply Chain Attack"],correct:2,level:3,exp:"Disguising origin to frame another nation=False Flag Attack."},
+      {q:"Hacktivist group publishes private information about government official. What technique?",opts:["Phishing","Doxxing","Vishing","Watering Hole"],correct:1,level:3,exp:"Publishing private personal information publicly=Doxxing. Common hacktivist technique."},
+      {q:"Stuxnet worm targeted Iranian nuclear facilities. What type of actor?",opts:["Hacktivist","Script Kiddie","Organized Crime","Nation-State Actor"],correct:3,level:3,exp:"Stuxnet=sophisticated+government-sponsored+strategic target=Nation-State Actor."},
+      {q:"Malicious image file with embedded malware sent via email. Which threat vector?",opts:["Messages","Voice Calls","Images","Removable Devices"],correct:2,level:3,exp:"Malicious code embedded in image file=Images threat vector."},
+      {q:"Security team deploys fake credentials inside real config file to detect attackers. Which TWO?",opts:["Honeypot containing Honeyfile","Honeyfile containing Honeytoken","Honeynet containing Honeypot","Honeytoken inside Honeynet"],correct:1,level:3,exp:"Real config file with fake content=Honeyfile. The fake credentials inside=Honeytoken."},
+      {q:"Anonymous group conducts DDoS against government site to protest a new law. What type?",opts:["Organized Crime","Nation-State","Hacktivist","Script Kiddie"],correct:2,level:1,exp:"Ideological motivation+no financial demand+DDoS protest=Hacktivist."},
+      {q:"Attacker with extensive skills and government backing stays undetected for 2 years. What?",opts:["Script Kiddie","Watering Hole","Advanced Persistent Threat (APT)","False Flag"],correct:2,level:3,exp:"Long-term+silent+evades detection+government-backed=APT."},
+      {q:"Which deception technology BEST detects if attacker uses stolen fake credentials?",opts:["Honeypot","Honeynet","Honeyfile","Honeytoken"],correct:3,level:3,exp:"Fake credentials that alert when USED=Honeytoken."},
+      {q:"Hacktivist compromises news website to replace front page with political message. What?",opts:["Phishing","Doxxing","Website Defacement","Watering Hole"],correct:2,level:2,exp:"Replacing website content with political message=Website Defacement."},
+      {q:"Contractor installs unauthorized network monitoring software without malicious intent. What?",opts:["Insider Threat — sabotage","Shadow IT — compliance risk","Nation-State — supply chain","Organized Crime — data theft"],correct:1,level:2,exp:"Unauthorized software+no malicious intent=Shadow IT."},
+      {q:"Which threat actor is primarily motivated by financial gain with structured organization?",opts:["Hacktivist","Script Kiddie","Nation-State Actor","Organized Crime"],correct:3,level:1,exp:"Financial+structured+professional criminal organization=Organized Crime."},
+      {q:"Attacker compromises legitimate software update to distribute malware to thousands. What?",opts:["Watering Hole","False Flag","Supply Chain Attack","APT Phase 1"],correct:2,level:3,exp:"Compromising legitimate software distribution=Supply Chain Attack."},
+      {q:"Hacktivist motivation when there is NO financial demand involved?",opts:["Financial gain","Ideological or political cause","Strategic espionage","Recognition and thrill"],correct:1,level:1,exp:"No financial demand + cause = Hacktivist. Financial=Organized Crime. Strategic=Nation-State."}
+    ],
+    3:[
+      {q:"Which BEST describes the primary purpose of bollards?",opts:["Monitor activity around building","Prevent vehicles from accessing pedestrian zones","Control entry by verifying credentials","Enclose area and deter intruders"],correct:1,level:1,exp:"Bollards=anti-vehicle posts. Anti-terrorism measure post-9/11."},
+      {q:"Unauthorized person follows authorized employee through secure door WITHOUT their knowledge. What?",opts:["Piggybacking","Baiting","Tailgating","Badge cloning"],correct:2,level:1,exp:"Without authorized person's knowledge=Tailgating. With consent=Piggybacking."},
+      {q:"Biometric system has HIGH False Acceptance Rate (FAR). What is the security implication?",opts:["Authorized users frequently rejected — inconvenient","Unauthorized users frequently accepted — dangerous","System reached CER — perfectly balanced","System has high FRR"],correct:1,level:2,exp:"High FAR=accepts unauthorized users=serious security vulnerability."},
+      {q:"Attacker uses handheld RFID reader to capture badge data, writes to blank card. Attack and mitigation?",opts:["Tailgating — vestibules","Badge cloning — MFA and shielded wallets","Piggybacking — biometric locks","Brute force — reinforced doors"],correct:1,level:2,exp:"Wireless RFID duplication=Badge cloning. MFA+shielded wallets prevent it."},
+      {q:"Motion-activated lighting at building entrances. What control TYPE and CATEGORY?",opts:["Preventive — Technical","Detective — Physical","Deterrent — Physical","Corrective — Operational"],correct:2,level:2,exp:"Lighting discourages attackers=Deterrent. Tangible measure=Physical."},
+      {q:"Attacker uses jamming device to disable all wireless cameras. Attack and countermeasure?",opts:["Visual Obstruction — tamper alarms","Blinding — anti-glare filters","Electromagnetic Interference — wired cameras + encrypted signals","Acoustic Jamming — backup power"],correct:2,level:3,exp:"Jamming wireless signals=EM Interference. Fix=wired cameras."},
+      {q:"Server room uses pin and tumbler locks. Pen tester picks lock in 30 seconds. Best solution?",opts:["Add second pin and tumbler lock","Locks are adequate","High-security areas need electronic or biometric + MFA","Cipher locks have same vulnerability"],correct:2,level:3,exp:"Pin and tumbler=vulnerable to picking. Sensitive areas=electronic/biometric+MFA."},
+      {q:"Vestibule traps visitor. Security reviews access logs for last 24h. Which TWO controls?",opts:["Preventive and Accounting","Preventive vestibule and Detective log review","Deterrent and Corrective","Authentication and Authorization"],correct:1,level:3,exp:"Vestibule=Preventive. Access log review=Detective (Accounting)."},
+      {q:"Biometric System A: CER=5%. System B: CER=1%. Which is better?",opts:["System A — higher value","Both equally secure","System B — lower CER means better FAR/FRR balance","CER only measures FRR"],correct:2,level:3,exp:"Lower CER=better system. CER is where FAR=FRR."},
+      {q:"Despite all controls in place — attacker gains entry by convincing guard. Which control FAILED?",opts:["Fencing","Bollards","Security guard — social engineered","CCTV"],correct:2,level:4,exp:"Guard=human Deterrent+Preventive. Social engineering bypassed human element."},
+      {q:"Authorized employee lets colleague enter without badge scan. What is this?",opts:["Tailgating","Baiting","Badge cloning","Piggybacking"],correct:3,level:1,exp:"Authorized person KNOWINGLY allows unauthorized entry=Piggybacking. They are an accomplice."},
+      {q:"Attacker sprays black paint on a CCTV camera lens. What bypass technique?",opts:["Electromagnetic Interference","Blinding","Visual Obstruction","Acoustic Jamming"],correct:2,level:1,exp:"Physically blocking camera lens=Visual Obstruction. Countermeasure=tamper alarms."},
+      {q:"Biometric system incorrectly rejects authorized user. Which metric measures this?",opts:["FAR — False Acceptance Rate","CER — Crossover Error Rate","FRR — False Rejection Rate","EER — Equal Error Rate"],correct:2,level:3,exp:"Rejecting authorized users=FRR (False Rejection Rate). Accepting unauthorized=FAR."},
+      {q:"What is the CER (Crossover Error Rate) in biometrics?",opts:["Rate of unauthorized access","Rate where FAR equals FRR — lower is better","Rate of system downtime","Maximum acceptable error rate"],correct:1,level:3,exp:"CER=point where FAR=FRR. Lower CER=better balanced biometric system."},
+      {q:"Physical fence with barbed wire surrounds data center perimeter. What control type?",opts:["Detective — Technical","Deterrent + Preventive — Physical","Corrective — Operational","Compensating — Managerial"],correct:1,level:2,exp:"Fence=Preventive (stops entry) + Deterrent (discourages). Physical category."},
+      {q:"Security guard at entrance visually checks all employee badges. What control type?",opts:["Detective — Technical","Preventive + Deterrent — Physical/Operational","Corrective — Operational","Directive — Managerial"],correct:1,level:2,exp:"Guard checks=Preventive + Deterrent. Human=Operational. Presence=Physical."},
+      {q:"Bright lights or lasers pointed at cameras to overwhelm the sensor. What bypass technique?",opts:["Visual Obstruction","Blinding","Electromagnetic Interference","Acoustic Jamming"],correct:1,level:2,exp:"Using light to overwhelm camera sensor=Blinding. Countermeasure=anti-glare filters."},
+      {q:"Access control vestibule allows only one person through at a time. What does it prevent?",opts:["Badge cloning","Both tailgating and piggybacking","Visual obstruction","Electromagnetic interference"],correct:1,level:2,exp:"Vestibule=one person at a time prevents BOTH tailgating and piggybacking."},
+      {q:"RFID badge cloning steps in correct order?",opts:["Extract → Scan → Write → Use","Scan → Extract → Write → Use","Write → Scan → Extract → Use","Scan → Write → Extract → Use"],correct:1,level:3,exp:"Badge cloning=Scan → Extract → Write → Use."},
+      {q:"Which type of door lock requires numeric combination and has no physical key?",opts:["Biometric lock","Electronic lock","Cipher lock","Pin and tumbler lock"],correct:2,level:2,exp:"Numeric combination, no physical key=Cipher lock."},
+      {q:"Attacker cuts power cables to surveillance cameras before entering. What technique?",opts:["Visual Obstruction","Electromagnetic Interference","Attacking the Physical Environment","Acoustic Jamming"],correct:2,level:2,exp:"Sabotaging power supply=Attacking Physical Environment. Countermeasure=backup power+redundancy."},
+      {q:"Vehicle rams through security gate to gain access to facility. What type of attack?",opts:["Forcible Entry","Vehicle Ramming Barrier","Tampering with Security Devices","Confronting Security Personnel"],correct:1,level:1,exp:"Vehicle used to breach physical barrier=Vehicle Ramming. Countermeasure=bollards."},
+      {q:"Shielded wallets are recommended as mitigation for which attack?",opts:["Tailgating","Visual Obstruction","Badge Cloning — RFID scanning","Electromagnetic Interference"],correct:2,level:2,exp:"Shielded wallets block wireless RFID scanning=prevent badge cloning."},
+      {q:"Fingerprint scanner rejects authorized user 30% of the time. Problem with which metric?",opts:["FAR is too high","CER is too low","FRR is too high","EER is acceptable"],correct:2,level:3,exp:"Frequently rejecting authorized users=high FRR (False Rejection Rate). Inconvenient but not a security risk."},
+      {q:"Tamper alarms on cameras protect against which bypass technique?",opts:["Electromagnetic Interference","Visual Obstruction — cameras being covered","Badge Cloning","Acoustic Jamming"],correct:1,level:2,exp:"Tamper alarms alert when cameras are physically covered=protection against Visual Obstruction."},
+      {q:"Data center uses perimeter fencing plus bollards at vehicle entrances. Purpose of BOTH?",opts:["Both prevent vehicle access","Fencing=perimeter pedestrian control, Bollards=anti-vehicle","Both are just deterrents","Fencing=anti-vehicle, Bollards=perimeter"],correct:1,level:2,exp:"Fencing=perimeter enclosure (pedestrian + visual deterrent). Bollards=specifically anti-vehicle."},
+      {q:"Intruder waits and slips through door behind employee WITHOUT employee knowing. What?",opts:["Piggybacking","Tailgating","Badge Cloning","Brute Force Entry"],correct:1,level:1,exp:"Following without authorized person's knowledge=Tailgating. Vestibule prevents this."},
+      {q:"Electronic locks that log access with timestamps provide which security benefit?",opts:["Preventive only","Audit trail for Accounting/Detective purposes","Compensating for lost keys","Directive compliance"],correct:1,level:2,exp:"Access logs=audit trail=Accounting function=Detective control."},
+      {q:"Infrared sensors detect body heat movement in restricted area at night. What control type?",opts:["Preventive — Physical","Detective — Technical","Deterrent — Physical","Corrective — Operational"],correct:1,level:2,exp:"Infrared sensors detect unauthorized movement=Detective. Electronic technology=Technical."},
+      {q:"Security guard confrontation results in physical violence. What brute force attack category?",opts:["Forcible Entry","Vehicle Ramming","Tampering with Devices","Confronting Security Personnel"],correct:3,level:1,exp:"Direct physical confrontation with security staff=Confronting Security Personnel."}
+    ],
+    4:[
+      {q:"Which motivational trigger creates false immediacy to bypass security measures?",opts:["Authority","Urgency","Social Proof","Scarcity"],correct:1,level:1,exp:"Urgency creates false immediacy — victim acts without critical thinking."},
+      {q:"Group registers 'paypa1.com' to capture credentials from users who mistype real domain. What?",opts:["Watering Hole","Brand Impersonation","Typosquatting","Pretexting"],correct:2,level:1,exp:"Registering domains with deliberate typos=Typosquatting (URL hijacking)."},
+      {q:"Attacker compromises website frequented by target employees and embeds malware. What attack?",opts:["Phishing","Pretexting","Watering Hole","Vishing"],correct:2,level:2,exp:"Compromising frequently visited website to infect targets=Watering Hole."},
+      {q:"Highly personalized email targets CFO using company-specific details. What phishing type?",opts:["General Phishing","Smishing","Spear Phishing","Vishing"],correct:2,level:2,exp:"Personalized phishing using specific victim information=Spear Phishing."},
+      {q:"Spear phishing specifically targeting C-Suite executives. What is it called?",opts:["Vishing","Smishing","BEC","Whaling"],correct:3,level:2,exp:"Spear Phishing targeting high-profile executives=Whaling."},
+      {q:"Attacker hijacks legitimate business email account to request fraudulent wire transfers. What?",opts:["Whaling","Spear Phishing","Business Email Compromise (BEC)","Vishing"],correct:2,level:2,exp:"Using REAL hijacked email account=BEC. Hardest to detect."},
+      {q:"False health info spread during pandemic by people who genuinely believed it was true. What?",opts:["Disinformation","Misinformation","Influence Campaign","Pretexting"],correct:1,level:2,exp:"False info shared WITHOUT harmful intent=Misinformation. With deliberate intent=Disinformation."},
+      {q:"Security researcher watches employee enter PIN at ATM from 2 feet away. What attack?",opts:["Baiting","Eavesdropping","Shoulder Surfing","Dumpster Diving"],correct:2,level:2,exp:"Directly observing sensitive info being entered=Shoulder Surfing. Mitigation=privacy screens."},
+      {q:"Attacker calls reception posing as printer vendor to confirm printer model. What technique?",opts:["Phishing","Watering Hole","Pretexting","Brand Impersonation"],correct:2,level:3,exp:"Creating fabricated scenario to extract information=Pretexting."},
+      {q:"Russian coordinated social media campaign spread divisive content to influence election. What?",opts:["Misinformation Campaign","Disinformation Campaign","Influence Campaign using Disinformation","Pretexting at scale"],correct:2,level:3,exp:"Coordinated INTENTIONAL false information to manipulate processes=Disinformation."},
+      {q:"Attacker finds discarded documents in company's rubbish bin. What attack?",opts:["Shoulder Surfing","Eavesdropping","Dumpster Diving","Baiting"],correct:2,level:1,exp:"Searching trash for sensitive documents=Dumpster Diving. Mitigation=shredding+clean desk policy."},
+      {q:"Attacker secretly listens to private conversation between two executives. What attack?",opts:["Shoulder Surfing","Eavesdropping","Dumpster Diving","Pretexting"],correct:1,level:1,exp:"Secretly listening to private conversations=Eavesdropping."},
+      {q:"Email from CEO asks urgently to transfer $50,000. What TWO motivational triggers?",opts:["Social Proof + Scarcity","Authority + Urgency","Likability + Fear","Scarcity + Authority"],correct:1,level:2,exp:"CEO (authority figure)=Authority trigger. 'Urgently'=Urgency trigger. Most dangerous combination."},
+      {q:"Fake email from 'Microsoft Support' claims account will be closed unless you verify now. What?",opts:["Likability","Social Proof","Fear + Urgency","Scarcity"],correct:2,level:2,exp:"Account closure threat=Fear trigger. 'Verify now'=Urgency trigger."},
+      {q:"Attacker sends SMS claiming victim won a prize and must click link to claim it. What attack?",opts:["Phishing","Vishing","Smishing","Spear Phishing"],correct:2,level:1,exp:"Malicious SMS message=Smishing."},
+      {q:"Anti-phishing simulation sends fake phishing emails to employees to test awareness. What?",opts:["Penetration Testing","Red Team Exercise","Anti-Phishing Campaign","Security Audit"],correct:2,level:2,exp:"Simulated phishing to test and train employees=Anti-Phishing Campaign."},
+      {q:"Attacker uses fake Twitter account pretending to be a major pharmaceutical company. What?",opts:["Typosquatting","Brand Impersonation","Watering Hole","Pretexting"],correct:1,level:2,exp:"Impersonating a real company using fake social media account=Brand Impersonation."},
+      {q:"Which phishing type is HARDEST to detect because it uses real compromised email account?",opts:["Whaling","Spear Phishing","Business Email Compromise (BEC)","Vishing"],correct:2,level:3,exp:"BEC uses REAL hijacked legitimate email account — looks completely authentic."},
+      {q:"Attacker creates elaborate backstory about being a new IT employee needing server access. What?",opts:["Phishing","Shoulder Surfing","Pretexting","Baiting"],correct:2,level:2,exp:"Creating fabricated scenario to manipulate victim=Pretexting."},
+      {q:"Intentionally created and spread false information to manipulate political outcomes. What?",opts:["Misinformation","Disinformation","Influence Campaign with Misinformation","Social Proof attack"],correct:1,level:2,exp:"Intentionally false information to manipulate=Disinformation. Without intent=Misinformation."},
+      {q:"Scammer calls posing as IRS and threatens arrest unless immediate payment is made. What triggers?",opts:["Social Proof + Scarcity","Likability + Urgency","Authority + Fear","Scarcity + Social Proof"],correct:2,level:2,exp:"IRS (authority figure)=Authority. Arrest threat=Fear."},
+      {q:"Employee receives targeted email using their manager's real name and project details. What type?",opts:["General Phishing","Whaling","Spear Phishing","Vishing"],correct:2,level:2,exp:"Personalized with specific victim details=Spear Phishing."},
+      {q:"What is the PRIMARY defense against ALL social engineering attacks?",opts:["Firewalls and IPS","Security Awareness Training","Multi-Factor Authentication","Data Loss Prevention"],correct:1,level:1,exp:"Primary defense against social engineering=Security Awareness Training."},
+      {q:"Attacker sends convincing invoice for services never rendered to company finance dept. What?",opts:["Phishing","Invoice Scam","BEC","Pretexting"],correct:1,level:2,exp:"Fake invoice for non-existent services=Invoice Scam."},
+      {q:"Attacker uses friendly and relatable persona to lower target's defenses over weeks. What trigger?",opts:["Authority","Urgency","Scarcity","Likability"],correct:3,level:2,exp:"Building friendly rapport to lower defenses=Likability trigger."},
+      {q:"Email link displays 'www.paypal.com' but actually goes to 'www.paypa1.com'. What?",opts:["BEC","Smishing","Typosquatting","Watering Hole"],correct:2,level:2,exp:"Fake domain with character substitution=Typosquatting."},
+      {q:"Only 5 spots left for exclusive training — sign up NOW before they're gone! What trigger?",opts:["Authority","Fear","Social Proof","Scarcity"],correct:3,level:1,exp:"Limited availability creating urgency=Scarcity trigger."},
+      {q:"'Everyone in your department has already verified their account'. What trigger?",opts:["Authority","Urgency","Social Proof","Fear"],correct:2,level:2,exp:"'Everyone else did it' to create normalcy=Social Proof trigger."},
+      {q:"Company receives call from vendor about changing bank account for invoice payment. What risk?",opts:["Vishing + Invoice Scam","BEC + Whaling","Smishing + Phishing","Shoulder Surfing + Eavesdropping"],correct:0,level:3,exp:"Phone call impersonating vendor=Vishing. Request to change payment=Invoice Scam."},
+      {q:"What distinguishes Whaling from standard Spear Phishing?",opts:["Whaling uses phone calls","Whaling targets C-Suite executives specifically","Whaling uses more sophisticated malware","Whaling hijacks legitimate email accounts"],correct:1,level:2,exp:"Whaling=Spear Phishing + specifically targets C-Suite (CEO/CFO/CISO)."}
+    ],
+    5:[
+      {q:"Which malware self-replicates across networks WITHOUT any user action?",opts:["Virus","Worm","Trojan","Ransomware"],correct:1,level:1,exp:"Worm=self-replicates WITHOUT user action. Virus=needs user to execute file."},
+      {q:"Virus changes its code signature with each execution to evade antivirus detection. What type?",opts:["Encrypted Virus","Stealth Virus","Polymorphic Virus","Armored Virus"],correct:2,level:1,exp:"Changes signature with each execution=Polymorphic. Metamorphic rewrites itself completely."},
+      {q:"Malware disguises itself as legitimate game but secretly installs a backdoor. What type?",opts:["Worm","Trojan","Rootkit","Logic Bomb"],correct:1,level:1,exp:"Disguises as legitimate software to trick user=Trojan. Does NOT replicate."},
+      {q:"Ransomware encrypts files. What is the FIRST step in response?",opts:["Notify authorities","Pay ransom","Disconnect infected systems from network","Restore from clean backups"],correct:2,level:2,exp:"FIRST=disconnect infected systems to prevent spread. Never pay ransom."},
+      {q:"Each individual compromised device in a botnet is called what?",opts:["Botnet","C2 Node","Zombie","RAT"],correct:2,level:1,exp:"Individual compromised device=Zombie. Network of zombies=Botnet."},
+      {q:"Rootkit operates in Ring 0 (kernel mode). Traditional antivirus FAILS. Best removal method?",opts:["Updated antivirus full scan","Delete suspicious files manually","Boot from external device and scan","Reinstall infected application"],correct:2,level:3,exp:"Rootkit in Ring 0=invisible to OS-level AV. Boot from external device."},
+      {q:"Employee inserts code that will delete all HR records on December 31st. What malware?",opts:["Backdoor","Worm","Logic Bomb","Ransomware"],correct:2,level:2,exp:"Code executes when specific condition met (date/event)=Logic Bomb. NOT immediate."},
+      {q:"Malware executes entirely in RAM — no files written to disk — evades traditional AV. What?",opts:["DLL Injection","Living Off the Land","Fileless Malware","Process Hollowing"],correct:2,level:3,exp:"Executes in RAM only, no files=Fileless Malware."},
+      {q:"Account shows login from London 9AM and Tokyo 9:15AM same day. What IoC?",opts:["Account Lockout","Resource Consumption spike","Impossible Travel","Out-of-Cycle Logging"],correct:2,level:2,exp:"Geographically impossible simultaneous access=Impossible Travel IoC=account compromised."},
+      {q:"Attackers use PowerShell and WMI — legitimate Windows tools — for malicious activities. What?",opts:["Fileless Malware","Living Off the Land","Process Hollowing","DLL Injection"],correct:1,level:3,exp:"Using legitimate system tools (PowerShell/WMI) maliciously=Living Off the Land."},
+      {q:"Virus rewrites itself COMPLETELY before infecting the next system. What type?",opts:["Polymorphic Virus","Stealth Virus","Metamorphic Virus","Armored Virus"],correct:2,level:3,exp:"Completely rewrites itself=Metamorphic Virus. More advanced than Polymorphic."},
+      {q:"Malware resides in hard drive's first sector and loads before the operating system. What type?",opts:["Macro Virus","Boot Sector Virus","Program Virus","Stealth Virus"],correct:1,level:2,exp:"Infects boot sector, loads before OS=Boot Sector Virus."},
+      {q:"Trojan grants attacker complete remote control of victim's system. What specific type?",opts:["Logic Bomb","Backdoor Trojan","Remote Access Trojan (RAT)","Rootkit"],correct:2,level:2,exp:"Trojan providing full remote control=RAT (Remote Access Trojan)."},
+      {q:"WannaCry spread automatically across unpatched Windows systems in 150 countries. What type?",opts:["Virus","Ransomware Trojan","Ransomware Worm","Rootkit"],correct:2,level:3,exp:"WannaCry=Ransomware (encrypts+demands ransom) + Worm (self-replicates without user action)."},
+      {q:"Malware embedded in Word document executes when document is opened. What type?",opts:["Boot Sector Virus","Program Virus","Macro Virus","Stealth Virus"],correct:2,level:2,exp:"Embedded in documents, executes when opened=Macro Virus."},
+      {q:"Multiple failed login attempts cause account to lock. What IoC?",opts:["Impossible Travel","Resource Consumption","Account Lockout — possible brute force","Missing Logs"],correct:2,level:1,exp:"Repeated failed logins causing lockout=Account Lockout IoC. Suggests brute force."},
+      {q:"SIEM logs from Tuesday night are completely missing on Wednesday morning. What IoC?",opts:["Out-of-Cycle Logging","Account Lockout","Missing Logs — attacker erased evidence","Resource Inaccessibility"],correct:2,level:2,exp:"Gaps in logs=Missing Logs IoC. Attacker likely deleted evidence."},
+      {q:"User reports computer extremely slow, fan constantly running even when idle at night. Most likely?",opts:["Ransomware encrypting files","Cryptominer or Botnet Zombie using CPU 24/7","Keylogger recording keystrokes","Logic Bomb waiting for trigger"],correct:1,level:2,exp:"24/7 high CPU+fan when idle=Cryptominer or Botnet."},
+      {q:"Attacker uses physical device plugged into computer to capture all keystrokes. What?",opts:["Software Keylogger","Hardware Keylogger","RAT","Spyware"],correct:1,level:2,exp:"Physical device capturing keystrokes=Hardware Keylogger."},
+      {q:"Malware incorporates multiple protective layers to confuse analysts. What type?",opts:["Stealth Virus","Polymorphic Virus","Armored Virus","Metamorphic Virus"],correct:2,level:3,exp:"Protective layers to confuse analysts=Armored Virus."},
+      {q:"Pre-installed software on new laptop that user never requested. Consumes resources. What?",opts:["Spyware","Trojan","Bloatware","Adware"],correct:2,level:1,exp:"Pre-installed unwanted software=Bloatware. Not malicious but wastes resources."},
+      {q:"Malware collects browsing history and sends it to attacker without user knowledge. What?",opts:["Keylogger","Ransomware","Spyware","Rootkit"],correct:2,level:1,exp:"Secretly collecting and transmitting user information=Spyware."},
+      {q:"Network of compromised computers used to send 50 million spam emails. What is the whole network?",opts:["Zombie","RAT","C2 Node","Botnet"],correct:3,level:1,exp:"Network of compromised devices=Botnet. Individual device=Zombie."},
+      {q:"Backdoor vs Logic Bomb: What is the KEY difference?",opts:["Backdoor is hardware, Logic Bomb is software","Backdoor=always available; Logic Bomb=waits for trigger condition","Both activate immediately","Logic Bomb is more destructive"],correct:1,level:3,exp:"Backdoor=persistent access always available. Logic Bomb=waits for specific condition."},
+      {q:"Malware hides inside legitimate running process by replacing its code. What technique?",opts:["DLL Injection","Masquerading","Process Hollowing","Living Off the Land"],correct:2,level:4,exp:"Creating legitimate process then replacing content=Process Hollowing."},
+      {q:"Files become inaccessible and note demands Bitcoin payment. What IoC and malware?",opts:["Missing Logs — Rootkit","Resource Inaccessibility — Ransomware","Account Lockout — Botnet","Impossible Travel — APT"],correct:1,level:2,exp:"Files inaccessible+ransom demand=Resource Inaccessibility IoC=Ransomware."},
+      {q:"Stage 1: dropper installed via phishing. Stage 2: downloads RAT for remote control. What model?",opts:["Single-stage deployment","Two-stage deployment model","APT infiltration","Living Off the Land"],correct:1,level:3,exp:"Dropper (Stage 1) then secondary payload RAT (Stage 2)=Two-Stage Deployment Model."},
+      {q:"Virus uses encryption to hide malicious code from antivirus signature detection. What type?",opts:["Stealth Virus","Polymorphic Virus","Encrypted Virus","Armored Virus"],correct:2,level:2,exp:"Uses encryption to hide code=Encrypted Virus."},
+      {q:"Colonial Pipeline 2021 — what type of malware and what was the CORRECT response?",opts:["Worm — disconnect and patch","Ransomware — disconnect, notify, restore from backup (DO NOT pay)","Rootkit — boot from external","Trojan — reinstall OS"],correct:1,level:3,exp:"Colonial Pipeline=Ransomware. Correct=disconnect+notify+restore. DO NOT pay."},
+      {q:"Malware intercepts OS calls to hide files and processes from detection tools. What type?",opts:["Armored Virus","Rootkit using Shims","Logic Bomb","Polymorphic Virus"],correct:1,level:4,exp:"Intercepting OS calls to hide presence=Rootkit using Shims."}
+    ]
+  };
+  const pool=banks[ch]||banks[1];
+  return [...pool].sort(()=>Math.random()-0.5).slice(0,10);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FALLBACK EXERCISES
+// ═══════════════════════════════════════════════════════════════
+function getFallbackEx(ch){
+  const exMap={
+    1:[
+      {type:"scenario",title:"Exercise 1 — Hospital Data Breach",instruction:"Read and identify the correct security concepts.",scenario:"A hospital discovers an attacker read patient records without modifying anything. SOC team reviews SIEM logs to reconstruct what happened. HIPAA requires logs kept for 6 years.",questions:[{q:"Which CIA principle was violated?",opts:["Integrity","Availability","Confidentiality","Non-repudiation"],correct:2,exp:"READ without modification=Confidentiality violation."},{q:"Which AAA function is the SOC team performing?",opts:["Authentication","Authorization","Accounting","Adaptive Identity"],correct:2,exp:"Reviewing logs to reconstruct=Accounting."},{q:"6-year log retention represents which function?",opts:["Forensic Analysis","User Accountability","Regulatory Compliance","Resource Optimization"],correct:2,exp:"Legal requirement to maintain records=Regulatory Compliance."}]},
+      {type:"dragdrop",title:"Exercise 2 — Match the Control Type",instruction:"Drag each example to its correct control type.",pairs:[{item:"Warning sign: 'CCTV in operation'",zone:"Deterrent"},{item:"Restore from backup after ransomware",zone:"Corrective"},{item:"Firewall blocking port 23",zone:"Preventive"},{item:"IDS alerting on suspicious traffic",zone:"Detective"}]},
+      {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence with the correct term.",blanks:[{before:"In Zero Trust, the component that decides whether to grant access is the",after:".",answer:"Policy Engine",hint:"Policy E"},{before:"Five nines uptime allows a maximum of",after:"of downtime per year.",answer:"5.26 minutes",hint:"5.2"},{before:"When a company cannot implement smart cards and uses MFA instead, this is a",after:"control.",answer:"Compensating",hint:"Com"}]},
+      {type:"multiselect4",ch:1}
+    ],
+    2:[
+      {type:"scenario",title:"Exercise 1 — Insider vs Shadow IT",instruction:"Read and identify the correct concepts.",scenario:"A fired sysadmin still has active credentials and deletes critical backups at 2AM. Another employee uses personal iPhone for corporate email and installed Dropbox without IT approval.",questions:[{q:"The ex-admin represents which threat actor?",opts:["Script Kiddie","Shadow IT","Insider Threat","Hacktivist"],correct:2,exp:"Deliberate malicious intent+legitimate credentials=Insider Threat."},{q:"The employee using Dropbox represents?",opts:["Insider Threat","Nation-State","Shadow IT and BYOD","Organized Crime"],correct:2,exp:"Unauthorized tools without malicious intent=Shadow IT and BYOD."},{q:"Primary risk of the employee's behavior?",opts:["Data theft","Data breach and non-compliance","Sabotage","DDoS attack"],correct:1,exp:"Shadow IT without malice=compliance risk and accidental breach."}]},
+      {type:"dragdrop",title:"Exercise 2 — Match the Threat Actor",instruction:"Drag each description to its correct threat actor.",pairs:[{item:"Uses LOIC, motivated by thrill, no advanced skills",zone:"Script Kiddie"},{item:"Custom malware, structured hierarchy, financial only",zone:"Organized Crime"},{item:"APTs, false flag attacks, government-sponsored",zone:"Nation-State Actor"},{item:"Website defacement, data leaks, ideological motivation",zone:"Hacktivist"}]},
+      {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A cyber attack disguised to appear from another country is called a",after:"attack.",answer:"False Flag",hint:"False F"},{before:"Multiple interconnected decoy systems simulating a network is called a",after:".",answer:"Honeynet",hint:"Honey"},{before:"An employee receiving a phone call from someone impersonating IT support is targeted by",after:".",answer:"Vishing",hint:"Vish"}]},
+      {type:"multiselect4",ch:2}
+    ],
+    3:[
+      {type:"scenario",title:"Exercise 1 — Physical Breach Analysis",instruction:"Read and identify the correct physical security concepts.",scenario:"A corporate HQ suffers a breach. Attacker sprayed black paint on outdoor cameras, jammed wireless signals of remaining cameras, followed authorized employee through main entrance unnoticed, accessed server room with cloned RFID badge.",questions:[{q:"What bypass technique was used on outdoor cameras?",opts:["Electromagnetic Interference","Visual Obstruction","Blinding with lasers","Acoustic Jamming"],correct:1,exp:"Spray paint on camera lens=Visual Obstruction."},{q:"What attack allowed entry through main entrance?",opts:["Piggybacking","Badge cloning","Forcible entry","Tailgating"],correct:3,exp:"Following without authorized person's knowledge=Tailgating."},{q:"What attack allowed server room access?",opts:["Tailgating","Brute force","Badge cloning","Lock picking"],correct:2,exp:"RFID data copied to blank card=Badge cloning."}]},
+      {type:"dragdrop",title:"Exercise 2 — Match the Physical Control",instruction:"Drag each example to its correct control type.",pairs:[{item:"Bollards at building entrance",zone:"Preventive — Physical"},{item:"Motion-activated lighting",zone:"Deterrent — Physical"},{item:"CCTV cameras recording activity",zone:"Detective — Technical"},{item:"Access control vestibule",zone:"Preventive — Physical"}]},
+      {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"When authorized person KNOWINGLY allows unauthorized entry, this is",after:".",answer:"Piggybacking",hint:"Piggy"},{before:"The biometric metric measuring rate of unauthorized users incorrectly accepted is",after:".",answer:"FAR",hint:"F"},{before:"Best countermeasure against electromagnetic jamming is to use",after:"cameras with encrypted signals.",answer:"wired",hint:"wir"}]},
+      {type:"multiselect4",ch:3}
+    ],
+    4:[
+      {type:"scenario",title:"Exercise 1 — Social Engineering Attack Chain",instruction:"Read and identify the correct concepts.",scenario:"An attacker calls accounting department posing as CEO's assistant (Authority trigger), claiming CEO urgently needs a wire transfer processed today or company will lose a major contract (Urgency trigger). Employee processes transfer without verification. Later, IT finds suspicious emails sent from a nearly identical domain.",questions:[{q:"Which TWO motivational triggers were combined?",opts:["Social Proof and Scarcity","Authority and Urgency","Likability and Fear","Scarcity and Social Proof"],correct:1,exp:"CEO's assistant=Authority. 'Must do today'=Urgency. Most dangerous combination."},{q:"The suspicious email domain is what type of attack?",opts:["Spear Phishing","Whaling","BEC","Typosquatting"],correct:3,exp:"Nearly identical domain to legitimate one=Typosquatting."},{q:"The phone call impersonating CEO's assistant is what type?",opts:["Phishing","Smishing","Vishing","Pretexting"],correct:3,exp:"Creating fabricated scenario via phone call=Pretexting + Vishing."}]},
+      {type:"dragdrop",title:"Exercise 2 — Match Phishing Type to Target",instruction:"Drag each phishing type to its primary target.",pairs:[{item:"Mass email campaign — no personalization",zone:"Phishing"},{item:"Personalized email using victim's specific info",zone:"Spear Phishing"},{item:"Targets CEO, CFO, CISO specifically",zone:"Whaling"},{item:"Uses hijacked legitimate email account",zone:"BEC"}]},
+      {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"False information shared WITHOUT harmful intent is called",after:".",answer:"Misinformation",hint:"Mis"},{before:"The most dangerous motivational trigger combination is Authority combined with",after:".",answer:"Urgency",hint:"Urg"},{before:"The primary defense against ALL social engineering attacks is",after:"training.",answer:"security awareness",hint:"security"}]},
+      {type:"multiselect4",ch:4}
+    ],
+    5:[
+      {type:"scenario",title:"Exercise 1 — Malware Incident Analysis",instruction:"Read and identify the correct malware concepts.",scenario:"SOC detects: (1) CPU spiked to 95% on multiple workstations at 3AM. (2) User account shows logins from New York 8AM and Tokyo 8:10AM same day. (3) System logs from Tuesday are completely missing. (4) Finance server files inaccessible with note demanding $500,000 in Bitcoin.",questions:[{q:"CPU spike at 3AM most likely indicates which malware?",opts:["Ransomware","Rootkit","Cryptominer (Botnet activity)","Logic Bomb"],correct:2,exp:"Unusual CPU spike during off-hours=cryptominer or botnet."},{q:"New York and Tokyo account activity same morning is which IoC?",opts:["Account Lockout","Resource Consumption","Impossible Travel","Out-of-Cycle Logging"],correct:2,exp:"Account in two distant locations simultaneously=Impossible Travel=account compromised."},{q:"Missing Tuesday logs is which IoC?",opts:["Out-of-Cycle Logging — system error","Missing Logs — attacker deleted evidence","Resource Inaccessibility — logs encrypted","Blocked Content — DLP removed logs"],correct:1,exp:"Gaps in logs=attacker erasing tracks. Critical red flag for SOC analysts."}]},
+      {type:"dragdrop",title:"Exercise 2 — Match Malware to Key Characteristic",instruction:"Drag each characteristic to its correct malware type.",pairs:[{item:"Self-replicates across networks WITHOUT user action",zone:"Worm"},{item:"Changes its signature with each execution",zone:"Polymorphic Virus"},{item:"Operates in Ring 0 — invisible to traditional AV",zone:"Rootkit"},{item:"Executes when specific date or event occurs",zone:"Logic Bomb"}]},
+      {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"Malware that executes entirely in RAM with no files written to disk is called",after:"malware.",answer:"Fileless",hint:"File"},{before:"Using legitimate system tools like PowerShell for malicious activities is called",after:".",answer:"Living Off the Land",hint:"Livin"},{before:"The response to a ransomware attack: DO NOT pay, disconnect systems, notify authorities, then restore from",after:".",answer:"clean backups",hint:"clean"}]},
+      {type:"multiselect4",ch:5}
+    ]
+  };
+  const pool=exMap[ch]||exMap[1];
+  const shuffled=[...pool];
+  return shuffled;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MULTISELECT EXERCISE 4 — BANKS (3 cases per chapter, rotatory)
+// ═══════════════════════════════════════════════════════════════
+const MULTISELECT_BANKS={
+  1:[
+    // SET A
+    [{scenario:"A SOC analyst is reviewing a security incident. The attacker entered using stolen credentials, modified financial records, then encrypted the backup server demanding ransom. The IDS generated alerts but the IPS was offline for maintenance. The CISO reviews SIEM logs the next morning.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["Modifying financial records violated Integrity","Encrypting the backup violated Availability","The IDS alert is a Detective control","The IPS being offline is a Compensating control","Reviewing SIEM logs is part of Accounting (AAA)"],correct:[0,1,2]},
+    {scenario:"A company deploys the following security measures: (A) Firewall blocking port 22, (B) Warning signs at all entrances, (C) Annual password reset policy approved by the board, (D) Antivirus that quarantines malware after detection, (E) Smart card + PIN for server room access.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) Firewall = Preventive — Technical","(B) Warning signs = Deterrent — Physical","(C) Password policy = Directive — Managerial","(D) Antivirus quarantine = Preventive — Technical","(E) Smart card + PIN = Something You Have only"],correct:[0,1,2]},
+    {scenario:"A company cannot verify its 99.999% SLA after a 12-minute outage. The Zero Trust system denied access to 3 employees despite valid credentials because their device health score dropped. The Policy Engine flagged the sessions and the PEP blocked them.",msgVar:"(Seleccione las que crea correctas)",opts:["The 12-minute outage violates the Five Nines SLA (max 5.26 min/year)","The Policy Engine EXECUTES the block decision","The PEP EXECUTES the block decision","Adaptive Identity evaluated device health dynamically","Three nines SLA allows up to 8.76 hours downtime/year"],correct:[0,2,3,4]}],
+    // SET B
+    [{scenario:"An employee logs in from Berlin using password + fingerprint. Meanwhile an attacker uses stolen credentials from a different country simultaneously. The SIEM generates an alert. IT reviews logs for 3 hours and restores systems from backup.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["Password = Something You Know","Fingerprint = Something You Are","Reviewing SIEM logs = Authentication","The simultaneous login = Impossible Travel IoC","Restoring from backup = Corrective control"],correct:[0,1,4]},
+    {scenario:"A hospital deploys: IDS on DMZ, IPS inline on internal network, CCTV cameras, security training policy, and key fobs because biometrics were too expensive. A ransomware attack occurs and IT restores from backup.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["IDS = Detective — Technical","IPS = Preventive — Technical","CCTV = Preventive — Technical","Key fob = Compensating control (biometrics not available)","Restoring from backup = Corrective — Operational"],correct:[0,1,3]},
+    {scenario:"Gap analysis reveals: (1) SIEM cannot correlate cloud logs, (2) password policy has not been updated in 4 years, (3) no MFA for remote workers. A POA&M is created for each finding.",msgVar:"(Seleccione las que crea correctas)",opts:["SIEM cloud gap = Technical Gap Analysis","Outdated password policy = Business Gap Analysis","No MFA = Technical Gap Analysis","POA&M = Plan Of Action and Milestones","Gap Analysis only covers technical issues"],correct:[0,1,3]}],
+    // SET C
+    [{scenario:"A new employee uses their GPS-enabled phone for MFA, enters their PIN on a keypad, and scans their fingerprint. The system grants access. Later, SIEM logs show an unusual pattern and the security team investigates.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["GPS phone MFA = Somewhere You Are","PIN on keypad = Something You Know","Fingerprint scan = Something You Are","SIEM investigation = Authorization","All three factors together = MFA"],correct:[0,1,2]},
+    {scenario:"Company A guarantees 99.9% uptime and had 6 hours of downtime this year. Company B guarantees 99.999% and had 10 minutes downtime. A Zero Trust system uses Policy Engine + Policy Administrator + PEP to enforce access.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["Company A violated its SLA (99.9% = max 8.76 hrs, 6 hrs = within limit)","Company B violated its SLA (99.999% = max 5.26 min, 10 min = exceeded)","Policy Engine = decides access","Policy Administrator = communicates decision","PEP = decides and executes simultaneously"],correct:[1,2,3]},
+    {scenario:"After a cyberattack: antivirus quarantines malware already running, IT team restores from backup, SIEM generates alerts throughout, and the security team reviews all logs. Management issues a new mandatory encryption policy.",msgVar:"(Seleccione las que crea correctas)",opts:["Antivirus quarantining active malware = Corrective control","SIEM generating alerts = Detective control","Restoring from backup = Corrective control","New encryption policy = Directive — Managerial","Reviewing logs = Preventive control"],correct:[0,1,2,3]}]
+  ],
+  2:[
+    // SET A
+    [{scenario:"A SOC alert fires at 3AM. An account shows simultaneous sessions in Berlin and Seoul. The team identifies a fake admin credential file that was accessed in the server room, and discovers a single decoy server was accessed by the intruder.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["Simultaneous Berlin+Seoul = Impossible Travel IoC","Fake credential file accessed = Honeytoken triggered","Single decoy server accessed = Honeypot triggered","Fake credential file = Honeynet","The threat actor is likely a Script Kiddie"],correct:[0,1,2]},
+    {scenario:"Three different attacks happen simultaneously: (A) USB drive labeled 'HR Salaries' left in parking lot, (B) Employee receives a call from 'IT Support' asking for credentials, (C) Rogue WiFi hotspot named 'CompanyWiFi_Guest' set up in lobby.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Baiting via Removable Devices vector","(B) = Vishing via Voice Calls vector","(C) = Evil Twin via Unsecured Networks vector","(A) = Phishing via Messages vector","(B) = Smishing via Messages vector"],correct:[0,1,2]},
+    {scenario:"Nation-State actor conducts a 14-month operation: stays silent, collects data, plants North Korean tool signatures before leaving. Meanwhile a hacktivist group defaces the company website and publishes employee private data online.",msgVar:"(Seleccione las que crea correctas)",opts:["14-month silent operation = Advanced Persistent Threat (APT)","Planting North Korean signatures = False Flag attack","Hacktivist website defacement = typical hacktivist technique","Publishing private employee data = Doxxing","Nation-State motivation = primarily financial gain"],correct:[0,1,2,3]}],
+    // SET B
+    [{scenario:"Security team deploys: (A) Single decoy server with fake data, (B) Network of 5 interconnected fake servers, (C) File named 'CEO_passwords.txt' that alerts when opened, (D) Fake API keys embedded in source code that alert when used.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Honeypot","(B) = Honeynet","(C) = Honeyfile","(D) = Honeytoken","(C) and (D) are the same technology"],correct:[0,1,2]},
+    {scenario:"A retail company is attacked by a group that: uses custom malware, has a structured hierarchy, demands $2M ransom, and is tracked to Eastern Europe. Separately, a government employee leaks classified documents deliberately.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["Retail attackers = Organized Crime (financial motive + custom malware)","Retail attackers = Nation-State (government-sponsored)","Government employee = Insider Threat (deliberate malicious intent)","Government employee = Shadow IT (no malicious intent)","Custom malware = characteristic of Nation-State actors only"],correct:[0,2,3]},
+    {scenario:"Review these actions: (A) Employee uses personal Google Drive for work files with no bad intent, (B) Attacker compromises coffee shop WiFi to infect visitors, (C) Attacker registers 'g00gle.com' targeting search users.",msgVar:"(Seleccione las que crea correctas)",opts:["(A) = Shadow IT — compliance risk, no malicious intent","(A) = Insider Threat — deliberate sabotage","(B) = Watering Hole attack using Unsecured Networks vector","(C) = Typosquatting attack","(B) requires direct contact with victims to work"],correct:[0,2,3]}],
+    // SET C
+    [{scenario:"An intelligence analyst identifies: (A) Anonymous group posting stolen documents protesting a new law, (B) Nation-State actor framing China for an attack using Chinese tool signatures, (C) Employee accidentally introduces vulnerability by installing unauthorized software.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Hacktivist — ideological motivation, no financial demand","(B) = False Flag Attack","(C) = Shadow IT — no malicious intent","(A) = Nation-State due to sophistication","(C) = Insider Threat — deliberate malicious action"],correct:[0,1,2]},
+    {scenario:"These threats are detected: (A) Fake file 'salaries_2026.xlsx' on shared drive, (B) Attacker connects to single fake server and is monitored, (C) Entire fake network of servers mimicking production environment accessed.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Honeyfile — triggers alert when accessed","(B) = Honeypot — single decoy system","(C) = Honeynet — multiple interconnected decoys","(A) = Honeytoken — fake credentials","(B) and (C) are both called Honeypots"],correct:[0,1,2]},
+    {scenario:"Three groups are identified: Group 1 — uses LOIC tool, motivated by recognition, very low skill level. Group 2 — financially motivated, professional structure, custom ransomware. Group 3 — long-term silent espionage, government resources.",msgVar:"(Seleccione las que crea correctas)",opts:["Group 1 = Script Kiddie","Group 2 = Organized Crime","Group 3 = Nation-State Actor — APT","Group 1 = Hacktivist","Group 3 = Organized Crime due to ransom"],correct:[0,1,2]}]
+  ],
+  3:[
+    // SET A
+    [{scenario:"A data center assesses physical security: System A uses FAR=7%, FRR=2%, CER=5%. System B uses FAR=0.3%, FRR=1%, CER=0.8%. Bollards are installed at vehicle gates. Security guard at entrance checks all badges.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["System B is superior — lower CER means better FAR/FRR balance","High FAR = dangerous — unauthorized users accepted","Bollards specifically prevent vehicle access","Security guard = Deterrent + Preventive control","System A is better because higher FAR = more users accepted"],correct:[0,1,2]},
+    {scenario:"Three incidents occur: (A) Attacker jams wireless camera signals with device, (B) Attacker sprays paint on CCTV lens, (C) Attacker shines high-powered laser at camera sensor. Team responds with wired cameras and tamper alarms.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Electromagnetic Interference — fix: wired cameras","(B) = Visual Obstruction — fix: tamper alarms","(C) = Blinding — fix: anti-glare filters","(A) = Acoustic Jamming","(B) = Blinding attack"],correct:[0,1,2]},
+    {scenario:"A company evaluates: vestibule that allows only one person at a time, RFID badge system, biometric fingerprint scanner. Two incidents: Person A tailgated through the main door. Person B convinced security guard to let them in.",msgVar:"(Seleccione las que crea correctas)",opts:["Vestibule prevents BOTH tailgating AND piggybacking","Tailgating = WITHOUT authorized person's knowledge","Person B's success = human element (guard) was social engineered","RFID badge alone without MFA is vulnerable to badge cloning","Vestibule only prevents tailgating, not piggybacking"],correct:[0,1,2,3]}],
+    // SET B
+    [{scenario:"Physical security audit finds: cipher locks on server room (numeric code, no key), pin & tumbler locks on storage room (pen tester picked in 25 seconds), motion-activated lights at all entrances, security guard with conflict resolution training.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["Cipher lock = better than pin & tumbler for secure areas","Pin & tumbler = vulnerable to lock picking","Motion-activated lights = Deterrent — Physical control","Security guard = only a Deterrent control, no other function","Conflict resolution training = operational preparedness"],correct:[0,1,2]},
+    {scenario:"Badge cloning attack is discovered. The attacker scanned the victim's RFID badge, extracted credentials, wrote them to a blank card, and used it for 3 days. Security team reviews the steps and implements countermeasures.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["Correct badge cloning order: Scan → Extract → Write → Use","MFA requirement means cloned badge alone is insufficient","Shielded wallets prevent wireless RFID scanning","The attack requires physical access to victim's badge","Badge cloning only works on NFC cards, not RFID"],correct:[0,1,2]},
+    {scenario:"A security team reviews biometric deployments: System A (FAR=8%) is used at main entrance. System B (CER=0.5%) is used at server room. A vestibule was installed but the guard admits allowing 'quick tailgaters' through.",msgVar:"(Seleccione las que crea correctas)",opts:["System A's FAR=8% is a serious security risk — too many unauthorized users accepted","System B's CER=0.5% indicates a well-balanced biometric system","The guard allowing tailgating defeats the vestibule's purpose","FAR measures authorized users incorrectly rejected","Vestibule + biometric together = strong Preventive physical control"],correct:[0,1,2,4]}],
+    // SET C
+    [{scenario:"Three physical attacks are reported: (A) Employee holds door open for 'delivery person' who is actually an attacker, (B) Attacker slips behind employee entering through turnstile without employee noticing, (C) Attacker cuts power cables to all CCTV cameras before entering.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Piggybacking — authorized person KNOWINGLY allows entry","(B) = Tailgating — WITHOUT authorized person's knowledge","(C) = Attacking Physical Environment — countermeasure: backup power","(A) = Tailgating because employee may not have known attacker's intent","(C) = Visual Obstruction technique"],correct:[0,1,2]},
+    {scenario:"Security controls are evaluated: (A) Motion sensor detects body heat at 3AM in restricted area, (B) Electronic lock records timestamps of every badge scan, (C) Infrared camera detects movement and triggers alarm, (D) Security guard patrols perimeter every 2 hours.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Detective — Technical control","(B) provides audit trail = Detective (Accounting) function","(C) = Detective — Technical control","(D) = Preventive — Technical control","(A) and (C) both serve a Detective function"],correct:[0,1,4]},
+    {scenario:"A bank implements: bollards at parking area, fencing around perimeter, access control vestibule at entrance, RFID badge + PIN for server room, and biometric (fingerprint) for data vault access.",msgVar:"(Seleccione las que crea correctas)",opts:["Bollards = specifically anti-vehicle, NOT general perimeter fencing","Fencing = perimeter enclosure and visual deterrent","RFID badge + PIN = two factors (Something You Have + Something You Know)","Biometric fingerprint = Something You Are factor","Vestibule alone provides both authentication and authorization"],correct:[0,1,2,3]}]
+  ],
+  4:[
+    // SET A
+    [{scenario:"An attacker sends an email to the CFO referencing their real name, real project, and CEO's name. Subject line: 'URGENT: Wire $85,000 before end of day or contract is cancelled.' The email comes from 'ceo@c0mpany.com' (zero instead of O).",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["The email = Spear Phishing (personalized, targeting specific person)","Authority trigger = CEO impersonation","Urgency trigger = 'before end of day'","'c0mpany.com' domain = Typosquatting","The email = Whaling because it targets CFO (C-Suite)"],correct:[1,2,3]},
+    {scenario:"Security team evaluates five attacks: (A) Employee receives fake IRS call threatening arrest, (B) Attacker searches trash for old invoices and org charts, (C) Employee sees colleague's PIN on ATM from 3 feet away, (D) Attacker poses as new IT employee to access server room, (E) Mass email about fake package delivery.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Vishing using Authority + Fear triggers","(B) = Dumpster Diving — mitigate with shredding","(C) = Shoulder Surfing — mitigate with privacy screens","(D) = Pretexting with fabricated scenario","(E) = Whaling targeting executives"],correct:[0,1,2]},
+    {scenario:"Review these statements about social engineering: The primary defense is always technical (firewalls). Whaling and Spear Phishing are identical attacks. BEC uses a real hijacked email making it the hardest to detect. Misinformation is intentionally false. Disinformation spreads without harmful intent.",msgVar:"(Seleccione las que crea correctas)",opts:["Primary defense against social engineering = Security Awareness Training (NOT firewalls)","Whaling = Spear Phishing specifically targeting C-Suite executives","BEC = hardest to detect because it uses REAL hijacked email accounts","Misinformation = false info WITHOUT harmful intent","Disinformation = intentionally created false info to deceive"],correct:[0,1,2,4]}],
+    // SET B
+    [{scenario:"Company receives: (A) Email from CEO's real account requesting urgent wire transfer, (B) SMS from 'Bank' saying account suspended — click link, (C) Call from 'Microsoft Support' saying computer has virus — pay $300 to fix, (D) Email blast about winning a cruise from unknown sender.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) could be BEC if CEO's account was hijacked","(B) = Smishing via SMS","(C) = Vishing using Fear + Authority triggers","(D) = Spear Phishing targeting specific employee","(C) uses Scarcity trigger primarily"],correct:[0,1,2]},
+    {scenario:"Threat intelligence report: Group A — compromised news website frequented by defence contractors (no direct contact). Group B — registered 'micosoft.com' to capture typo traffic. Group C — sent personalized emails using real internal org chart data.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["Group A = Watering Hole attack","Group B = Typosquatting (URL hijacking)","Group C = Spear Phishing","Group A = Phishing (direct victim contact)","Group B = Brand Impersonation (fake social media)"],correct:[0,1,2]},
+    {scenario:"Analyze these trigger scenarios: (A) Email: 'Only 3 licenses left — buy NOW', (B) Message from 'your bank' that 'everyone has upgraded their security', (C) Fake antivirus popup: 'You have 47 viruses — call immediately', (D) Call from 'IRS agent' with badge number.",msgVar:"(Seleccione las que crea correctas)",opts:["(A) = Scarcity trigger","(B) = Social Proof trigger","(C) = Fear + Urgency triggers combined","(D) = Authority trigger","(A) = Urgency trigger only, not Scarcity"],correct:[0,1,2,3]}],
+    // SET C
+    [{scenario:"A financial firm is attacked: Week 1 — personalized phishing targeting VP of Finance using her real LinkedIn data. Week 2 — attacker hijacks the VP's real email and sends wire instructions to accounting. Week 3 — attacker registers 'firmn4me.com' for credential harvesting.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["Week 1 = Spear Phishing (personalized, targeting specific person)","Week 2 = BEC — Business Email Compromise (real hijacked account)","Week 3 = Typosquatting (character substitution in domain)","Week 1 = Whaling (VP = C-Suite executive)","Week 2 = Smishing (SMS-based attack)"],correct:[0,1,2]},
+    {scenario:"Compare these social engineering attacks: (A) Attacker befriends victim over 6 weeks on LinkedIn before asking for favor. (B) Attack uses 5-star reviews and testimonials to make scam seem legitimate. (C) Attacker sends invoice for services 'already rendered' to finance department.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Likability trigger — long-term rapport building","(B) = Social Proof trigger — fake endorsements","(C) = Invoice Scam — fake invoice for non-existent services","(A) = Authority trigger — impersonating manager","(B) = Scarcity trigger — limited spots"],correct:[0,1,2]},
+    {scenario:"After a security awareness training, employees are tested: (A) Did employees recognize Misinformation vs Disinformation? (B) Did employees know the primary defense against social engineering? (C) Did employees know BEC from Whaling? The passing rate was 78%.",msgVar:"(Seleccione las que crea correctas)",opts:["Misinformation = false info shared WITHOUT harmful intent","Disinformation = intentionally created false info to manipulate","Primary defense against social engineering = Security Awareness Training","BEC is harder to detect than Whaling because BEC uses a real account","Whaling targets C-Suite, BEC can target any employee with financial authority"],correct:[0,1,2,3,4]}]
+  ],
+  5:[
+    // SET A
+    [{scenario:"SOC detects at 3AM: System A — CPU 97% with process 'svchost32.exe' connecting to 185.x.x.x:4444. System B — files renamed .locked with ransom note. System C — PowerShell used to move laterally using legitimate Windows admin tools.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["System A = Cryptominer/Botnet Zombie (high CPU + unknown outbound)","System B = Ransomware (encrypted files + ransom demand)","System C = Living Off the Land (legitimate tools used maliciously)","System A = Logic Bomb (triggered at 3AM)","System C = Fileless Malware (no files involved)"],correct:[0,1,2]},
+    {scenario:"Malware analysis lab receives samples: (A) Code changes signature with each infection. (B) Code completely rewrites itself before infecting next host. (C) Code resides in RAM only — zero files written to disk. (D) Code hides in Master Boot Record and loads before OS.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Polymorphic Virus — changes signature","(B) = Metamorphic Virus — completely rewrites itself","(C) = Fileless Malware — RAM only, evades AV","(D) = Boot Sector Virus — loads before OS","(A) and (B) are identical techniques"],correct:[0,1,2]},
+    {scenario:"A company suffered a full attack chain: Employee opened malicious PDF (Trojan dropper). Dropper downloaded RAT for remote control. Attacker used WMI to spread laterally. After 60 days all files encrypted and ransom demanded. All logs from this period are missing.",msgVar:"(Seleccione las que crea correctas)",opts:["PDF Trojan dropper = Stage 1 of Two-Stage Deployment","RAT = Remote Access Trojan = full remote control","WMI lateral movement = Living Off the Land technique","Missing logs = Missing Logs IoC — attacker deleted evidence","Encrypted files + ransom = Ransomware — DO NOT pay"],correct:[0,1,2,3,4]}],
+    // SET B
+    [{scenario:"Incident response team classifies malware: (A) Deletes HR records automatically on December 31st. (B) Provides persistent hidden access to attacker anytime. (C) Operates in kernel Ring 0 — traditional AV cannot detect it. (D) Individual compromised device in a larger controlled network.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Logic Bomb — activates on specific condition/date","(B) = Backdoor — always available persistent access","(C) = Rootkit — Ring 0 = traditional AV fails","(D) = Botnet — the full network of compromised devices","(A) = Ransomware — demands payment on that date"],correct:[0,1,2]},
+    {scenario:"A SOC dashboard shows: Account jsmith locked after 3,000 failed logins in 60 seconds. Account bsmith shows logins from Tokyo 8AM and Berlin 8:05AM. Finance server logs from last Tuesday are completely empty. Ten workstations CPU at 96% since Sunday at midnight.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["jsmith lockout = Account Lockout IoC (possible brute force)","bsmith = Impossible Travel IoC (account compromised)","Missing Tuesday logs = Missing Logs IoC (attacker erased evidence)","High CPU since Sunday = Logic Bomb triggered","All four events together suggest a coordinated attack"],correct:[0,1,2]},
+    {scenario:"Security architect evaluates malware defenses: Traditional signature AV vs. Behavior-based detection. Rootkits in Ring 0. Worm vs Virus propagation. Logic Bomb vs Backdoor activation.",msgVar:"(Seleccione las que crea correctas)",opts:["Rootkits in Ring 0 = traditional signature AV FAILS — must boot from external device","Worm = spreads WITHOUT user action (unlike Virus)","Logic Bomb = activates on condition; Backdoor = always available","Behavior-based detection is more effective against Polymorphic/Metamorphic viruses","Fileless malware leaves files on disk that can be scanned"],correct:[0,1,2,3]}],
+    // SET C
+    [{scenario:"Three malware incidents: (A) Employee opens Word document and macro runs — spreads to network share. (B) Attacker inserts physical USB keyboard logger between keyboard and PC. (C) Malware intercepts OS calls to hide its processes from Task Manager.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["(A) = Macro Virus — embedded in document, runs when opened","(B) = Hardware Keylogger — requires physical access","(C) = Rootkit using Shims — intercepts OS calls to hide","(A) = Boot Sector Virus — infects on document open","(B) = Software Keylogger — installed remotely"],correct:[0,1,2]},
+    {scenario:"Review these malware characteristics: WannaCry 2017. Stuxnet. Ransomware response policy. Botnet architecture with C2 server.",msg3:"(Seleccione las 3 opciones que crea correctas)",opts:["WannaCry = Ransomware Worm (encrypts + self-replicates without user action)","Stuxnet = Nation-State malware targeting industrial control systems","Correct ransomware response: disconnect → notify → DO NOT pay → restore from backup","Botnet = network of Zombies controlled by C2 (Command & Control) node","WannaCry required user to click to spread between systems"],correct:[0,1,2]},
+    {scenario:"Forensic analyst reviews attack artifacts: (A) Process 'explorer.exe' has injected foreign code running in its memory space. (B) A legitimate 'svchost.exe' process has been hollowed out and refilled with malware. (C) Malware only exists in RAM, disappears on reboot but reinstalls via registry.",msgVar:"(Seleccione las que crea correctas)",opts:["(A) = DLL Injection — code injected into legitimate process","(B) = Process Hollowing — legitimate process replaced with malicious code","(C) = Fileless Malware — RAM-only execution, evades file-based AV","(A) = Process Hollowing — creates new process","(C) = Logic Bomb — triggers on reboot condition"],correct:[0,1,2]}]
+  ]
 };
 
-// SAMPLE QUESTIONS (puedes expandir)
-function generateQuestions(ch){
-let base = [
-"Example Q1","Example Q2","Example Q3","Example Q4","Example Q5",
-"Example Q6","Example Q7","Example Q8","Example Q9","Example Q10",
-"Example Q11","Example Q12","Example Q13","Example Q14","Example Q15"
+function getMultiselect4(ch){
+  const sets=MULTISELECT_BANKS[ch]||MULTISELECT_BANKS[1];
+  // Rotate set based on exAttempt so different set each visit/retry
+  const setIdx=exAttempt%sets.length;
+  return sets[setIdx];
+}
+
+function renderMultiselect4(ch,c){
+  const cases=getMultiselect4(ch);
+  let caseIdx=0, totalScore=0;
+
+  function renderCase(){
+    if(caseIdx>=cases.length){
+      const pct=Math.round(totalScore/cases.length*100);
+      const passed=pct>=66;
+      const nextCh=ch<5?ch+1:null;
+      const nextMsg=nextCh?`Chapter ${nextCh} unlocked!`:'All chapters complete!';
+      c.innerHTML=`<div class="card" style="text-align:center;padding:2rem">
+        <div style="font-size:48px;margin-bottom:1rem">${passed?'🎉':'💪'}</div>
+        <h2 style="font-size:20px;font-weight:600;margin-bottom:8px;color:var(--text)">${passed?'¡Excelente trabajo!':'Not quite there'}</h2>
+        <p style="font-size:14px;color:var(--text2);margin-bottom:0.5rem">Score: <strong style="color:${passed?'var(--success)':'var(--danger)'}">${totalScore}/${cases.length} cases — ${pct}%</strong></p>
+        ${passed?`<p style="font-size:13px;color:var(--success);font-family:var(--mono);margin-bottom:1.5rem">// ${nextMsg}</p>
+        <button class="btn btn-success" style="font-size:16px;padding:12px 32px" onclick="finishChapter()">🎓 Congratulations — Next Chapter →</button>`
+        :`<p style="font-size:13px;color:var(--text3);font-family:var(--mono);margin-bottom:1.5rem">// Need 66%+. A new set of cases will be generated.</p>
+        <button class="btn btn-danger" onclick="retryMultiselect()">Retry with new cases →</button>`}
+      </div>`;
+      return;
+    }
+
+    const cas=cases[caseIdx];
+    const isFixed=cas.msg3!==undefined;
+    const requiredCount=isFixed?3:cas.correct.length;
+    const msgText=isFixed?cas.msg3:cas.msgVar;
+    let selected=new Set();
+
+    c.innerHTML=`<div class="card">
+      <span class="badge badge-ex">PRACTICAL CASE ${caseIdx+1}/3</span>
+      <span class="ai-tag">// chapter_${ch}_content</span>
+      <h2 style="font-size:15px;font-weight:600;margin:10px 0 6px;color:var(--text)">Exercise 4 — Practical Case ${caseIdx+1}</h2>
+      <div class="scenario-box" style="font-size:13px;line-height:1.8">${cas.scenario}</div>
+      <p style="font-size:13px;color:var(--warning);font-family:var(--mono);margin:10px 0 8px">${msgText}</p>
+      <div id="ms-opts">
+        ${cas.opts.map((opt,i)=>`
+          <button class="ms-opt" id="msopt-${i}" onclick="toggleOpt(${i})"
+            style="width:100%;text-align:left;padding:10px 14px;margin:4px 0;border:1px solid var(--border);border-radius:9px;cursor:pointer;background:var(--surface2);color:var(--text2);font-size:13px;font-family:var(--sans);transition:all 0.15s;display:flex;align-items:center;gap:10px">
+            <span id="mscheck-${i}" style="width:18px;height:18px;border-radius:4px;border:2px solid var(--border);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px"></span>
+            ${opt}
+          </button>`).join('')}
+      </div>
+      <div id="ms-counter" style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:8px">Selected: 0${isFixed?' / 3 required':''}</div>
+      <div style="text-align:right;margin-top:1rem">
+        <button class="btn btn-primary" id="ms-check-btn" onclick="checkMultiselect()">Check Answers →</button>
+      </div>
+      <div id="ms-fb"></div>
+    </div>`;
+
+    window.toggleOpt=function(i){
+      if(document.getElementById('ms-check-btn').disabled)return;
+      if(selected.has(i)){selected.delete(i);document.getElementById(`msopt-${i}`).style.borderColor='var(--border)';document.getElementById(`msopt-${i}`).style.background='var(--surface2)';document.getElementById(`mscheck-${i}`).textContent='';}
+      else{selected.add(i);document.getElementById(`msopt-${i}`).style.borderColor='var(--accent)';document.getElementById(`msopt-${i}`).style.background='rgba(0,212,255,0.06)';document.getElementById(`mscheck-${i}`).textContent='✓';}
+      document.getElementById('ms-counter').textContent=`Selected: ${selected.size}${isFixed?' / 3 required':''}`;
+    };
+
+    window.checkMultiselect=function(){
+      document.getElementById('ms-check-btn').disabled=true;
+      const correctSet=new Set(cas.correct);
+      let hits=0;
+      cas.opts.forEach((_,i)=>{
+        const btn=document.getElementById(`msopt-${i}`);
+        const chk=document.getElementById(`mscheck-${i}`);
+        const isCorrect=correctSet.has(i);
+        const isSelected=selected.has(i);
+        if(isCorrect&&isSelected){hits++;btn.style.borderColor='var(--success)';btn.style.background='rgba(16,185,129,0.1)';btn.style.color='var(--success)';chk.textContent='✓';}
+        else if(isCorrect&&!isSelected){btn.style.borderColor='var(--warning)';btn.style.background='rgba(245,158,11,0.08)';btn.style.color='var(--warning)';chk.textContent='!';}
+        else if(!isCorrect&&isSelected){btn.style.borderColor='var(--danger)';btn.style.background='rgba(239,68,68,0.08)';btn.style.color='var(--danger)';chk.textContent='✗';}
+      });
+      const pct=Math.round(hits/cas.correct.length*100);
+      const passed=pct>=66;
+      if(passed)totalScore++;
+      const fb=document.getElementById('ms-fb');
+      fb.className=`feedback-box ${passed?'feedback-correct':'feedback-wrong'}`;
+      fb.innerHTML=`<strong>// ${hits}/${cas.correct.length} correct — ${pct}%</strong>${!passed?'<br><span style="font-size:11px;opacity:0.8">Green = correct answers you missed. Review them.</span>':''}<div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextCase()">${caseIdx<cases.length-1?'Next Case →':'See Results →'}</button></div>`;
+    };
+
+    window.nextCase=function(){caseIdx++;renderCase();};
+  }
+
+  window.retryMultiselect=function(){exAttempt++;renderExDots();renderMultiselect4(ch,c);};
+  renderCase();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FINAL CHALLENGE
+// ═══════════════════════════════════════════════════════════════
+let challengeAttempt=0,challengeScore=0,challengeQIdx=0,challengeSet=[];
+
+function generateCode(score){
+  const w=Math.ceil(new Date().getDate()/7),m=new Date().getMonth()+1;
+  const words=['ALPHA','OMEGA','SIGMA','NEXUS','CYBER','GHOST','TITAN','DELTA','ECHO','BRAVO'];
+  const word=words[(score*7+w*13+m)%words.length];
+  const num=String((score*11+w*17+m*5)%100).padStart(2,'0');
+  return `SEC+-W${w+1}-2026-${word}-${num}`;
+}
+
+const CHALLENGE_SETS=[
+  [{type:'mcq5',levelStars:'⭐⭐',title:'Q1 — Real-World Scenario',scenario:`SOC analyst receives alert at 02:47 AM. User account "jsmith" shows simultaneous sessions: Berlin office (since 9AM yesterday) and Seoul, South Korea (new session at 02:43AM). The Seoul session downloaded 4.2 GB from finance server in 11 minutes with no VPN. jsmith's shift ends at 6PM.`,question:'Which combination of Indicators of Compromise is present?',opts:['A) Account Lockout + Out-of-Cycle Logging → brute force triggered lockout','B) Blocked Content + Resource Consumption → DLP blocked a file','C) Missing Logs + Resource Inaccessibility → ransomware encrypted logs','D) Impossible Travel + Concurrent Session Utilization → credentials stolen, attacker using them while original session still active in Berlin','E) Published Attack + Account Lockout → known threat actor targeting company'],correct:3,exp:'TWO IoCs: Impossible Travel (Berlin+Seoul simultaneously) + Concurrent Session Utilization = credentials stolen and used remotely.'},
+  {type:'dragdrop',levelStars:'⭐⭐⭐',title:'Q2 — Concept Matching',instruction:'Drag each attack description to its correct security category.',items:['Attacker sprays black paint on parking lot CCTV camera','Employee receives call from "IT support" asking for their password','USB drive labeled "CEO Salary 2026" left in company lobby','Threat actor silently operates inside network for 9 months collecting data','Email from fake CEO domain requests urgent wire transfer'],zones:['Physical Security Bypass','Vishing — Social Engineering','Baiting — Removable Device Vector','APT — Advanced Persistent Threat','Whaling / BEC Attack'],correct:[0,1,2,3,4],exp:'Spray paint=Visual Obstruction | IT call=Vishing | USB with label=Baiting | 9 months silent=APT | Fake CEO email=Whaling/BEC'},
+  {type:'image',levelStars:'⭐⭐⭐⭐',title:'Q3 — Visual System Diagnosis',scenario:`Employee emails IT helpdesk: "My computer has been extremely slow for 4 days. I have not installed anything new. My fan runs constantly even at night when I leave. Sometimes browser opens tabs I did not click. I found a process called svchost32.exe using most of my CPU."`,imageType:'cpu_memory',question:'Looking at the system monitor data below, which type of malware is MOST likely responsible?',opts:['A) Ransomware — encrypting files silently in background consuming CPU','B) Cryptominer / Botnet Zombie — using CPU and RAM to mine cryptocurrency or perform DDoS, connecting to external mining pool','C) Hardware Keylogger — physical device intercepting keystrokes','D) Logic Bomb — pre-programmed trigger condition reached'],correct:1,exp:'High CPU+RAM 24/7 (even when user is away) + "svchost32.exe" (masquerading as legitimate "svchost.exe") + outbound to unknown IP = Cryptominer or Botnet Zombie.'},
+  {type:'combo_drag',levelStars:'⭐⭐⭐⭐⭐',title:'Q4 — Attack Chain Classification',scenario:`Company suffers 4-week breach. Week 1: Developer received personalized email referencing their real GitHub project — clicked malicious PDF. Week 2: Attacker used PowerShell to move laterally. Week 3: Attacker accessed "hr_salary_CONFIDENTIAL.xlsx" — a file NEVER accessed since creation 6 months ago. Week 4: All servers encrypted, $3M ransom demanded.`,question:"Match each week's attacker action to the correct security concept:",items:['Week 1: Personalized email using developer\'s real project names + malicious PDF','Week 2: PowerShell used to move through internal servers — legitimate Windows tool','Week 3: Accessed file that had NEVER been opened — decoy to detect intruders','Week 4: Simultaneous encryption of all servers + ransom demand'],zones:['Spear Phishing — Targeted Attack','Living Off the Land — Evasion Technique','Honeyfile — Deception Technology Detection','Ransomware — Action on Objectives'],correct:[0,1,2,3],exp:'Personalized email+PDF=Spear Phishing | PowerShell (legit tool)=Living Off the Land | Never-accessed file=Honeyfile | Encryption+ransom=Ransomware'},
+  {type:'image_drag',levelStars:'⭐⭐⭐⭐⭐⭐',title:'Q5 — Visual SOC Analysis (Expert)',scenario:`You are a SOC analyst on night shift. The network monitoring dashboard shows unusual activity on 4 systems simultaneously at 3AM. All activity started within a 20-minute window. Classify what is happening on each system.`,imageType:'network_traffic',items:['System A: 4.2 GB outbound to unknown IP in 11 minutes — no business justification','System B: 98% CPU constant + connection to pool.minexmr.com mining pool','System C: 2,847 failed SSH logins in 90 seconds from 45 different IPs','System D: Files renamed .locked + ransom note README_DECRYPT_NOW.txt created'],zones:['Data Exfiltration — Possible APT activity','Cryptominer / Botnet Zombie infection','Brute Force Attack — Credential stuffing','Ransomware — Active encryption in progress'],correct:[0,1,2,3],exp:'Large outbound to unknown IP=Data Exfiltration | High CPU+mining pool=Cryptominer | 2847 failed logins=Brute Force | .locked files+ransom note=Ransomware'}],
+  [{type:'mcq5',levelStars:'⭐⭐',title:'Q1 — Real-World Scenario',scenario:`Hospital security team notices radiology workstations running at 95% CPU for 72 hours. These machines are only used 8AM-6PM but high CPU persists 24/7. No new software installed. Task Manager shows process "svch0st.exe" (with zero, not letter O) using 82% CPU with active outbound connections to IP 185.234.x.x on port 4444.`,question:'What type of malware is present and what specific evasion technique is being used?',opts:['A) Ransomware using Process Hollowing — creating legitimate process shell','B) Rootkit using DLL Injection — inserting into kernel-level processes','C) Cryptominer using Masquerading — disguising malicious process as legitimate Windows svchost.exe with character substitution','D) Logic Bomb using Stealth Virus techniques — hiding until trigger condition','E) Armored Virus using Polymorphic code — changing signature'],correct:2,exp:'24/7 high CPU despite off-hours + "svch0st.exe" mimicking "svchost.exe" (zero instead of o) + outbound to unknown IP = Cryptominer. Masquerading technique = evasion method.'},
+  {type:'dragdrop',levelStars:'⭐⭐⭐',title:'Q2 — Security Concept Matching',instruction:'Match each definition to the correct security term.',items:['Data governed by laws of country where it is physically stored','Biometric system incorrectly accepts unauthorized users — the DANGEROUS metric','Attacker compromises website frequented by target group — no direct contact with victim','Decoy network of interconnected fake servers to monitor attackers','False information intentionally created to manipulate public opinion'],zones:['Data Sovereignty','FAR — False Acceptance Rate','Watering Hole Attack','Honeynet','Disinformation'],correct:[0,1,2,3,4],exp:'Laws of storage location=Data Sovereignty | Wrong people accepted=FAR | Compromised visited website=Watering Hole | Network of decoy systems=Honeynet | Deliberate false info=Disinformation'},
+  {type:'image',levelStars:'⭐⭐⭐⭐',title:'Q3 — Visual Phishing Analysis',scenario:`A bank customer reports: "I got an email saying my account was suspended. I clicked the link and logged in. The website looked exactly like my bank. Now I see 3 transactions I never made totaling $4,200. The email came from 'security@bankofamerica-alerts.com' and the site URL looked slightly wrong."`,imageType:'phishing_url',question:'Analyzing the browser address bar shown below, which attack techniques were used?',opts:['A) Vishing + Identity Theft — attacker called the victim and impersonated the bank','B) Typosquatting + Phishing — fake domain with deliberate character substitution combined with fraudulent urgent email','C) BEC + Brand Impersonation — attacker hijacked real bank email account','D) Watering Hole + Spear Phishing — attacker compromised legitimate bank website'],correct:1,exp:'"bank0famerica.com" (digit 0 instead of letter o) = Typosquatting. Delivered via urgent fake email = Phishing. Together = credential theft.'},
+  {type:'combo_drag',levelStars:'⭐⭐⭐⭐⭐',title:'Q4 — Security Controls Classification',scenario:`After a breach, company implements 5 new security measures: (A) Steel bollards at all vehicle entry points. (B) Motion-activated CCTV cameras with tamper alarms on external doors. (C) MFA enforced for all remote VPN access. (D) Three interconnected decoy server systems deployed mimicking real infrastructure. (E) Annual mandatory security awareness training policy approved by CISO.`,question:'Match each security measure to its correct control TYPE and CATEGORY:',items:['(A) Steel bollards at vehicle entry points','(B) Motion-activated cameras with tamper alarms','(C) MFA for all VPN remote access','(D) Three interconnected decoy servers','(E) Annual mandatory security training policy'],zones:['Preventive — Physical control','Detective — Technical control','Preventive — Technical control','Detective — Deception (Honeynet)','Directive — Managerial control'],correct:[0,1,2,3,4],exp:'Bollards=Preventive+Physical | Cameras=Detective+Technical | MFA=Preventive+Technical | 3 decoy systems=Honeynet=Detective | Mandatory training policy=Directive+Managerial'},
+  {type:'image_drag',levelStars:'⭐⭐⭐⭐⭐⭐',title:'Q5 — SIEM Alert Triage (Expert)',scenario:`You are the on-call SOC analyst. Five simultaneous alerts fire at 3AM. Your manager asks you to classify each alert correctly before escalating.`,imageType:'siem_alerts',items:['Alert #1: jsmith simultaneous sessions Berlin 08:00 + Sydney 08:05 — 16,700km apart','Alert #2: 2,847 failed SSH logins in 90 seconds on web server from 45 IPs','Alert #3: finance/Q4_bonuses.xlsx accessed at 03:47AM by service account','Alert #4: Outbound email blocked by DLP — 847 SSN numbers detected in attachment','Alert #5: WS-042 sending DNS queries to known Emotet C2 server every 30 seconds'],zones:['Impossible Travel — Compromised Account','Brute Force / Credential Stuffing Attack','Out-of-Cycle Logging — Suspicious Off-Hours Access','Data Exfiltration — DLP Policy Violation','Botnet / C2 Beacon — Malware Communication'],correct:[0,1,2,3,4],exp:'Berlin+Sydney simultaneously=Impossible Travel | 2847 failed logins=Brute Force | 3:47AM finance access=Out-of-Cycle | 847 SSNs outbound=Data Exfiltration | DNS to C2=Botnet beacon'}]
 ];
 
-return shuffle(base).slice(0,10).map(q=>({
-q:q,
-a:["A","B","C","D"],
-correct:Math.floor(Math.random()*4)
-}));
+function generateSVG(type){
+  if(type==='cpu_memory')return`<svg viewBox="0 0 600 210" xmlns="http://www.w3.org/2000/svg" style="background:#0d1117;width:100%;display:block"><rect width="600" height="210" fill="#0d1117"/><text x="16" y="22" fill="#58a6ff" font-family="monospace" font-size="11" font-weight="bold">Task Manager — Performance Monitor  03:47 AM</text><line x1="0" y1="30" x2="600" y2="30" stroke="#21262d" stroke-width="1"/><text x="16" y="50" fill="#8b949e" font-family="monospace" font-size="10">CPU Usage</text><rect x="16" y="58" width="568" height="18" rx="3" fill="#21262d"/><rect x="16" y="58" width="545" height="18" rx="3" fill="#f85149"/><text x="572" y="71" fill="#f85149" font-family="monospace" font-size="10" font-weight="bold">96%</text><text x="16" y="96" fill="#8b949e" font-family="monospace" font-size="10">RAM Usage  (15.8 GB / 16 GB)</text><rect x="16" y="104" width="568" height="18" rx="3" fill="#21262d"/><rect x="16" y="104" width="540" height="18" rx="3" fill="#d29922"/><text x="572" y="117" fill="#d29922" font-family="monospace" font-size="10" font-weight="bold">95%</text><text x="16" y="142" fill="#8b949e" font-family="monospace" font-size="10">Network Out  (avg 12 MB/s to unknown IPs)</text><rect x="16" y="150" width="568" height="18" rx="3" fill="#21262d"/><rect x="16" y="150" width="320" height="18" rx="3" fill="#388bfd"/><text x="572" y="163" fill="#388bfd" font-family="monospace" font-size="10" font-weight="bold">56%</text><rect x="8" y="178" width="584" height="26" rx="4" fill="#161b22" stroke="#f85149" stroke-width="1"/><text x="16" y="191" fill="#f85149" font-family="monospace" font-size="9">⚠  Process: svchost32.exe  CPU:78%  RAM:2.1GB  Net: →185.234.219.x:4444 (unknown)</text><text x="16" y="204" fill="#6e7681" font-family="monospace" font-size="9">    User logged off 6 hrs ago — system should be IDLE</text></svg>`;
+  if(type==='phishing_url')return`<svg viewBox="0 0 600 190" xmlns="http://www.w3.org/2000/svg" style="background:#0d1117;width:100%;display:block"><rect width="600" height="190" fill="#0d1117"/><text x="16" y="22" fill="#58a6ff" font-family="monospace" font-size="11" font-weight="bold">Browser — Address Bar &amp; Email Preview</text><rect x="8" y="32" width="584" height="34" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/><circle cx="30" cy="49" r="8" fill="#f85149" opacity="0.9"/><text x="27" y="53" fill="white" font-family="monospace" font-size="10" font-weight="bold">!</text><text x="46" y="54" fill="#f85149" font-family="monospace" font-size="13" font-weight="bold">http://bank</text><text x="178" y="54" fill="#ffa657" font-family="monospace" font-size="15" font-weight="bold">0</text><text x="191" y="54" fill="#f85149" font-family="monospace" font-size="13" font-weight="bold">famerica.com/login/verify</text><rect x="8" y="76" width="584" height="20" rx="3" fill="#1c1007" stroke="#d29922" stroke-width="1"/><text x="16" y="90" fill="#d29922" font-family="monospace" font-size="10">⚠  Not secure — "0" (zero) used instead of letter "o" — this is NOT the real bank website</text><rect x="8" y="104" width="584" height="80" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/><text x="16" y="122" fill="#8b949e" font-family="monospace" font-size="10">Email received 8 min ago · From: security@bankofamerica-alerts.com</text><line x1="8" y1="128" x2="592" y2="128" stroke="#21262d" stroke-width="1"/><text x="16" y="145" fill="#e6edf3" font-family="monospace" font-size="11" font-weight="bold">⚠ URGENT: Your account has been temporarily suspended</text><text x="16" y="162" fill="#8b949e" font-family="monospace" font-size="10">We detected unusual activity. Verify your identity within 24 hours</text><text x="16" y="178" fill="#58a6ff" font-family="monospace" font-size="10">→ Click here to verify: http://bank0famerica.com/login/verify</text></svg>`;
+  if(type==='network_traffic')return`<svg viewBox="0 0 600 230" xmlns="http://www.w3.org/2000/svg" style="background:#0d1117;width:100%;display:block"><rect width="600" height="230" fill="#0d1117"/><text x="16" y="22" fill="#58a6ff" font-family="monospace" font-size="11" font-weight="bold">Network Traffic Monitor — SIEM Dashboard — 03:00 AM</text><rect x="8" y="32" width="284" height="88" rx="6" fill="#161b22" stroke="#f85149" stroke-width="1"/><text x="18" y="50" fill="#f85149" font-family="monospace" font-size="10" font-weight="bold">● SYSTEM A — CRITICAL</text><text x="18" y="65" fill="#8b949e" font-family="monospace" font-size="9">Out: 4.2GB → 185.219.44.x  Port:443</text><text x="18" y="79" fill="#8b949e" font-family="monospace" font-size="9">Duration: 11 min | Dest: unknown</text><text x="18" y="93" fill="#f85149" font-family="monospace" font-size="9">▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲</text><text x="18" y="107" fill="#6e7681" font-family="monospace" font-size="8">No business justification found</text><rect x="308" y="32" width="284" height="88" rx="6" fill="#161b22" stroke="#d29922" stroke-width="1"/><text x="318" y="50" fill="#d29922" font-family="monospace" font-size="10" font-weight="bold">● SYSTEM B — WARNING</text><text x="318" y="65" fill="#8b949e" font-family="monospace" font-size="9">CPU: 98% | Process: cryptoworker.exe</text><text x="318" y="79" fill="#8b949e" font-family="monospace" font-size="9">Conn → pool.minexmr.com:3333</text><text x="318" y="93" fill="#d29922" font-family="monospace" font-size="9">████████████████████████ 98%</text><text x="318" y="107" fill="#6e7681" font-family="monospace" font-size="8">Running 24/7 since 6 days</text><rect x="8" y="130" width="284" height="88" rx="6" fill="#161b22" stroke="#a371f7" stroke-width="1"/><text x="18" y="148" fill="#a371f7" font-family="monospace" font-size="10" font-weight="bold">● SYSTEM C — WARNING</text><text x="18" y="163" fill="#8b949e" font-family="monospace" font-size="9">Failed SSH logins: 2,847 in 90s</text><text x="18" y="177" fill="#8b949e" font-family="monospace" font-size="9">Source: 45 different IPs (distributed)</text><text x="18" y="191" fill="#a371f7" font-family="monospace" font-size="9">Account locked after attempt #5</text><text x="18" y="205" fill="#6e7681" font-family="monospace" font-size="8">Pattern: sequential usernames</text><rect x="308" y="130" width="284" height="88" rx="6" fill="#161b22" stroke="#f85149" stroke-width="1"/><text x="318" y="148" fill="#f85149" font-family="monospace" font-size="10" font-weight="bold">● SYSTEM D — CRITICAL</text><text x="318" y="163" fill="#8b949e" font-family="monospace" font-size="9">report.docx → report.docx.locked</text><text x="318" y="177" fill="#8b949e" font-family="monospace" font-size="9">New: README_DECRYPT_NOW.txt</text><text x="318" y="191" fill="#f85149" font-family="monospace" font-size="9">Spreading to \\SERVER\Finance\*</text><text x="318" y="205" fill="#6e7681" font-family="monospace" font-size="8">BTC wallet address detected in note</text></svg>`;
+  if(type==='siem_alerts')return`<svg viewBox="0 0 600 250" xmlns="http://www.w3.org/2000/svg" style="background:#0d1117;width:100%;display:block"><rect width="600" height="250" fill="#0d1117"/><text x="16" y="22" fill="#58a6ff" font-family="monospace" font-size="11" font-weight="bold">SIEM Alert Console — 5 Active Alerts — Real-time</text><rect x="8" y="32" width="584" height="38" rx="4" fill="#1c0a0a" stroke="#f85149" stroke-width="1"/><text x="16" y="49" fill="#f85149" font-family="monospace" font-size="10" font-weight="bold">[CRITICAL] #1</text><text x="90" y="49" fill="#e6edf3" font-family="monospace" font-size="10">Impossible Travel: jsmith  Berlin 08:00 → Sydney 08:05 (same session)</text><text x="16" y="63" fill="#6e7681" font-family="monospace" font-size="9">         Distance: 16,700 km | Time: 5 min | Physically impossible</text><rect x="8" y="76" width="584" height="38" rx="4" fill="#1a1200" stroke="#d29922" stroke-width="1"/><text x="16" y="93" fill="#d29922" font-family="monospace" font-size="10" font-weight="bold">[HIGH]     #2</text><text x="90" y="93" fill="#e6edf3" font-family="monospace" font-size="10">Brute Force: 2,847 failed SSH attempts in 90s  →  web-srv-01</text><text x="16" y="107" fill="#6e7681" font-family="monospace" font-size="9">         Source: 45 IPs | Tool pattern: Hydra detected</text><rect x="8" y="120" width="584" height="38" rx="4" fill="#0d0d1a" stroke="#a371f7" stroke-width="1"/><text x="16" y="137" fill="#a371f7" font-family="monospace" font-size="10" font-weight="bold">[MEDIUM]  #3</text><text x="90" y="137" fill="#e6edf3" font-family="monospace" font-size="10">Out-of-Hours: finance/Q4_bonuses.xlsx  accessed 03:47AM  by svc_account</text><text x="16" y="151" fill="#6e7681" font-family="monospace" font-size="9">         Normal access hours: 08:00-18:00 | Last accessed: 2 months ago</text><rect x="8" y="164" width="584" height="38" rx="4" fill="#1c0a0a" stroke="#f85149" stroke-width="1"/><text x="16" y="181" fill="#f85149" font-family="monospace" font-size="10" font-weight="bold">[HIGH]     #4</text><text x="90" y="181" fill="#e6edf3" font-family="monospace" font-size="10">DLP Triggered: outbound email blocked — 847 SSN patterns detected</text><text x="16" y="195" fill="#6e7681" font-family="monospace" font-size="9">         Destination: external-partner@gmail.com | Attachment: employee_data.csv</text><rect x="8" y="208" width="584" height="38" rx="4" fill="#1c0a0a" stroke="#f85149" stroke-width="1"/><text x="16" y="225" fill="#f85149" font-family="monospace" font-size="10" font-weight="bold">[CRITICAL] #5</text><text x="90" y="225" fill="#e6edf3" font-family="monospace" font-size="10">C2 Beacon: WS-042  DNS query → 185.234.219.x  (known botnet C2)</text><text x="16" y="239" fill="#6e7681" font-family="monospace" font-size="9">         Frequency: every 30s | ThreatIntel match: Emotet C2 infrastructure</text></svg>`;
+  return`<svg viewBox="0 0 600 80" xmlns="http://www.w3.org/2000/svg" style="background:#0d1117;width:100%"><text x="300" y="45" fill="#8b949e" font-family="monospace" font-size="12" text-anchor="middle">Security Dashboard</text></svg>`;
 }
 
-// ================= MENU =================
-
-function showMenu(){
-hideAll();
-let html="";
-let unlocked = JSON.parse(localStorage.getItem("progress"))||1;
-
-for(let i=1;i<=5;i++){
-html+=`<button ${i>unlocked?"class='locked'":""} onclick="startChapter(${i})">
-Chapter ${i}</button><br>`;
+function showFinalChallenge(){
+  challengeAttempt++;challengeScore=0;challengeQIdx=0;
+  challengeSet=CHALLENGE_SETS[(challengeAttempt-1)%CHALLENGE_SETS.length];
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('challenge-screen').classList.add('active');
+  renderChallengeQ();
 }
 
-document.getElementById("menu").innerHTML=html;
-document.getElementById("menu").classList.remove("hidden");
+function renderChallengeQ(){
+  const q=challengeSet[challengeQIdx],total=challengeSet.length;
+  const screen=document.getElementById('challenge-screen');
+  const dotsHtml=challengeSet.map((_,i)=>`<div style="width:10px;height:10px;border-radius:50%;background:${i<challengeQIdx?'var(--success)':i===challengeQIdx?'var(--warning)':'var(--border)'}"></div>`).join('');
+  let bodyHtml='';
+  if(q.type==='mcq5'){
+    bodyHtml=`<div class="scenario-box" style="font-size:13px;line-height:1.8">${q.scenario}</div><p style="font-size:14px;font-weight:600;color:var(--text);margin:1rem 0 10px">${q.question}</p><div id="ch-opts">${q.opts.map((o,i)=>`<button class="option-btn" id="copt-${i}" onclick="selectChallengeA(${i})">${o}</button>`).join('')}</div><div id="ch-fb" style="display:none"></div><div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" id="ch-nxt" style="display:none" onclick="nextChallengeQ()">Next →</button></div>`;
+  } else if(q.type==='image'){
+    bodyHtml=`<div class="scenario-box" style="font-size:13px;line-height:1.8">${q.scenario}</div><div style="margin:1rem 0;border-radius:10px;overflow:hidden;border:1px solid var(--border)">${generateSVG(q.imageType)}</div><p style="font-size:14px;font-weight:600;color:var(--text);margin:1rem 0 10px">${q.question}</p><div id="ch-opts">${q.opts.map((o,i)=>`<button class="option-btn" id="copt-${i}" onclick="selectChallengeA(${i})">${o}</button>`).join('')}</div><div id="ch-fb" style="display:none"></div><div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" id="ch-nxt" style="display:none" onclick="nextChallengeQ()">Next →</button></div>`;
+  } else {
+    const hasImg=q.type==='image_drag';
+    const shuffled=[...q.items].sort(()=>Math.random()-0.5);
+    bodyHtml=`<div class="scenario-box" style="font-size:13px;line-height:1.8">${q.scenario}</div>${hasImg?`<div style="margin:1rem 0;border-radius:10px;overflow:hidden;border:1px solid var(--border)">${generateSVG(q.imageType)}</div>`:''}<p style="font-size:14px;font-weight:600;color:var(--text);margin:1rem 0 8px">${q.question||q.instruction}</p><div style="background:var(--surface2);border-radius:9px;padding:1rem;margin-bottom:1rem"><p style="font-family:var(--mono);font-size:10px;color:var(--accent);margin-bottom:8px">// DRAG THESE:</p><div id="ch-drag-src">${shuffled.map((item,i)=>`<div class="drag-item" draggable="true" id="chd-${i}" data-val="${item.replace(/"/g,'&quot;')}">${item}</div>`).join('')}</div></div><p style="font-family:var(--mono);font-size:10px;color:var(--accent);margin-bottom:8px">// DROP INTO CORRECT ZONE:</p><div id="ch-drop-zones">${q.zones.map((z,i)=>`<div class="drop-zone" id="chz-${i}" data-idx="${i}"><div style="font-family:var(--mono);font-size:10px;color:var(--accent);font-weight:700;margin-bottom:4px">${z}</div><div id="chzc-${i}" style="font-size:11px;color:var(--text3);font-style:italic;min-height:14px">drop here...</div></div>`).join('')}</div><div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" onclick="checkChallengeDrag()">Check Answers →</button></div><div id="ch-fb" style="display:none"></div>`;
+  }
+  screen.innerHTML=`<div class="nav-bar"><button class="btn" onclick="showHome()">← Exit</button><div><div class="nav-title">🏆 Final Security+ Challenge</div><div class="nav-sub">attempt_${challengeAttempt} // Q${challengeQIdx+1} of ${total}</div></div><span style="font-family:var(--mono);font-size:11px;color:var(--warning)">${q.levelStars}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${(challengeQIdx/total)*100}%"></div></div><div style="display:flex;gap:6px;margin:10px 0 1rem">${dotsHtml}</div><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span class="badge badge-ex">${q.title}</span><span style="font-family:var(--mono);font-size:10px;color:var(--warning)">Level ${challengeQIdx+1}/5</span></div>${bodyHtml}</div>`;
+  if(q.type==='dragdrop'||q.type==='combo_drag'||q.type==='image_drag')setTimeout(()=>attachChallengeDrag(),50);
 }
 
-// ================= CHAPTER =================
-
-function startChapter(ch){
-currentChapter=ch;
-hideAll();
-
-videoFrame.src=videos[ch];
-ytLink.href=videos[ch].replace("embed","watch?v=");
-chapterTitle.innerText="Chapter "+ch;
-
-videoSection.classList.remove("hidden");
+function attachChallengeDrag(){
+  let dragSrc=null;
+  document.querySelectorAll('#ch-drag-src .drag-item').forEach(el=>{el.addEventListener('dragstart',()=>{dragSrc=el;});});
+  document.querySelectorAll('#ch-drop-zones .drop-zone').forEach(zone=>{
+    zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over');});
+    zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+    zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('over');if(!dragSrc)return;const prev=zone.getAttribute('data-dropped');if(prev){const old=[...document.querySelectorAll('#ch-drag-src .drag-item')].find(d=>d.getAttribute('data-val')===prev);if(old)old.style.display='block';}zone.setAttribute('data-dropped',dragSrc.getAttribute('data-val'));document.getElementById('chzc-'+zone.getAttribute('data-idx')).textContent=dragSrc.getAttribute('data-val');document.getElementById('chzc-'+zone.getAttribute('data-idx')).style.fontStyle='normal';document.getElementById('chzc-'+zone.getAttribute('data-idx')).style.color='var(--text2)';dragSrc.style.display='none';dragSrc=null;});
+  });
 }
 
-// ================= THEORY =================
-
-function startTheory(){
-hideAll();
-theorySection.classList.remove("hidden");
-theoryStep=0;
-updateTheory();
+function selectChallengeA(idx){
+  const q=challengeSet[challengeQIdx];
+  document.querySelectorAll('.option-btn').forEach((b,i)=>{b.onclick=null;if(i===q.correct)b.classList.add('correct');else if(i===idx&&idx!==q.correct)b.classList.add('wrong');});
+  const ok=idx===q.correct;if(ok)challengeScore++;
+  const fb=document.getElementById('ch-fb');fb.style.display='block';fb.className='feedback-box '+(ok?'feedback-correct':'feedback-wrong');fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+q.exp;
+  document.getElementById('ch-nxt').style.display='inline-block';
 }
 
-function updateTheory(){
-theoryContent.innerText=theory[currentChapter][theoryStep];
-progressBar.style.width=((theoryStep+1)*25)+"%";
+function checkChallengeDrag(){
+  const q=challengeSet[challengeQIdx];let ok=0;
+  q.zones.forEach((z,i)=>{const zone=document.getElementById('chz-'+i);const dropped=(zone.getAttribute('data-dropped')||'').replace(/&quot;/g,'"');if(dropped===q.items[q.correct[i]]){ok++;zone.classList.add('matched');}else zone.classList.add('wrong-drop');});
+  const pct=Math.round(ok/q.zones.length*100);if(ok===q.zones.length)challengeScore++;
+  const fb=document.getElementById('ch-fb');fb.style.display='block';fb.className='feedback-box '+(pct>=80?'feedback-correct':'feedback-wrong');
+  fb.innerHTML=`<strong>// Score: ${ok}/${q.zones.length} (${pct}%)</strong><br>${q.exp}<div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextChallengeQ()">Next →</button></div>`;
+  document.querySelector('[onclick="checkChallengeDrag()"]').remove();
 }
 
-function nextTheory(){
-theoryStep++;
-if(theoryStep>=4){ startQuiz(); }
-else updateTheory();
+function nextChallengeQ(){challengeQIdx++;if(challengeQIdx>=challengeSet.length)showChallengeResult();else renderChallengeQ();}
+
+function showChallengeResult(){
+  const total=challengeSet.length,passed=challengeScore>=Math.ceil(total*0.8),code=passed?generateCode(challengeScore):null;
+  const screen=document.getElementById('challenge-screen');
+  if(passed){
+    screen.innerHTML=`<div style="text-align:center;padding:1.5rem 0"><div style="font-size:52px;margin-bottom:1rem">🏆</div><div style="font-family:var(--mono);font-size:10px;color:var(--success);letter-spacing:3px;margin-bottom:8px">CHALLENGE COMPLETE</div><h1 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">Congratulations!</h1><p style="font-size:14px;color:var(--text2);max-width:460px;margin:0 auto 1.5rem">You scored <strong style="color:var(--success)">${challengeScore}/${total}</strong> on the Security+ Final Challenge!</p><div style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.04));border:2px solid rgba(245,158,11,0.6);border-radius:16px;padding:1.75rem;max-width:500px;margin:0 auto 1.5rem"><p style="font-family:var(--mono);font-size:10px;color:var(--warning);letter-spacing:2px;margin-bottom:10px">// NEXT WEEK UNLOCK CODE</p><div style="font-family:var(--mono);font-size:24px;font-weight:700;letter-spacing:5px;color:#fbbf24;text-shadow:0 0 24px rgba(251,191,36,0.5);margin-bottom:14px;word-break:break-all">${code}</div><p style="font-size:12px;color:var(--text3);margin-bottom:12px">Enter this code in the app to unlock next week. Share with classmates as proof of completion.</p><button class="btn" id="copy-btn" style="background:rgba(251,191,36,0.12);color:#fbbf24;border-color:rgba(251,191,36,0.4);width:100%;margin-bottom:8px" onclick="copyCode('${code}')">📋 Copy Unlock Code</button><button class="btn btn-primary" style="width:100%" onclick="shareResult('${code}','${challengeScore}','${total}')">📤 Share with Classmates</button></div><div class="btn-row"><button class="btn btn-success" onclick="showHome()">← Back to Chapters</button></div></div>`;
+  } else {
+    screen.innerHTML=`<div style="text-align:center;padding:2rem 0"><div style="font-size:48px;margin-bottom:1rem">💪</div><h1 style="font-size:20px;font-weight:600;color:var(--text);margin-bottom:8px">So close!</h1><p style="font-size:14px;color:var(--text2);margin-bottom:0.5rem">You scored <strong style="color:var(--danger)">${challengeScore}/${total}</strong>.</p><p style="font-size:13px;color:var(--text3);font-family:var(--mono);margin-bottom:1.5rem">Need ${Math.ceil(total*0.8)}/${total} to earn the unlock code. Retry generates completely new questions.</p><div class="btn-row"><button class="btn btn-danger" onclick="showFinalChallenge()">Retry with new questions →</button><button class="btn" onclick="showHome()">Back to Chapters</button></div></div>`;
+  }
 }
 
-function prevTheory(){
-if(theoryStep>0){ theoryStep--; updateTheory(); }
+function copyCode(code){navigator.clipboard.writeText(code).then(()=>{const b=document.getElementById('copy-btn');if(b){b.textContent='✅ Copied!';setTimeout(()=>b.textContent='📋 Copy Unlock Code',2500);}}).catch(()=>{prompt('Your unlock code:',code);});}
+
+function shareResult(code,score,total){
+  const text=`🏆 I just passed the Security+ SY0-701 Final Challenge!\nScore: ${score}/${total}\n\nNext week unlock code: ${code}\n\nStudy app: https://ZT-911.github.io/security-plus-study-app`;
+  if(navigator.share){navigator.share({title:'Security+ Challenge Complete!',text});}
+  else{navigator.clipboard.writeText(text).then(()=>alert('✅ Result copied! Share it with your classmates.'));}
 }
 
-// ================= QUIZ =================
-
-let quiz=[];
-
-function startQuiz(){
-hideAll();
-quizSection.classList.remove("hidden");
-
-quiz = generateQuestions(currentChapter);
-
-let html="";
-quiz.forEach((q,i)=>{
-html+=`<div class="question">
-<p>${q.q}</p>
-${q.a.map((opt,j)=>`
-<label><input type="radio" name="q${i}" value="${j}">${opt}</label><br>`).join("")}
-</div>`;
-});
-
-quizContainer.innerHTML=html;
-}
-
-function submitQuiz(){
-let score=0;
-
-quiz.forEach((q,i)=>{
-let sel=document.querySelector(`input[name="q${i}"]:checked`);
-if(sel && parseInt(sel.value)===q.correct){score++;}
-});
-
-let percent=(score/quiz.length)*100;
-
-if(percent>=80){
-startExercises();
-}else{
-alert("Failed. New questions generated.");
-startQuiz();
-}
-}
-
-// ================= EXERCISES =================
-
-function startExercises(){
-hideAll();
-exerciseSection.classList.remove("hidden");
-
-exerciseContainer.innerHTML=`
-<p>Scenario: CPU 100%</p>
-<img src="https://i.imgur.com/8Km9tLL.png" width="300"><br>
-<label><input type="checkbox"> Malware</label><br>
-<label><input type="checkbox"> Normal</label><br>
-<label><input type="checkbox"> Hardware</label><br>
-<button onclick="passChapter()">Submit</button>
-`;
-}
-
-// ================= FINAL =================
-
-function passChapter(){
-let progress = JSON.parse(localStorage.getItem("progress"))||1;
-
-if(currentChapter >= progress){
-localStorage.setItem("progress", currentChapter+1);
-}
-
-if(currentChapter<5){
-startChapter(currentChapter+1);
-}else{
-startFinal();
-}
-}
-
-function startFinal(){
-hideAll();
-finalSection.classList.remove("hidden");
-
-finalExercises.innerHTML=`
-<h3>Case 1</h3>
-<p>Employee receives urgent phishing email</p>
-<button onclick="finish()">Phishing</button>
-
-<h3>Case 2</h3>
-<p>Multiple global logins</p>
-<button onclick="finish()">Brute Force</button>
-
-<h3>Case 3</h3>
-<p>Remote control system</p>
-<button onclick="finish()">RAT</button>
-`;
-}
-
-function finish(){
-hideAll();
-codeSection.classList.remove("hidden");
-
-let code = generateCode();
-localStorage.setItem("finalCode", code);
-finalCode.innerText = code;
-}
-
-// ================= UTILS =================
-
-function generateCode(){
-return "SEC-"+Math.random().toString(36).substring(2,10).toUpperCase();
-}
-
-function shuffle(arr){
-return arr.sort(()=>Math.random()-0.5);
-}
-
-function hideAll(){
-["menu","videoSection","theorySection","quizSection","exerciseSection","finalSection","codeSection"]
-.forEach(id=>document.getElementById(id).classList.add("hidden"));
-}
-
-// INIT
-showMenu();
-
+// ═══════════════════════════════════════════════════════════════
+// INIT — Start directly at Chapter 1
+// ═══════════════════════════════════════════════════════════════
+startChapter(1);
 </script>
-
 </body>
 </html>
