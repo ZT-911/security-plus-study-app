@@ -5,110 +5,32 @@
 <title>Security+ Training Pro</title>
 
 <style>
-body {
-  font-family: Arial;
-  background: #0d1117;
-  color: white;
-  margin: 0;
-}
-
-header {
-  padding: 10px;
-  background: #161b22;
-  position: fixed;
-  width: 100%;
-  top: 0;
-}
-
-button {
-  padding: 10px;
-  margin: 5px;
-  cursor: pointer;
-}
-
-.container {
-  padding: 80px 20px;
-}
-
-.hidden { display: none; }
-
-.progress {
-  height: 10px;
-  background: green;
-  width: 0%;
-}
-
-.locked { opacity: 0.4; pointer-events: none; }
-
-.question { margin: 20px 0; }
+body { font-family: Arial; background:#0d1117; color:white; }
+button { padding:10px; margin:5px; cursor:pointer; }
+.hidden { display:none; }
+.container { padding:20px; }
 </style>
+
 </head>
 
 <body>
 
-<header>
-<button onclick="showMenu()">☰ Chapters</button>
-</header>
-
 <div class="container">
 
-<!-- MENU -->
+<h1>Security+ Training</h1>
+
 <div id="menu"></div>
 
-<!-- VIDEO -->
-<div id="videoSection" class="hidden">
-<h2 id="chapterTitle"></h2>
-<iframe id="videoFrame" width="100%" height="400"></iframe>
-
-<button onclick="startTheory()">Skip</button>
-<button onclick="startTheory()">Start Theory</button>
-
-<p><a id="ytLink" target="_blank">Watch later</a></p>
-</div>
-
-<!-- THEORY -->
-<div id="theorySection" class="hidden">
-<div class="progress" id="progressBar"></div>
-<p id="theoryContent"></p>
-<button onclick="prevTheory()">Previous</button>
-<button onclick="nextTheory()">Next</button>
-</div>
-
-<!-- QUIZ -->
-<div id="quizSection" class="hidden">
-<h2>Quiz</h2>
-<div id="quizContainer"></div>
-<button onclick="submitQuiz()">Submit</button>
-</div>
-
-<!-- EXERCISES -->
-<div id="exerciseSection" class="hidden">
-<h2>Exercises</h2>
-<div id="exerciseContainer"></div>
-</div>
-
-<!-- FINAL -->
-<div id="finalSection" class="hidden">
-<h2>Final Scenarios</h2>
-<div id="finalExercises"></div>
-</div>
-
-<!-- CODE -->
-<div id="codeSection" class="hidden">
-<h2>🎉 Congratulations</h2>
-<p>Your unlock code:</p>
-<h1 id="finalCode"></h1>
-</div>
+<div id="content"></div>
 
 </div>
 
 <script>
 
-// ================= DATA =================
-
+// ================= STATE =================
 let currentChapter = 1;
-let theoryStep = 0;
 
+// ================= VIDEOS =================
 const videos = {
 1:"https://www.youtube.com/embed/jcvwsAYRqh8",
 2:"https://www.youtube.com/embed/bD2EMsKlJoY",
@@ -117,20 +39,84 @@ const videos = {
 5:"https://www.youtube.com/embed/rF_gEMy8iG8"
 };
 
-const theory = {
-1:["CIA","AAA","Controls","Zero Trust"],
-2:["Actors","Motivation","Vectors","Deception"],
-3:["Physical","Surveillance","Access","Biometrics"],
-4:["Phishing","Triggers","Pretexting","Fraud"],
-5:["Malware","Ransomware","Rootkits","IoC"]
-};
+// ================= MENU =================
 
-// SAMPLE QUESTIONS (puedes expandir)
-function generateQuestions(ch){
+function showMenu(){
+let progress = localStorage.getItem("progress") || 1;
+
+let html = "<h2>Chapters</h2>";
+
+for(let i=1;i<=5;i++){
+let locked = i>progress ? "disabled" : "";
+html += `<button ${locked} onclick="startChapter(${i})">Chapter ${i}</button><br>`;
+}
+
+menu.innerHTML = html;
+content.innerHTML = "";
+}
+
+// ================= START =================
+
+function startChapter(ch){
+currentChapter = ch;
+
+content.innerHTML = `
+<h2>Chapter ${ch}</h2>
+
+<iframe width="100%" height="300"
+src="${videos[ch]}" allowfullscreen></iframe>
+
+<br>
+<button onclick="startTheory()">Skip</button>
+<button onclick="startTheory()">Start Theory</button>
+
+<p><a href="${videos[ch].replace("embed","watch?v=")}" target="_blank">Watch on YouTube</a></p>
+`;
+}
+
+// ================= THEORY =================
+
+function startTheory(){
+content.innerHTML = `
+<h2>Theory</h2>
+<p>Study content of Chapter ${currentChapter}</p>
+<button onclick="startQuiz()">Go to Quiz</button>
+`;
+}
+
+// ================= QUIZ =================
+
+function startQuiz(){
+let questions = generateQuiz();
+
+let html = "<h2>Quiz (80% required)</h2>";
+
+questions.forEach((q,i)=>{
+html += `<p>${q.q}</p>`;
+q.a.forEach((opt,j)=>{
+html += `<label><input type="radio" name="q${i}" value="${j}">${opt}</label><br>`;
+});
+});
+
+html += `<button onclick="submitQuiz(${JSON.stringify(questions)})">Submit</button>`;
+
+content.innerHTML = html;
+}
+
+function generateQuiz(){
 let base = [
-"Example Q1","Example Q2","Example Q3","Example Q4","Example Q5",
-"Example Q6","Example Q7","Example Q8","Example Q9","Example Q10",
-"Example Q11","Example Q12","Example Q13","Example Q14","Example Q15"
+"What is phishing?",
+"Which is malware?",
+"What is CIA triad?",
+"Which is a threat actor?",
+"What is ransomware?",
+"Which is social engineering?",
+"What is a botnet?",
+"What is a rootkit?",
+"What is tailgating?",
+"What is MFA?",
+"What is IDS?",
+"What is IPS?"
 ];
 
 return shuffle(base).slice(0,10).map(q=>({
@@ -140,95 +126,20 @@ correct:Math.floor(Math.random()*4)
 }));
 }
 
-// ================= MENU =================
+function submitQuiz(qs){
+let correct=0;
 
-function showMenu(){
-hideAll();
-let html="";
-let unlocked = JSON.parse(localStorage.getItem("progress"))||1;
-
-for(let i=1;i<=5;i++){
-html+=`<button ${i>unlocked?"class='locked'":""} onclick="startChapter(${i})">
-Chapter ${i}</button><br>`;
-}
-
-document.getElementById("menu").innerHTML=html;
-document.getElementById("menu").classList.remove("hidden");
-}
-
-// ================= CHAPTER =================
-
-function startChapter(ch){
-currentChapter=ch;
-hideAll();
-
-videoFrame.src=videos[ch];
-ytLink.href=videos[ch].replace("embed","watch?v=");
-chapterTitle.innerText="Chapter "+ch;
-
-videoSection.classList.remove("hidden");
-}
-
-// ================= THEORY =================
-
-function startTheory(){
-hideAll();
-theorySection.classList.remove("hidden");
-theoryStep=0;
-updateTheory();
-}
-
-function updateTheory(){
-theoryContent.innerText=theory[currentChapter][theoryStep];
-progressBar.style.width=((theoryStep+1)*25)+"%";
-}
-
-function nextTheory(){
-theoryStep++;
-if(theoryStep>=4){ startQuiz(); }
-else updateTheory();
-}
-
-function prevTheory(){
-if(theoryStep>0){ theoryStep--; updateTheory(); }
-}
-
-// ================= QUIZ =================
-
-let quiz=[];
-
-function startQuiz(){
-hideAll();
-quizSection.classList.remove("hidden");
-
-quiz = generateQuestions(currentChapter);
-
-let html="";
-quiz.forEach((q,i)=>{
-html+=`<div class="question">
-<p>${q.q}</p>
-${q.a.map((opt,j)=>`
-<label><input type="radio" name="q${i}" value="${j}">${opt}</label><br>`).join("")}
-</div>`;
-});
-
-quizContainer.innerHTML=html;
-}
-
-function submitQuiz(){
-let score=0;
-
-quiz.forEach((q,i)=>{
+qs.forEach((q,i)=>{
 let sel=document.querySelector(`input[name="q${i}"]:checked`);
-if(sel && parseInt(sel.value)===q.correct){score++;}
+if(sel && parseInt(sel.value)===q.correct){correct++;}
 });
 
-let percent=(score/quiz.length)*100;
+let percent=(correct/qs.length)*100;
 
 if(percent>=80){
 startExercises();
 }else{
-alert("Failed. New questions generated.");
+alert("Failed. New quiz generated.");
 startQuiz();
 }
 }
@@ -236,82 +147,100 @@ startQuiz();
 // ================= EXERCISES =================
 
 function startExercises(){
-hideAll();
-exerciseSection.classList.remove("hidden");
+loadCase1();
+}
 
-exerciseContainer.innerHTML=`
-<p>Scenario: CPU 100%</p>
+// -------- CASE 1 --------
+function loadCase1(){
+content.innerHTML = `
+<h2>Practical Case 1</h2>
+
+<p>A system shows abnormal CPU usage.</p>
 <img src="https://i.imgur.com/8Km9tLL.png" width="300"><br>
-<label><input type="checkbox"> Malware</label><br>
-<label><input type="checkbox"> Normal</label><br>
-<label><input type="checkbox"> Hardware</label><br>
-<button onclick="passChapter()">Submit</button>
+
+<p>Select 3 correct answers:</p>
+
+<label><input type="checkbox" value="malware"> Malware infection</label><br>
+<label><input type="checkbox" value="cryptominer"> Cryptominer activity</label><br>
+<label><input type="checkbox" value="botnet"> Botnet participation</label><br>
+<label><input type="checkbox" value="normal"> Normal usage</label><br>
+<label><input type="checkbox" value="hardware"> Hardware damage</label><br>
+
+<button onclick="evalCase1()">Submit</button>
 `;
 }
 
-// ================= FINAL =================
+function evalCase1(){
+let selected = getChecked();
+let correct = ["malware","cryptominer","botnet"];
 
-function passChapter(){
-let progress = JSON.parse(localStorage.getItem("progress"))||1;
+let count = selected.filter(x=>correct.includes(x)).length;
 
-if(currentChapter >= progress){
-localStorage.setItem("progress", currentChapter+1);
-}
-
-if(currentChapter<5){
-startChapter(currentChapter+1);
+if(count >= 2){
+loadCase2();
 }else{
-startFinal();
+alert("Try again. New case generated.");
+loadCase1();
 }
 }
 
-function startFinal(){
-hideAll();
-finalSection.classList.remove("hidden");
+// -------- CASE 2 --------
+function loadCase2(){
+content.innerHTML = `
+<h2>Practical Case 2</h2>
 
-finalExercises.innerHTML=`
-<h3>Case 1</h3>
-<p>Employee receives urgent phishing email</p>
-<button onclick="finish()">Phishing</button>
+<p>User receives urgent email asking credentials.</p>
 
-<h3>Case 2</h3>
-<p>Multiple global logins</p>
-<button onclick="finish()">Brute Force</button>
+<label><input type="checkbox" value="phishing"> Phishing attack</label><br>
+<label><input type="checkbox" value="urgency"> Urgency trigger</label><br>
+<label><input type="checkbox" value="authority"> Authority trigger</label><br>
+<label><input type="checkbox" value="normal"> Normal email</label><br>
 
-<h3>Case 3</h3>
-<p>Remote control system</p>
-<button onclick="finish()">RAT</button>
+<button onclick="evalCase2()">Submit</button>
 `;
 }
 
-function finish(){
-hideAll();
-codeSection.classList.remove("hidden");
+function evalCase2(){
+let selected = getChecked();
+let correct = ["phishing","urgency","authority"];
 
-let code = generateCode();
-localStorage.setItem("finalCode", code);
-finalCode.innerText = code;
+let count = selected.filter(x=>correct.includes(x)).length;
+
+if(count >= 2){
+loadCase3();
+}else{
+alert("Try again. New case generated.");
+loadCase2();
+}
 }
 
-// ================= UTILS =================
+// -------- CASE 3 --------
+function loadCase3(){
+content.innerHTML = `
+<h2>Practical Case 3</h2>
 
-function generateCode(){
-return "SEC-"+Math.random().toString(36).substring(2,10).toUpperCase();
+<p>Select all correct answers:</p>
+
+<label><input type="checkbox" value="rat"> RAT allows remote control</label><br>
+<label><input type="checkbox" value="worm"> Worm spreads automatically</label><br>
+<label><input type="checkbox" value="trojan"> Trojan tricks user</label><br>
+<label><input type="checkbox" value="false"> Firewall is malware</label><br>
+
+<button onclick="evalCase3()">Submit</button>
+`;
 }
 
-function shuffle(arr){
-return arr.sort(()=>Math.random()-0.5);
+function evalCase3(){
+let selected = getChecked();
+let correct = ["rat","worm","trojan"];
+
+let count = selected.filter(x=>correct.includes(x)).length;
+let percent = (count / correct.length) * 100;
+
+if(percent >= 70){
+passChapter();
+}else{
+alert("Try again.");
+loadCase3();
 }
-
-function hideAll(){
-["menu","videoSection","theorySection","quizSection","exerciseSection","finalSection","codeSection"]
-.forEach(id=>document.getElementById(id).classList.add("hidden"));
 }
-
-// INIT
-showMenu();
-
-</script>
-
-</body>
-</html>
