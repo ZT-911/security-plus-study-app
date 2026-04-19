@@ -1083,3 +1083,808 @@ startChapter(1);
 </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security+ Week 2 | Study App</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--border:#1e2d45;
+  --accent:#00d4ff;--accent2:#7c3aed;--success:#10b981;--danger:#ef4444;
+  --warning:#f59e0b;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;--platinum:#e5e4e2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh}
+.app{max-width:820px;margin:0 auto;padding:1.25rem}
+.screen{display:none}.screen.active{display:block}
+.nav-bar{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.nav-title{font-size:15px;font-weight:500;color:var(--text)}
+.nav-sub{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:0.75rem}
+.btn{border:1px solid var(--border);background:transparent;color:var(--text2);padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-family:var(--sans);transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--surface2);color:var(--text)}
+.btn-primary{background:rgba(0,212,255,0.1);color:var(--accent);border-color:rgba(0,212,255,0.3)}
+.btn-primary:hover{background:rgba(0,212,255,0.2)}
+.btn-success{background:rgba(16,185,129,0.1);color:var(--success);border-color:rgba(16,185,129,0.3)}
+.btn-danger{background:rgba(239,68,68,0.1);color:var(--danger);border-color:rgba(239,68,68,0.3)}
+.btn-platinum{background:rgba(229,228,226,0.1);color:var(--platinum);border-color:rgba(229,228,226,0.4)}
+.badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:5px;letter-spacing:1px}
+.badge-done{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
+.badge-start{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid rgba(0,212,255,0.3)}
+.badge-lock{background:rgba(100,116,139,0.15);color:var(--text3);border:1px solid var(--border)}
+.pbar{width:100%;height:4px;background:var(--border);border-radius:2px;margin:10px 0 4px;overflow:hidden}
+.pfill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .5s}
+.th-section{border-left:2px solid var(--accent);padding-left:1rem;margin:1rem 0}
+.th-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.th-body{font-size:13px;color:var(--text2);line-height:1.75}
+.trick{background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:8px 12px;margin:6px 0;font-size:12px;color:var(--accent);font-family:var(--mono);line-height:1.6}
+.trap{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:8px 12px;margin:6px 0;font-size:12px;color:var(--danger);font-family:var(--mono);line-height:1.6}
+.messer{background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);border-radius:8px;padding:8px 12px;margin:6px 0;font-size:12px;color:#a78bfa;font-family:var(--mono);line-height:1.6}
+.tbl{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--surface2);padding:6px 9px;text-align:left;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px}
+td{padding:6px 9px;border-bottom:1px solid var(--border);color:var(--text2);line-height:1.5}
+td strong{color:var(--accent)}
+tr:last-child td{border-bottom:none}
+.sec-nav{display:flex;justify-content:space-between;margin-top:1.25rem}
+.chapter-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:0.75rem;cursor:pointer;transition:all .2s}
+.chapter-card:hover:not(.locked){border-color:rgba(0,212,255,0.3);transform:translateY(-1px)}
+.chapter-card.locked{opacity:0.45;cursor:not-allowed}
+.ch-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.ch-path{font-family:var(--mono);font-size:10px;color:var(--text3)}
+.video-badge{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:4px;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2)}
+.sr-timer{font-family:var(--mono);font-size:48px;font-weight:700;text-align:center;margin:0.5rem 0;transition:color .3s;color:var(--accent)}
+.sr-timer.warning{color:var(--warning)}
+.sr-timer.danger{color:var(--danger)}
+.sr-timer-bar{width:100%;height:6px;background:var(--border);border-radius:3px;margin-bottom:1rem;overflow:hidden}
+.sr-timer-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--success),var(--accent));transition:width 1s linear}
+.sr-keyword{font-size:20px;font-weight:700;color:var(--text);margin:1rem 0;min-height:64px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.4;padding:0 0.5rem}
+.sr-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1rem 0}
+.sr-opt{padding:14px 12px;border:1px solid var(--border);border-radius:10px;cursor:pointer;background:var(--surface2);color:var(--text2);font-size:13px;font-family:var(--sans);transition:all .15s;text-align:center;line-height:1.4}
+.sr-opt:hover{border-color:var(--accent);color:var(--text)}
+.sr-opt.correct{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.5);color:var(--success);cursor:default}
+.sr-opt.wrong{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.5);color:var(--danger);cursor:default}
+.sr-fb{padding:10px 14px;border-radius:9px;margin-top:1rem;font-size:12px;font-family:var(--mono);line-height:1.6}
+.sr-fb.ok{background:rgba(16,185,129,0.08);color:var(--success);border:1px solid rgba(16,185,129,0.2)}
+.sr-fb.no{background:rgba(239,68,68,0.08);color:var(--danger);border:1px solid rgba(239,68,68,0.2)}
+.td-dot{width:10px;height:10px;border-radius:50%;background:var(--border);display:inline-block;margin:0 4px;transition:background .3s}
+.td-dot.active{background:var(--danger)}
+.td-dot.done{background:var(--success)}
+.td-opt{width:100%;text-align:left;padding:12px 14px;margin:5px 0;border:1px solid var(--border);border-radius:9px;cursor:pointer;background:var(--surface2);color:var(--text2);font-size:13px;font-family:var(--sans);transition:all .15s;line-height:1.5}
+.td-opt:hover{border-color:rgba(239,68,68,0.3);color:var(--text)}
+.td-opt.is-trap{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.5);color:var(--danger)}
+.td-opt.not-trap{background:rgba(16,185,129,0.06);border-color:rgba(16,185,129,0.3);color:var(--success)}
+.td-opt.selected-wrong{background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.4);color:var(--warning)}
+.td-explain{padding:12px 14px;border-radius:9px;margin-top:12px;font-size:12px;font-family:var(--mono);line-height:1.7;border:1px solid rgba(239,68,68,0.2);background:rgba(239,68,68,0.05);color:var(--text2)}
+.result-circle{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;margin:0 auto 1rem;font-family:var(--mono)}
+.rc-pass{background:rgba(16,185,129,0.1);color:var(--success);border:2px solid rgba(16,185,129,0.3)}
+.rc-fail{background:rgba(239,68,68,0.1);color:var(--danger);border:2px solid rgba(239,68,68,0.3)}
+.fc-opt{width:100%;text-align:left;padding:11px 14px;margin:5px 0;border:1px solid var(--border);border-radius:9px;cursor:pointer;background:var(--surface2);color:var(--text2);font-size:13px;font-family:var(--sans);transition:all .15s}
+.fc-opt:hover{border-color:var(--text3);color:var(--text)}
+.fc-opt.correct{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.4);color:var(--success)}
+.fc-opt.wrong{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.4);color:var(--danger)}
+.fc-fb{padding:10px 14px;border-radius:9px;margin-top:10px;font-size:12px;line-height:1.6;font-family:var(--mono)}
+.fc-fb-ok{background:rgba(16,185,129,0.08);color:var(--success);border:1px solid rgba(16,185,129,0.2)}
+.fc-fb-no{background:rgba(239,68,68,0.08);color:var(--danger);border:1px solid rgba(239,68,68,0.2)}
+.plat-box{background:linear-gradient(135deg,rgba(229,228,226,0.08),rgba(180,176,200,0.04));border:2px solid rgba(229,228,226,0.4);border-radius:16px;padding:1.75rem;max-width:500px;margin:0 auto 1.5rem;text-align:center}
+.plat-code{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:4px;color:var(--platinum);text-shadow:0 0 20px rgba(229,228,226,0.3);margin:1rem 0;word-break:break-all}
+.ch-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100;display:none;align-items:center;justify-content:center}
+.ch-overlay.open{display:flex}
+.ch-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;max-width:500px;width:90%;max-height:80vh;overflow-y:auto}
+.site-footer{text-align:center;padding:1.5rem 0 0.5rem;border-top:1px solid var(--border);margin-top:1.5rem}
+.site-footer p{font-size:11px;color:var(--text3);font-family:var(--mono)}
+.site-footer a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- ACCESS GUARD -->
+<script>
+if(sessionStorage.getItem('w2_unlocked')!=='true'){
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.body.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0a0e1a;font-family:'Space Mono',monospace;text-align:center;padding:2rem"><div><div style="font-size:48px;margin-bottom:1rem">🔒</div><div style="font-size:10px;color:#ef4444;letter-spacing:3px;margin-bottom:12px">ACCESS DENIED</div><h1 style="font-size:20px;font-weight:700;color:#e2e8f0;margin-bottom:10px">Week 2 is Locked</h1><p style="font-size:13px;color:#94a3b8;margin-bottom:2rem;line-height:1.7">Complete Week 1 Final Challenge to earn your Golden Ticket.<br>Enter your code on the home screen to unlock Week 2.</p><a href="index.html" style="padding:10px 24px;border:1px solid rgba(0,212,255,0.3);background:rgba(0,212,255,0.1);color:#00d4ff;border-radius:8px;text-decoration:none;font-size:12px;letter-spacing:1px">Back to Home</a></div></div>`;
+  });
+}
+</script>
+
+<!-- CHAPTERS OVERLAY -->
+<div class="ch-overlay" id="ch-overlay" onclick="closeChapters(event)">
+  <div class="ch-modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:2px;margin-bottom:4px">WEEK 2 — SY0-701</div>
+        <div style="font-size:16px;font-weight:600;color:var(--text)">Select Chapter</div>
+      </div>
+      <button class="btn" onclick="closeChapters()">✕</button>
+    </div>
+    <div id="ch-modal-list"></div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);text-align:center">
+      <a href="index.html" style="font-family:var(--mono);font-size:10px;color:var(--text3);text-decoration:none">← Back to Home</a>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+
+<!-- HOME -->
+<div id="home-screen" class="screen">
+  <div style="text-align:center;padding:1.5rem 0 1rem">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:3px;margin-bottom:8px">WEEK 2 — SY0-701</div>
+    <h1 style="font-size:26px;font-weight:700;margin-bottom:8px;color:var(--text)">Security+ Study App</h1>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:1rem">Complete all 5 chapters to earn your <strong style="color:var(--platinum)">Platinum Ticket 🥈</strong></p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem">
+      <span style="font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:100px;background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid rgba(0,212,255,0.2)">5 Chapters</span>
+      <span style="font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:100px;background:rgba(124,58,237,0.1);color:#a78bfa;border:1px solid rgba(124,58,237,0.2)">⚡ Speed Round</span>
+      <span style="font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:100px;background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2)">🎯 Trap Detector</span>
+      <span style="font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:100px;background:rgba(229,228,226,0.1);color:var(--platinum);border:1px solid rgba(229,228,226,0.2)">🥈 Platinum Ticket</span>
+    </div>
+  </div>
+  <div id="chapters-list"></div>
+  <div id="final-challenge-card" style="display:none;cursor:pointer;background:var(--surface);border:2px solid rgba(229,228,226,0.3);border-radius:14px;padding:1.25rem;margin-bottom:0.75rem" onclick="showFinalChallenge()">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <span class="badge" style="background:rgba(229,228,226,0.1);color:var(--platinum);border:1px solid rgba(229,228,226,0.3)">🥈 FINAL CHALLENGE</span>
+        <h2 style="font-size:16px;font-weight:600;margin:8px 0 3px;color:var(--text)">Week 2 Master Challenge</h2>
+        <p style="font-size:12px;color:var(--text2)">All 5 chapters · Earn your Platinum Ticket</p>
+      </div>
+      <span class="badge" style="background:rgba(229,228,226,0.1);color:var(--platinum);border:1px solid rgba(229,228,226,0.3)">START</span>
+    </div>
+  </div>
+  <div class="site-footer"><p>Built by <a href="https://linkedin.com/in/carlos-l-materano-g" target="_blank">Carlos Materano</a> · CompTIA Security+ SY0-701 · 2026</p></div>
+</div>
+
+<!-- INTRO -->
+<div id="intro-screen" class="screen">
+  <div class="nav-bar">
+    <div style="flex:1"><div class="nav-title" id="intro-ch-name"></div><div class="nav-sub">optional intro video</div></div>
+    <button class="btn" onclick="openChapters()">☰ Chapters</button>
+  </div>
+  <div class="card">
+    <div style="font-family:var(--mono);font-size:10px;color:#ef4444;letter-spacing:2px;margin-bottom:4px">▶ INTRO VIDEO — OPTIONAL</div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Watch the intro video or skip directly to the theory.</p>
+    <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:10px;overflow:hidden;background:#000;margin-bottom:12px">
+      <iframe id="intro-iframe" src="" title="Intro" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%"></iframe>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:8px;padding:10px 14px;margin-bottom:1.25rem">
+      <span style="color:#ef4444">▶</span>
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;color:#ef4444;letter-spacing:1px;margin-bottom:2px">YOUTUBE LINK</div>
+        <a id="intro-yt-link" href="#" target="_blank" style="font-size:12px;color:var(--accent);text-decoration:none">Open on YouTube →</a>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn" onclick="goTheory()">Skip video →</button>
+      <button class="btn btn-primary" onclick="goTheory()">Start Theory →</button>
+    </div>
+  </div>
+</div>
+
+<!-- THEORY -->
+<div id="theory-screen" class="screen">
+  <div class="nav-bar">
+    <div style="flex:1"><div class="nav-title" id="th-ch-name"></div><div class="nav-sub" id="th-counter"></div></div>
+    <button class="btn" onclick="openChapters()">☰ Chapters</button>
+  </div>
+  <div class="pbar"><div id="th-bar" class="pfill" style="width:0%"></div></div>
+  <div id="th-content" style="margin-top:1rem"></div>
+  <div class="sec-nav">
+    <button class="btn" id="th-prev" onclick="prevSec()" style="visibility:hidden">← Previous</button>
+    <button class="btn btn-primary" id="th-next" onclick="nextSec()">Next →</button>
+  </div>
+</div>
+
+<!-- SPEED ROUND -->
+<div id="speedround-screen" class="screen">
+  <div class="nav-bar">
+    <div style="flex:1"><div class="nav-title" id="sr-ch-name"></div><div class="nav-sub">phase_1 // speed_round</div></div>
+    <button class="btn" onclick="openChapters()">☰ Chapters</button>
+  </div>
+  <div class="card">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:3px;margin-bottom:8px">// PHASE 1 — SPEED ROUND</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:1rem">Match the exam keyword. <strong style="color:var(--accent)">45 seconds.</strong> Trust your instincts.</p>
+    <div class="sr-timer-bar"><div id="sr-timer-fill" class="sr-timer-fill" style="width:100%"></div></div>
+    <div class="sr-timer" id="sr-timer">45</div>
+    <div class="sr-keyword" id="sr-keyword"></div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-align:center;margin-bottom:1rem" id="sr-kw-sub"></div>
+    <div class="sr-options" id="sr-options"></div>
+    <div id="sr-fb" style="display:none"></div>
+    <div style="text-align:right;margin-top:10px">
+      <button class="btn btn-primary" id="sr-next-btn" style="display:none" onclick="nextKeyword()">Next →</button>
+    </div>
+    <div style="display:flex;gap:20px;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--text3);margin-top:8px">
+      <span>✓ <strong style="color:var(--success)" id="sr-correct">0</strong></span>
+      <span>✗ <strong style="color:var(--danger)" id="sr-wrong">0</strong></span>
+      <span id="sr-prog"></span>
+    </div>
+  </div>
+</div>
+
+<!-- SR RESULT -->
+<div id="sr-result-screen" class="screen">
+  <div class="nav-bar"><div class="nav-title">Speed Round — Results</div><button class="btn" onclick="openChapters()" style="margin-left:auto">☰ Chapters</button></div>
+  <div class="card" style="text-align:center;padding:2rem">
+    <div style="font-size:40px;margin-bottom:1rem">⚡</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:3px;margin-bottom:8px">PHASE 1 COMPLETE</div>
+    <div class="result-circle rc-pass" id="sr-res-circle"><span id="sr-res-pct"></span></div>
+    <h2 style="font-size:18px;font-weight:600;margin-bottom:8px;color:var(--text)" id="sr-res-heading"></h2>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:1.5rem" id="sr-res-msg"></p>
+    <button class="btn btn-primary" style="font-size:14px;padding:10px 28px" onclick="startTrapDetector()">Phase 2 — Trap Detector →</button>
+  </div>
+</div>
+
+<!-- TRAP DETECTOR -->
+<div id="trapdetector-screen" class="screen">
+  <div class="nav-bar">
+    <div style="flex:1"><div class="nav-title" id="td-ch-name"></div><div class="nav-sub">phase_2 // trap_detector</div></div>
+    <button class="btn" onclick="openChapters()">☰ Chapters</button>
+  </div>
+  <div class="card">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--danger);letter-spacing:3px;margin-bottom:8px">// PHASE 2 — TRAP DETECTOR</div>
+    <div style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text3);font-family:var(--mono);margin-bottom:1rem">🎯 One of these 4 statements is a TRAP — it sounds correct but it's WRONG. Find it.</div>
+    <div id="td-dots" style="text-align:center;margin-bottom:1rem"></div>
+    <p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:1rem" id="td-round-label"></p>
+    <div id="td-options"></div>
+    <div id="td-explain" style="display:none" class="td-explain"></div>
+    <div style="text-align:right;margin-top:1rem">
+      <button class="btn btn-primary" id="td-next-btn" style="display:none" onclick="nextTrap()">Next →</button>
+    </div>
+    <div style="text-align:center;margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--text3)" id="td-score-disp"></div>
+  </div>
+</div>
+
+<!-- TD RESULT -->
+<div id="td-result-screen" class="screen">
+  <div class="nav-bar"><div class="nav-title">Trap Detector — Results</div><button class="btn" onclick="openChapters()" style="margin-left:auto">☰ Chapters</button></div>
+  <div class="card" style="text-align:center;padding:2rem">
+    <div style="font-size:40px;margin-bottom:1rem">🎯</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--danger);letter-spacing:3px;margin-bottom:8px">PHASE 2 COMPLETE</div>
+    <div class="result-circle" id="td-res-circle"><span id="td-res-pct"></span></div>
+    <h2 style="font-size:18px;font-weight:600;margin-bottom:8px;color:var(--text)" id="td-res-heading"></h2>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:6px" id="td-res-msg"></p>
+    <p style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:1.5rem" id="td-res-sub"></p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-success" style="font-size:14px;padding:10px 28px" id="td-continue-btn" onclick="showCongrats()">Continue →</button>
+      <button class="btn btn-danger" id="td-retry-btn" style="display:none" onclick="startTrapDetector()">Retry →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONGRATS -->
+<div id="congrats-screen" class="screen">
+  <div class="nav-bar"><div class="nav-title" id="congrats-title">Chapter Complete</div><button class="btn" onclick="openChapters()" style="margin-left:auto">☰ Chapters</button></div>
+  <div class="card" style="text-align:center;padding:2.5rem 1.5rem">
+    <div style="font-size:52px;margin-bottom:1rem">🎓</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--success);letter-spacing:3px;margin-bottom:8px">CHAPTER COMPLETE</div>
+    <h2 style="font-size:20px;font-weight:600;margin-bottom:10px;color:var(--text)" id="congrats-heading"></h2>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:2rem" id="congrats-msg"></p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-success" style="font-size:15px;padding:12px 32px" id="congrats-btn" onclick="goNextChapter()">Next Chapter →</button>
+      <button class="btn btn-platinum" style="display:none;font-size:15px;padding:12px 32px" id="congrats-final-btn" onclick="showFinalChallenge()">🥈 Final Challenge →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL CHALLENGE -->
+<div id="finalchallenge-screen" class="screen">
+  <div class="nav-bar">
+    <div style="flex:1"><div class="nav-title">🥈 Week 2 Final Challenge</div><div class="nav-sub" id="fc-counter">question_1_of_18</div></div>
+    <button class="btn" onclick="openChapters()">☰ Chapters</button>
+  </div>
+  <div class="pbar"><div id="fc-bar" class="pfill" style="width:0%"></div></div>
+  <div id="fc-content" style="margin-top:1rem">
+    <div class="card">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px;display:flex;justify-content:space-between">
+        <span><span id="fc-stars" style="color:var(--warning)">★</span> <span id="fc-level" style="font-family:var(--mono);font-size:11px;color:var(--text3)"></span></span>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text3)" id="fc-ch-tag"></span>
+      </div>
+      <p style="font-size:15px;font-weight:500;color:var(--text);line-height:1.65;margin-bottom:1rem" id="fc-question"></p>
+      <div id="fc-options"></div>
+      <div id="fc-feedback" style="display:none"></div>
+      <div style="text-align:right;margin-top:1rem">
+        <button class="btn btn-primary" id="fc-next-btn" style="display:none" onclick="fcNext()">Next →</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:14px;font-size:12px;color:var(--text3);font-family:var(--mono);margin-top:8px">
+      <span>Correct: <strong style="color:var(--success)" id="fc-correct">0</strong></span>
+      <span>Wrong: <strong style="color:var(--danger)" id="fc-wrong">0</strong></span>
+    </div>
+  </div>
+</div>
+
+<!-- PLATINUM TICKET -->
+<div id="platinum-screen" class="screen">
+  <div class="nav-bar"><div class="nav-title">🥈 Platinum Ticket Earned!</div><button class="btn" onclick="showHome()" style="margin-left:auto">← Home</button></div>
+  <div class="card" style="text-align:center;padding:2rem">
+    <div style="font-size:52px;margin-bottom:1rem">🥈</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--platinum);letter-spacing:3px;margin-bottom:8px">WEEK 2 COMPLETE</div>
+    <h1 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">Congratulations!</h1>
+    <p style="font-size:14px;color:var(--text2);max-width:460px;margin:0 auto 1.5rem">You scored <strong id="plat-score" style="color:var(--platinum)"></strong> on the Week 2 Final Challenge!</p>
+    <div class="plat-box">
+      <p style="font-family:var(--mono);font-size:10px;color:var(--platinum);letter-spacing:2px;margin-bottom:10px">// YOUR PLATINUM TICKET</p>
+      <div class="plat-code" id="plat-code"></div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Share this as proof you completed Week 2!</p>
+      <button class="btn btn-platinum" id="plat-copy-btn" style="width:100%;margin-bottom:8px" onclick="copyPlatCode()">📋 Copy Platinum Ticket</button>
+      <button class="btn btn-primary" style="width:100%" onclick="sharePlat()">📤 Share with Classmates</button>
+    </div>
+    <button class="btn" onclick="showHome()">← Back to Chapters</button>
+  </div>
+  <div class="site-footer"><p>Built by <a href="https://linkedin.com/in/carlos-l-materano-g" target="_blank">Carlos Materano</a> · CompTIA Security+ SY0-701 · 2026</p></div>
+</div>
+
+</div><!-- end .app -->
+
+<script>
+// ═══════════════════════════════════════════════
+// CHAPTER DATA — W2C1 & W2C2
+// ═══════════════════════════════════════════════
+const CHAPTERS={
+  1:{name:"Chapter 1: Data Protection",video:"https://youtu.be/yXnfM0NlqIM",color:"#00d4ff",
+    sections:[
+      {title:"Data Classifications",content:`<div class="trick">// TRICK: Commercial: Public→Sensitive→Private→Confidential→Critical. Government: Unclassified→SBU→Confidential→Secret→Top Secret — MIX ON THE EXAM!</div><div class="tbl"><table><tr><th>Commercial Level</th><th>Description</th><th>Example</th></tr><tr><td><strong>Public</strong></td><td>Freely shareable — no harm if disclosed</td><td>Press releases, website content</td></tr><tr><td><strong>Sensitive</strong></td><td>Minor harm if disclosed</td><td>Internal financial summaries</td></tr><tr><td><strong>Private</strong></td><td>Personal employee information</td><td>HR records, salary data, PII</td></tr><tr><td><strong>Confidential</strong></td><td>Significant harm if disclosed</td><td>Trade secrets, source code</td></tr><tr><td><strong>Critical</strong></td><td>Catastrophic harm if disclosed</td><td>Classified R&D, encryption keys, merger plans</td></tr></table></div><div class="trap">// TRAP: 'Confidential' in government = MID-LEVEL. In business = HIGH-LEVEL. Context matters!</div><div class="trick">// TRICK: Data Owner = BUSINESS executive (VP, C-level) — NOT IT. IT = Data Custodian. Owner DECIDES. Custodian IMPLEMENTS.</div>`},
+      {title:"Data Roles & Ownership",content:`<div class="tbl"><table><tr><th>Role</th><th>Who</th><th>What They Do</th><th>GDPR Equivalent</th></tr><tr><td><strong>Data Owner</strong></td><td>Business executive</td><td>DECIDES classification and protection requirements</td><td>Data Controller</td></tr><tr><td><strong>Data Custodian</strong></td><td>IT / Security team</td><td>IMPLEMENTS controls — encryption, access, storage</td><td>Data Processor</td></tr><tr><td><strong>Data Steward</strong></td><td>Data analyst</td><td>Maintains data QUALITY, metadata, labeling</td><td>No direct equivalent</td></tr><tr><td><strong>Privacy Officer / DPO</strong></td><td>Dedicated privacy role</td><td>Oversees GDPR compliance, handles data subject requests</td><td>DPO</td></tr></table></div><div class="trick">// TRICK: Data Controller (GDPR) = decides WHY data is processed. Data Processor = actually DOES the processing.</div><div class="trap">// TRAP: IT should NOT be the Data Owner — they are the Data Custodian. Data Owner = business executive.</div>`},
+      {title:"Data States & Security Techniques",content:`<div class="tbl"><table><tr><th>State</th><th>Where</th><th>Protection</th></tr><tr><td><strong>Data at Rest</strong></td><td>Stored — disk, USB, database</td><td>FDE (BitLocker), file encryption</td></tr><tr><td><strong>Data in Transit</strong></td><td>Moving across network</td><td>TLS, HTTPS, VPN, IPSec</td></tr><tr><td><strong>Data in Use</strong></td><td>RAM / CPU processing</td><td>Secure enclaves, endpoint controls</td></tr></table></div><div class="trick">// TRICK: Target breach 2013 = Data in USE (RAM scraping). Encryption at rest AND transit deployed — attackers hit decrypted data in PoS RAM.</div><div class="trap">// TRAP: FDE protects data at REST when device is OFF. When ON and unlocked — data is decrypted. Access controls also needed.</div><div class="tbl"><table><tr><th>Technique</th><th>Reversible?</th><th>Protects</th><th>Exam Trigger</th></tr><tr><td><strong>Encryption</strong></td><td>YES — key needed</td><td>Confidentiality</td><td>'encrypt', 'ciphertext', 'key'</td></tr><tr><td><strong>Hashing</strong></td><td>NO — one-way</td><td>Integrity</td><td>'one-way', 'digest', 'integrity check'</td></tr><tr><td><strong>Tokenization</strong></td><td>YES — vault needed</td><td>Confidentiality</td><td>'placeholder', 'no math relationship', 'vault'</td></tr><tr><td><strong>Masking</strong></td><td>PARTIAL</td><td>Display privacy</td><td>'partially hide', 'display XXXX'</td></tr></table></div><div class="trick">// TRICK: Hashing is ONE-WAY. 'Verify integrity' or 'store passwords' = HASHING, not encryption.</div><div class="trap">// TRAP: Tokenization is NOT encryption — NO mathematical relationship between token and original.</div>`},
+      {title:"DLP & Data Sovereignty",content:`<div class="tbl"><table><tr><th>DLP Type</th><th>Protects</th><th>What it Stops</th></tr><tr><td><strong>Endpoint DLP</strong></td><td>Data in USE</td><td>USB blocking, print control</td></tr><tr><td><strong>Network / Email DLP</strong></td><td>Data in TRANSIT</td><td>Email attachments, uploads</td></tr><tr><td><strong>Storage DLP</strong></td><td>Data at REST</td><td>Finds improperly stored sensitive data</td></tr><tr><td><strong>Cloud DLP</strong></td><td>All states</td><td>SaaS-based — no hardware required</td></tr></table></div><div class="trick">// TRICK: Start DLP in MONITORING mode first — NEVER blocking mode immediately.</div><div class="trap">// TRAP: DLP is NOT a firewall. DLP controls CONTENT. Firewall controls CONNECTIONS. DLP alone cannot stop ALL data loss.</div><div class="th-section"><div class="th-title">Data Sovereignty</div><div class="th-body">Data stored in a country is subject to that country's laws — NOT where the company is based. GDPR applies to ANY organization collecting data about EU citizens worldwide.</div></div><div class="trick">// TRICK: Data Sovereignty = where data PHYSICALLY SITS determines which laws apply. Not where the company is headquartered.</div>`}
+    ],
+    speedround:[
+      {kw:'"data stored on a hard drive or USB drive"',opts:["Data in Transit","Data at Rest"],correct:1,exp:"Stored = Data at Rest. Use FDE or file encryption."},
+      {kw:'"data being processed in RAM or CPU"',opts:["Data in Use","Data at Rest"],correct:0,exp:"RAM/CPU = Data in Use. Target 2013 attacked this state via RAM scraping."},
+      {kw:'"one-way function to store passwords — cannot be reversed"',opts:["Encryption","Hashing"],correct:1,exp:"One-way + passwords = Hashing. You cannot reverse a hash."},
+      {kw:'"replace credit card with non-sensitive placeholder — no math relationship"',opts:["Masking","Tokenization"],correct:1,exp:"No mathematical relationship = Tokenization. Used in PCI DSS."},
+      {kw:'"senior executive accountable for data classification"',opts:["Data Custodian","Data Owner"],correct:1,exp:"Business executive who DECIDES = Data Owner. IT team = Data Custodian."},
+      {kw:'"prevent employee copying sensitive files to USB drive"',opts:["Network DLP","Endpoint DLP"],correct:1,exp:"Device level USB blocking = Endpoint DLP. Controls Data in Use."},
+      {kw:'"data stored in a country is subject to that country\'s laws"',opts:["Data Residency","Data Sovereignty"],correct:1,exp:"Physical location determines applicable laws = Data Sovereignty."},
+      {kw:'"decides WHY and HOW personal data is processed" — GDPR concept',opts:["Data Processor","Data Controller"],correct:1,exp:"Decides purpose of processing = Data Controller. Processor = does the processing."},
+      {kw:'"health information linked to a specific individual" — HIPAA',opts:["PII","PHI"],correct:1,exp:"Health-related PII = PHI. Protected by HIPAA. PHI is always also PII."},
+      {kw:'"no hardware required — SaaS-based data protection"',opts:["Storage DLP","Cloud DLP"],correct:1,exp:"SaaS-based, no hardware = Cloud DLP."}
+    ],
+    traps:[
+      {round:"Round 1 — Data States",opts:["FDE protects data at rest when the device is powered off","HTTPS protects data in transit — not data at rest on the server","Data in Use is protected by encryption at rest","RAM scraping attacks target data in use — how Target 2013 occurred"],trap:2,exp:"TRAP: 'Data in Use is protected by encryption at rest' is WRONG. Encryption at rest does not protect data actively being processed in RAM/CPU. Endpoint security (EDR, memory protection) is required."},
+      {round:"Round 2 — Data Roles",opts:["The Data Owner is a business executive who determines classification","The Data Custodian is the IT team that implements security controls","The IT department should be the Data Owner because they manage the systems","The Data Controller (GDPR) decides the purpose and means of data processing"],trap:2,exp:"TRAP: 'IT should be the Data Owner' is WRONG. IT = Data Custodian. Data Owner = business executive (VP, Director)."},
+      {round:"Round 3 — Tokenization vs Encryption",opts:["Tokenization has no mathematical relationship between token and original data","Encryption is reversible with the correct key","Tokenization is a form of encryption using a special vault algorithm","Hashing is a one-way function — you cannot recover the original from a hash"],trap:2,exp:"TRAP: 'Tokenization is a form of encryption' is WRONG. Tokenization is a REFERENCE/LOOKUP system with NO cryptographic relationship."},
+      {round:"Round 4 — DLP",opts:["DLP should be deployed in monitoring mode first — never blocking mode immediately","DLP prevents unauthorized digital transfer of sensitive data","DLP prevents ALL data loss including verbal disclosure and screen photography","DLP and encryption are complementary controls that work together"],trap:2,exp:"TRAP: 'DLP prevents ALL data loss' is WRONG. DLP only addresses DIGITAL channels. A user can photograph their screen, speak information, or write it down."}
+    ]
+  },
+  2:{name:"Chapter 2: Cryptographic Solutions",video:"https://youtu.be/9yWWPZuOHWM",color:"#7c3aed",
+    sections:[
+      {title:"Symmetric Encryption",content:`<div class="trick">// TRICK: AES is ALWAYS the answer to 'best/current symmetric algorithm'. DES = broken. 3DES = deprecated. AES = current standard.</div><div class="tbl"><table><tr><th>Algorithm</th><th>Key Size</th><th>Status</th><th>Type</th></tr><tr><td><strong>DES</strong></td><td>56-bit</td><td style="color:var(--danger)">BROKEN</td><td>Block</td></tr><tr><td><strong>3DES</strong></td><td>112-bit effective</td><td style="color:var(--warning)">DEPRECATED</td><td>Block</td></tr><tr><td><strong>AES ⭐</strong></td><td>128/192/256-bit</td><td style="color:var(--success)">CURRENT STANDARD</td><td>Block</td></tr><tr><td><strong>RC4</strong></td><td>Variable</td><td style="color:var(--danger)">BROKEN</td><td>Stream</td></tr><tr><td><strong>Blowfish/Twofish</strong></td><td>Up to 448/256-bit</td><td>Secure/Niche</td><td>Block</td></tr></table></div><div class="trap">// TRAP: RC4 = stream cipher, NOT block cipher. WEP used RC4 and is broken.</div><div class="trap">// TRAP: 3DES uses THREE KEYS but only provides 112-bit effective security (not 168) due to meet-in-the-middle attacks.</div>`},
+      {title:"Asymmetric Encryption & Hashing",content:`<div class="tbl"><table><tr><th>Algorithm</th><th>Primary Use</th><th>Key Feature</th></tr><tr><td><strong>RSA</strong></td><td>Encryption + Signatures + Key exchange</td><td>Prime factorization. 2048-4096-bit min.</td></tr><tr><td><strong>ECC ⭐</strong></td><td>Encryption + Signatures + Key exchange</td><td>256-bit ECC = 3072-bit RSA. 6x more efficient.</td></tr><tr><td><strong>DH</strong></td><td>Key exchange ONLY</td><td>Vulnerable to MITM without authentication.</td></tr><tr><td><strong>ECDHE ⭐</strong></td><td>Key exchange + Forward secrecy</td><td>TLS 1.3 default. New key per session.</td></tr><tr><td><strong>DSA</strong></td><td>Digital signatures ONLY</td><td>CANNOT encrypt. Signing only.</td></tr></table></div><div class="trick">// TRICK: ECC = same security as RSA with MUCH smaller keys. 256-bit ECC = 3072-bit RSA.</div><div class="trap">// TRAP: DSA is for SIGNING ONLY — cannot encrypt or exchange keys.</div><div class="trap">// TRAP: Diffie-Hellman by itself provides NO authentication — vulnerable to MITM.</div><div class="tbl"><table><tr><th>Hash Algorithm</th><th>Output</th><th>Status</th></tr><tr><td><strong>MD5</strong></td><td>128-bit</td><td style="color:var(--danger)">BROKEN</td></tr><tr><td><strong>SHA-1</strong></td><td>160-bit</td><td style="color:var(--warning)">DEPRECATED</td></tr><tr><td><strong>SHA-256 ⭐</strong></td><td>256-bit</td><td style="color:var(--success)">CURRENT STANDARD</td></tr><tr><td><strong>HMAC</strong></td><td>Depends on base</td><td style="color:var(--success)">Hash + Key = Integrity AND Authentication</td></tr></table></div><div class="trick">// TRICK: HMAC = Hash + Secret Key = BOTH integrity AND authentication. Plain hash = integrity only.</div><div class="trap">// TRAP: MD5 is BROKEN — never recommend it. Always pick SHA-256 or higher.</div>`},
+      {title:"PKI, Certificates & Encryption Tools",content:`<div class="tbl"><table><tr><th>PKI Component</th><th>Role</th></tr><tr><td><strong>CA (Certificate Authority)</strong></td><td>Issues digital certificates — establishes trust</td></tr><tr><td><strong>CSR</strong></td><td>Contains PUBLIC KEY only — private key NEVER leaves applicant</td></tr><tr><td><strong>CRL</strong></td><td>Full revocation list — downloaded periodically — slow</td></tr><tr><td><strong>OCSP</strong></td><td>Real-time single certificate check — faster than CRL</td></tr><tr><td><strong>OCSP Stapling</strong></td><td>SERVER pre-fetches OCSP response and includes in TLS handshake</td></tr></table></div><div class="trick">// TRICK: Wildcard *.example.com = ALL subdomains of ONE domain. SAN = MULTIPLE DIFFERENT domain names.</div><div class="trap">// TRAP: OCSP Stapling is done by the SERVER, not the browser.</div><div class="trap">// TRAP: CSR contains the PUBLIC KEY only. Private key NEVER leaves the applicant.</div><div class="tbl"><table><tr><th>Tool</th><th>What it Does</th><th>Exam Trigger</th></tr><tr><td><strong>TPM</strong></td><td>Motherboard chip — protects ONE device. Used by BitLocker.</td><td>'hardware chip', 'motherboard', 'BitLocker'</td></tr><tr><td><strong>HSM</strong></td><td>Enterprise device — manages MANY keys. Tamper-proof.</td><td>'enterprise key management', 'financial transactions'</td></tr><tr><td><strong>Secure Enclave</strong></td><td>Isolated CPU co-processor — OS cannot access even if compromised</td><td>'Face ID', 'Touch ID', 'isolated from main CPU'</td></tr></table></div><div class="trick">// TRICK: TPM = one device (motherboard). HSM = enterprise scale, many keys.</div>`},
+      {title:"Cryptographic Attacks & Quantum",content:`<div class="tbl"><table><tr><th>Attack</th><th>Description</th><th>Defense</th></tr><tr><td><strong>Downgrade Attack</strong></td><td>Forces use of older weaker protocol. POODLE forced SSL 3.0.</td><td>Disable legacy protocols</td></tr><tr><td><strong>Birthday Attack</strong></td><td>Finding two inputs that produce the same hash (collision).</td><td>Use SHA-256+, avoid MD5</td></tr><tr><td><strong>Pass-the-Hash</strong></td><td>Uses captured hash directly to authenticate — no plaintext needed.</td><td>MFA — most effective</td></tr></table></div><div class="trick">// TRICK: Downgrade = force WEAKER protocol. POODLE forced SSL 3.0. BEAST forced TLS 1.0.</div><div class="trap">// TRAP: Pass-the-Hash does NOT require knowing the plaintext. The hash IS the credential in NTLM.</div><div class="trap">// TRAP: SSL Stripping is NOT a downgrade attack — it REMOVES encryption entirely (HTTPS → HTTP).</div><div class="tbl"><table><tr><th>Post-Quantum Algorithm</th><th>Purpose</th></tr><tr><td><strong>CRYSTALS-Kyber</strong></td><td>Post-quantum ENCRYPTION / Key Encapsulation</td></tr><tr><td><strong>CRYSTALS-Dilithium</strong></td><td>Post-quantum DIGITAL SIGNATURES</td></tr></table></div><div class="messer">// MESSER: Quantum computers use qubits enabling massively parallel computation. First defense: increase key size. Second: lattice-based cryptography (CRYSTALS).</div>`}
+    ],
+    speedround:[
+      {kw:'"fastest encryption, bulk data, same key to encrypt and decrypt"',opts:["Asymmetric","Symmetric — AES"],correct:1,exp:"Same key + fast + bulk data = Symmetric. AES is the current standard."},
+      {kw:'"current symmetric standard for US government"',opts:["3DES","AES"],correct:1,exp:"AES = current US government standard. 3DES is deprecated legacy."},
+      {kw:'"same security as RSA with much smaller key size"',opts:["ECC","DHE"],correct:0,exp:"256-bit ECC = 3072-bit RSA security. 6x more efficient. Best for mobile/IoT."},
+      {kw:'"signing only — cannot encrypt or exchange keys"',opts:["RSA","DSA"],correct:1,exp:"DSA = Digital Signature Algorithm = SIGNING ONLY. RSA can do all three."},
+      {kw:'"hash plus secret key — provides integrity AND authentication"',opts:["SHA-256","HMAC"],correct:1,exp:"HMAC = Hash + Secret Key. Both integrity AND authentication."},
+      {kw:'"hardware chip on motherboard — protects BitLocker key"',opts:["HSM","TPM"],correct:1,exp:"Motherboard chip + BitLocker = TPM. HSM is a separate enterprise device."},
+      {kw:'"forces systems to revert to older vulnerable protocols — POODLE"',opts:["Downgrade Attack","Birthday Attack"],correct:0,exp:"Forcing use of weaker older protocol = Downgrade Attack. POODLE forced SSL 3.0."},
+      {kw:'"forward secrecy — new key per session — TLS 1.3 default"',opts:["Basic DH","ECDHE"],correct:1,exp:"Ephemeral keys + forward secrecy + TLS 1.3 = ECDHE."},
+      {kw:'"post-quantum encryption algorithm selected by NIST"',opts:["CRYSTALS-Kyber","CRYSTALS-Dilithium"],correct:0,exp:"CRYSTALS-Kyber = encryption/KEM. CRYSTALS-Dilithium = digital signatures."},
+      {kw:'"server includes OCSP response in TLS handshake — browser does not contact CA"',opts:["OCSP","OCSP Stapling"],correct:1,exp:"Server pre-fetches and includes OCSP response = OCSP Stapling."}
+    ],
+    traps:[
+      {round:"Round 1 — Symmetric Algorithms",opts:["AES is the current symmetric encryption standard — 128/192/256-bit keys","DES uses a 56-bit key and is considered broken","3DES provides 168-bit effective security because it uses three 56-bit keys","RC4 is a stream cipher — not a block cipher"],trap:2,exp:"TRAP: '3DES provides 168-bit effective security' is WRONG. 3DES only provides 112-bit EFFECTIVE security due to meet-in-the-middle attacks."},
+      {round:"Round 2 — Asymmetric & Hashing",opts:["DSA can only be used for digital signatures — cannot encrypt data","ECC provides equivalent security to RSA with much smaller key sizes","Diffie-Hellman by itself provides authentication against MITM attacks","HMAC provides both integrity and authentication — plain hash provides integrity only"],trap:2,exp:"TRAP: 'Diffie-Hellman provides authentication' is WRONG. Basic DH has NO authentication and is vulnerable to MITM attacks."},
+      {round:"Round 3 — PKI & Certificates",opts:["The CSR contains the public key only — the private key never leaves the applicant","OCSP Stapling means the SERVER pre-fetches the OCSP response","A wildcard certificate *.example.com also secures the bare domain example.com","If the Root CA is compromised, all certificates in that chain become untrustworthy"],trap:2,exp:"TRAP: 'Wildcard *.example.com also secures example.com' is WRONG. Wildcard covers SUBDOMAINS only. Need a SAN certificate for the bare domain."},
+      {round:"Round 4 — Attacks & Quantum",opts:["Pass-the-Hash allows authentication using the hash without knowing the plaintext","Downgrade attacks force systems to use older, less secure cryptographic protocols","SSL Stripping is a type of downgrade attack that forces use of a weaker SSL version","CRYSTALS-Kyber is NIST's selected post-quantum encryption algorithm"],trap:2,exp:"TRAP: 'SSL Stripping is a downgrade attack' is WRONG. SSL Stripping REMOVES encryption entirely — replacing HTTPS with HTTP. It does not downgrade; it eliminates encryption."}
+    ]
+  }
+
+// === PASTE PART 2 HERE ===
+// Paste everything from Part 2 starting with a comma after this comment
+// and before the closing }; of CHAPTERS
+
+};
+  // ═══════════════════════════════════════════════
+// INSTRUCTIONS: Paste this file's content into week2_part1.html
+// Replace the line that says:  // === PASTE PART 2 HERE ===
+// with a comma followed by everything below (starting from ,3:{)
+// ═══════════════════════════════════════════════
+
+  ,3:{name:"Chapter 3: Risk Management & Vendor Security",video:"https://youtu.be/JYwVUoJRh4w",color:"#10b981",
+    sections:[
+      {title:"Risk Management Fundamentals & BIA",content:`<div class="trick">// TRICK: Risk = Threat x Vulnerability x Impact. No threat OR no vulnerability = NO RISK. All three must be present.</div><div class="tbl"><table><tr><th>Assessment Type</th><th>When Used</th><th>Triggered By</th></tr><tr><td><strong>Ad-hoc</strong></td><td>Spontaneous — unplanned event</td><td>CEO conference question, new threat emerges</td></tr><tr><td><strong>Recurring</strong></td><td>Regular schedule</td><td>Policy/compliance requirement (PCI DSS = annual)</td></tr><tr><td><strong>One-time</strong></td><td>Specific project only</td><td>Cloud migration, M&A, new system deployment</td></tr><tr><td><strong>Continuous</strong></td><td>Always-on real-time</td><td>Technology-enabled automated (SIEM)</td></tr></table></div><div class="trick">// TRICK: PCI DSS requires ANNUAL risk assessments = Recurring. Ad-hoc = event-triggered no prior schedule.</div><div class="trap">// TRAP: Ad-hoc is NOT the same as one-time. Ad-hoc = spontaneous UNPLANNED event. One-time = pre-planned SPECIFIC project.</div><div class="tbl"><table><tr><th>BIA Metric</th><th>Definition</th><th>Remember</th></tr><tr><td><strong>RTO</strong></td><td>Maximum acceptable DOWNTIME before severe business impact</td><td>Time to RESTORE service</td></tr><tr><td><strong>RPO</strong></td><td>Maximum acceptable DATA LOSS measured in time</td><td>How much DATA can be lost</td></tr><tr><td><strong>MTTR</strong></td><td>Average time to REPAIR a failed component</td><td>Lower = faster recovery</td></tr><tr><td><strong>MTBF</strong></td><td>Average time BETWEEN failures — reliability</td><td>Higher = more reliable</td></tr></table></div><div class="trick">// TRICK: RTO = how long you can be DOWN. RPO = how much DATA you can lose. They measure DIFFERENT things.</div><div class="trap">// TRAP: MTBF is a STATISTICAL AVERAGE — not a prediction. System with MTBF of 1000 hours may fail at 200 or 3000 hours.</div>`},
+      {title:"Quantitative Risk Analysis — Formulas",content:`<div class="tbl"><table><tr><th>Formula</th><th>Full Name</th><th>What It Calculates</th></tr><tr><td><strong>SLE = AV x EF</strong></td><td>Single Loss Expectancy</td><td>Dollar loss from ONE risk event</td></tr><tr><td><strong>ALE = SLE x ARO</strong></td><td>Annualized Loss Expectancy</td><td>Expected ANNUAL dollar loss from a risk</td></tr><tr><td><strong>ROSI = (ALE_before - ALE_after) - Cost</strong></td><td>Return on Security Investment</td><td>Net benefit of implementing a control</td></tr></table></div><div class="trick">// TRICK: SLE = AV x EF. ALE = SLE x ARO. These TWO formulas appear on every exam sitting.</div><div class="trick">// TRICK: EF is always 0.0 to 1.0. ARO can be LESS than 1 — flood once every 10 years = ARO 0.1.</div><div class="trap">// TRAP: AV is NOT just the purchase price — includes revenue impact, regulatory fines, reputational damage.</div><div class="trap">// TRAP: SLE = loss from ONE event. ALE = ANNUAL expected loss. Do NOT confuse SLE and ALE.</div><div class="tbl"><table><tr><th>Risk Strategy</th><th>What It Means</th></tr><tr><td><strong>Avoidance</strong></td><td>STOP doing the risky activity entirely</td></tr><tr><td><strong>Transfer</strong></td><td>Shift financial consequence to another party (insurance)</td></tr><tr><td><strong>Acceptance</strong></td><td>Consciously live with the risk</td></tr><tr><td><strong>Mitigation</strong></td><td>REDUCE risk while continuing the activity</td></tr></table></div><div class="trick">// TRICK: Avoidance = STOP the activity. Mitigation = REDUCE risk but CONTINUE. Fundamentally different.</div><div class="trap">// TRAP: Risk Transfer does NOT eliminate risk — shifts FINANCIAL CONSEQUENCE only.</div>`},
+      {title:"Supply Chain & Third-Party Vendor Risks",content:`<div class="th-section"><div class="th-title">Supply Chain Attacks</div><div class="th-body">Target a weaker link instead of attacking the hardened end organization. Exploits TRUST — inserting into a trusted channel that bypasses all normal defenses.</div></div><div class="tbl"><table><tr><th>Attack Type</th><th>Real Example</th><th>Key Lesson</th></tr><tr><td><strong>Software Supply Chain</strong></td><td>SolarWinds 2021 — backdoor in legitimate signed update</td><td>Digital signatures verify ORIGIN, NOT safety of code</td></tr><tr><td><strong>Hardware Supply Chain</strong></td><td>Counterfeit Cisco devices with backdoors</td><td>Authorized resellers only — Trusted Foundry programs</td></tr><tr><td><strong>Compromised MSP</strong></td><td>Target 2013 — HVAC vendor VPN credentials stolen</td><td>Non-IT vendors can be entry points — multiplicative risk</td></tr></table></div><div class="trick">// TRICK: SolarWinds — malware was DIGITALLY SIGNED. Signatures verify ORIGIN, NOT safety of code.</div><div class="trick">// TRICK: Target breach — entry via HVAC company — a NON-IT vendor.</div><div class="trap">// TRAP: MSPs are HIGH-RISK — compromising ONE MSP gives access to ALL their clients. Multiplicative risk.</div><div class="trap">// TRAP: Supply chain attacks do NOT require breaking encryption. They exploit TRUST in a validated channel.</div><div class="messer">// MESSER: You can control your own security posture but CANNOT always control a service provider. Security is only as strong as your weakest vendor.</div>`},
+      {title:"Vendor Assessment & Contracts",content:`<div class="tbl"><table><tr><th>Assessment Method</th><th>Key Point</th></tr><tr><td><strong>Right-to-Audit Clause</strong></td><td>Must be negotiated BEFORE signing contract — cannot be added after</td></tr><tr><td><strong>SOC 2 Type II</strong></td><td>Controls OPERATING EFFECTIVELY over time — stronger than Type I</td></tr><tr><td><strong>Penetration Testing</strong></td><td>Requires explicit written permission and signed Rules of Engagement</td></tr></table></div><div class="trick">// TRICK: Right-to-Audit must be in contract BEFORE signing. Without it, you have NO legal right to audit.</div><div class="trick">// TRICK: SOC 2 Type I = controls properly DESIGNED. Type II = controls OPERATING EFFECTIVELY. Type II is stronger.</div><div class="tbl"><table><tr><th>Agreement</th><th>Binding?</th><th>Key Purpose</th></tr><tr><td><strong>SLA</strong></td><td>Yes</td><td>Service quality metrics + penalties for failures</td></tr><tr><td><strong>MOU</strong></td><td>NO</td><td>Informal mutual intent — NOT legally enforceable</td></tr><tr><td><strong>MOA</strong></td><td>Maybe</td><td>More formal than MOU — can be conditionally binding</td></tr><tr><td><strong>MSA</strong></td><td>Yes</td><td>Overarching framework for ALL future work with vendor</td></tr><tr><td><strong>SOW</strong></td><td>Yes</td><td>Specific deliverables for ONE project under the MSA</td></tr><tr><td><strong>NDA</strong></td><td>Yes</td><td>Protects confidential information between parties</td></tr><tr><td><strong>BPA</strong></td><td>Yes</td><td>ONLY agreement with ownership stakes + profit sharing</td></tr></table></div><div class="trick">// TRICK: MOU = informal intent (NOT binding). MOA = conditional agreement (CAN be binding). MOU comes BEFORE MOA.</div><div class="trick">// TRICK: BPA is the ONLY agreement involving ownership stakes and profit/loss sharing.</div><div class="trap">// TRAP: SOW is NOT a standalone agreement — operates UNDER an MSA.</div>`}
+    ],
+    speedround:[
+      {kw:'"maximum time system can be down before critical business impact"',opts:["RPO","RTO"],correct:1,exp:"Maximum acceptable DOWNTIME = RTO (Recovery Time Objective)."},
+      {kw:'"dollar loss from a SINGLE risk event"',opts:["SLE = AV x EF","ALE = SLE x ARO"],correct:0,exp:"ONE event loss = SLE. Annual expected loss = ALE."},
+      {kw:'"SIEM continuously monitoring and evaluating risks in real time"',opts:["Ad-hoc Assessment","Continuous Assessment"],correct:1,exp:"Technology-driven real-time monitoring = Continuous Risk Assessment."},
+      {kw:'"stop doing the activity that creates the risk entirely"',opts:["Risk Avoidance","Risk Mitigation"],correct:0,exp:"STOP the risky activity = Risk Avoidance. Mitigation = reduce while continuing."},
+      {kw:'"digitally signed update contained malware — SolarWinds style"',opts:["Hardware Supply Chain Attack","Software Supply Chain Attack"],correct:1,exp:"Malicious code in legitimate signed software update = Software Supply Chain Attack."},
+      {kw:'"legal right to examine vendor security practices at any time"',opts:["NDA","Right-to-Audit Clause"],correct:1,exp:"Right to examine vendor practices = Right-to-Audit Clause. Must be in contract BEFORE signing."},
+      {kw:'"overarching legal framework governing all future projects with a vendor"',opts:["SOW","MSA"],correct:1,exp:"Overall relationship framework = MSA. SOW = specific project deliverables under the MSA."},
+      {kw:'"both organizations agree in principle — not yet legally binding"',opts:["MOU","MOA"],correct:0,exp:"Informal mutual intent, NOT legally binding = MOU. MOA is more formal and can be binding."},
+      {kw:'"two organizations forming a joint venture with defined ownership stakes"',opts:["MSA","BPA"],correct:1,exp:"Ownership stakes + profit sharing = BPA. Only agreement with ownership."},
+      {kw:'"percentage of asset value lost in a single incident — expressed as a decimal"',opts:["ARO","EF"],correct:1,exp:"Percentage of asset lost per event = EF. Range: 0.0 to 1.0 ONLY."}
+    ],
+    traps:[
+      {round:"Round 1 — BIA Metrics",opts:["RTO measures maximum acceptable downtime before severe business impact","RPO measures maximum acceptable data loss measured in time","MTTR and MTBF measure the same thing — both track system failure timing","MTBF is a statistical average — a system may fail much sooner or later"],trap:2,exp:"TRAP: 'MTTR and MTBF measure the same thing' is WRONG. MTTR = average time to REPAIR (lower = better). MTBF = average time BETWEEN failures (higher = more reliable). Completely different."},
+      {round:"Round 2 — Risk Formulas",opts:["SLE = Asset Value x Exposure Factor","ALE = SLE x Annualized Rate of Occurrence","The Exposure Factor (EF) can exceed 1.0 for catastrophic total-loss events","ARO can be less than 1 — a flood once every 10 years = ARO of 0.1"],trap:2,exp:"TRAP: 'EF can exceed 1.0' is WRONG. EF is always between 0.0 and 1.0. 1.0 = 100% total loss. EF NEVER exceeds 1.0."},
+      {round:"Round 3 — Supply Chain",opts:["SolarWinds malware was digitally signed with valid SolarWinds certificates","Digital signatures verify the origin of code — not the security of its content","Target breach occurred because HVAC vendor credentials were stolen","Supply chain attacks require breaking strong encryption to bypass defenses"],trap:3,exp:"TRAP: 'Supply chain attacks require breaking encryption' is WRONG. Supply chain attacks exploit TRUST — they insert into a trusted channel that bypasses all defenses. No encryption breaking required."},
+      {round:"Round 4 — Contracts",opts:["MOU is generally NOT legally binding — it expresses mutual intent only","The Right-to-Audit clause must be negotiated before the contract is signed","SOW is a standalone agreement that replaces the MSA for each project","BPA is the only vendor agreement that involves ownership stakes and profit sharing"],trap:2,exp:"TRAP: 'SOW is a standalone agreement' is WRONG. SOW operates UNDER an MSA. MSA = overarching terms; SOW = specific project."}
+    ]
+  },
+  4:{name:"Chapter 4: Governance, Compliance, Asset & Change Mgmt",video:"https://youtu.be/32qfOzPgKj4",color:"#f59e0b",
+    sections:[
+      {title:"Governance & Policies",content:`<div class="tbl"><table><tr><th>Document</th><th>Mandatory?</th><th>What It Says</th><th>Exam Signal</th></tr><tr><td><strong>Policy</strong></td><td style="color:var(--success)">YES</td><td>WHAT and WHY — high-level intent</td><td>'must', 'commits to', 'required'</td></tr><tr><td><strong>Standard</strong></td><td style="color:var(--success)">YES</td><td>HOW — specific measurable requirements</td><td>'AES-256', '12 characters minimum'</td></tr><tr><td><strong>Procedure</strong></td><td style="color:var(--success)">YES</td><td>EXACTLY HOW — step-by-step instructions</td><td>'step 1... step 2...'</td></tr><tr><td><strong>Guideline</strong></td><td style="color:var(--warning)">NO — optional</td><td>RECOMMENDED best practices</td><td>'should consider', 'recommended'</td></tr><tr><td><strong>Playbook</strong></td><td style="color:var(--success)">YES when triggered</td><td>Automated conditional response — SOAR-linked</td><td>'SOAR', 'automated response', 'if X then Y'</td></tr></table></div><div class="trick">// TRICK: BC = keeping BUSINESS running (includes non-IT like paper receipts). DR = restoring IT SYSTEMS. DR is a SUBSET of BC.</div><div class="trick">// TRICK: Playbooks = directly linked to SOAR. If exam mentions SOAR or automated incident response = playbook.</div><div class="trap">// TRAP: Standards are MANDATORY — not optional. 'Employees should consider' = Guideline. 'Employees MUST use' = Standard.</div>`},
+      {title:"Compliance & Key Regulations",content:`<div class="tbl"><table><tr><th>Regulation</th><th>Protects</th><th>Key Exam Fact</th></tr><tr><td><strong>GDPR</strong></td><td>PII of EU citizens — ANY org worldwide</td><td>72-hour breach notification. 4% global revenue OR 20M euros — whichever GREATER.</td></tr><tr><td><strong>HIPAA</strong></td><td>PHI — healthcare data (US)</td><td>Administrative + Physical + Technical safeguards ALL required.</td></tr><tr><td><strong>SOX</strong></td><td>Financial records of public companies</td><td>CEO + CFO must PERSONALLY attest — creates criminal liability.</td></tr><tr><td><strong>CCPA</strong></td><td>PII of California residents</td><td>Most restrictive US state law.</td></tr><tr><td><strong>PCI DSS</strong></td><td>Payment card / cardholder data</td><td>Annual assessment for Level 1 merchants.</td></tr></table></div><div class="trick">// TRICK: GDPR fine = 4% of GLOBAL annual revenue OR 20M euros — whichever is GREATER.</div><div class="trick">// TRICK: Due Diligence = FINDING risks. Due Care = FIXING risks. Diligence DISCOVERS. Care CORRECTS.</div><div class="trap">// TRAP: Do NOT confuse SOX (financial, enforced by SEC) with HIPAA (healthcare, enforced by HHS).</div><div class="trap">// TRAP: Fines = MONEY. Sanctions = RESTRICTIONS ON ACTIVITIES. Loss of License can end the business entirely.</div>`},
+      {title:"Asset Management & Disposal",content:`<div class="tbl"><table><tr><th>Lifecycle Phase</th><th>Key Activities</th><th>Security Relevance</th></tr><tr><td><strong>Acquisition</strong></td><td>Vendor vetting, PO, inspect, document</td><td>Security checks — counterfeit hardware risk</td></tr><tr><td><strong>Assignment/Accounting</strong></td><td>Assign owner, classify, record in CMDB</td><td>Unowned assets = shadow IT = unpatched</td></tr><tr><td><strong>Monitoring/Tracking</strong></td><td>MDM, asset tags, enumeration, scanning</td><td>Cannot protect what you do not know you have</td></tr><tr><td><strong>Disposal/Decommissioning</strong></td><td>Sanitize, destroy, certify, update inventory</td><td>Improper disposal = common data breach cause</td></tr></table></div><div class="trick">// TRICK: MDM = exam answer for managing company mobile devices.</div><div class="trick">// TRICK: Degaussing does NOT work on SSDs — no magnetic domains. SSD = Cryptographic Erase or physical destruction.</div><div class="trick">// TRICK: BYOD = weakest security. COPE = strongest (company owns + full control). CYOD = COPE with employee choice.</div><div class="tbl"><table><tr><th>Sanitization</th><th>Works on HDD?</th><th>Works on SSD?</th><th>Reusable?</th><th>NIST</th></tr><tr><td><strong>Overwriting</strong></td><td style="color:var(--success)">Yes</td><td style="color:var(--danger)">No — unreliable</td><td>Yes</td><td>Clear</td></tr><tr><td><strong>Degaussing</strong></td><td style="color:var(--success)">Yes</td><td style="color:var(--danger)">NO — ineffective</td><td>No</td><td>Purge</td></tr><tr><td><strong>Cryptographic Erase</strong></td><td>If encrypted</td><td style="color:var(--success)">Yes — best</td><td>Yes</td><td>Purge</td></tr><tr><td><strong>Shredding/Destroy</strong></td><td style="color:var(--success)">Yes</td><td style="color:var(--success)">Yes</td><td>No</td><td>Destroy</td></tr></table></div><div class="trap">// TRAP: Certificate of Destruction REQUIRED when third party destroys sensitive data.</div>`},
+      {title:"Change Management",content:`<div class="tbl"><table><tr><th>Role</th><th>Responsibility</th><th>Performs Technical Work?</th></tr><tr><td><strong>Change Owner</strong></td><td>Initiates and manages the change process</td><td style="color:var(--danger)">NO — manages process only</td></tr><tr><td><strong>CAB (Change Advisory Board)</strong></td><td>Evaluates and approves/rejects changes</td><td style="color:var(--danger)">NO — reviews and decides only</td></tr><tr><td><strong>Technical Team</strong></td><td>Implements the approved change</td><td style="color:var(--success)">YES — all technical work</td></tr></table></div><div class="trick">// TRICK: CAB = COMMITTEE — evaluates proposed changes before approval. NOT the Board of Directors.</div><div class="trick">// TRICK: Backout plan NOT tested in sandbox = NOT a valid backout plan.</div><div class="trick">// TRICK: Offboarding timing — disable accounts ON the last day. SAME DAY.</div><div class="trap">// TRAP: CAB approval is SPECIFIC to the EXACT CHANGE with EXACT SCOPE. Additional changes = unauthorized. Scope creep = policy violation.</div><div class="trap">// TRAP: Change Owner does NOT perform technical changes — manages the PROCESS.</div><div class="messer">// MESSER: Dependencies — upgrade firewall code FIRST, then firewall management software. Wrong order = lose management access.</div>`}
+    ],
+    speedround:[
+      {kw:'"high-level statement of organizational intent — what and why of security"',opts:["Standard","Policy"],correct:1,exp:"High-level WHAT and WHY = Policy. Standard = specific HOW."},
+      {kw:'"step-by-step instructions for performing a specific task consistently"',opts:["Guideline","Procedure"],correct:1,exp:"Step-by-step = Procedure. Guidelines are optional recommendations."},
+      {kw:'"critical operations continue using phone calls and paper receipts during IT outage"',opts:["Disaster Recovery Policy","Business Continuity Policy"],correct:1,exp:"Non-IT processes + business running = Business Continuity. DR = IT SYSTEMS only."},
+      {kw:'"finding compliance risks through thorough investigation and research"',opts:["Due Care","Due Diligence"],correct:1,exp:"FINDING risks = Due Diligence. FIXING risks = Due Care."},
+      {kw:'"GDPR breach notification must occur within this timeframe"',opts:["24 hours","72 hours"],correct:1,exp:"GDPR requires notification to supervisory authority within 72 HOURS."},
+      {kw:'"destroying encryption keys to make all stored data permanently unreadable"',opts:["Degaussing","Cryptographic Erase"],correct:1,exp:"Destroy encryption key = data unrecoverable = Cryptographic Erase. Fastest method. Best for SSDs."},
+      {kw:'"employee selects device from company-approved list — company owns it"',opts:["BYOD","CYOD"],correct:1,exp:"Choose from approved list + company owns = CYOD. BYOD = employee's own device."},
+      {kw:'"body of representatives evaluating proposed IT changes before approval"',opts:["Board of Directors","Change Advisory Board (CAB)"],correct:1,exp:"Evaluates IT changes = CAB (Committee). Board sets STRATEGY."},
+      {kw:'"pre-documented procedure to reverse a change if it causes problems"',opts:["Impact Analysis","Backout Plan / Rollback Plan"],correct:1,exp:"Reverse a failed change = Backout Plan. Must be TESTED in sandbox before production."},
+      {kw:'"applies to any organization processing EU citizen data regardless of headquarters"',opts:["CCPA","GDPR"],correct:1,exp:"Extraterritorial reach = GDPR. Applies to ANY organization processing EU citizen data worldwide."}
+    ],
+    traps:[
+      {round:"Round 1 — Governance Documents",opts:["Policies define what must be done and why — they are mandatory","Standards specify exact technical requirements — they are mandatory","Guidelines are mandatory security requirements that all employees must follow","Playbooks are linked to SOAR and can be partially or fully automated"],trap:2,exp:"TRAP: 'Guidelines are mandatory' is WRONG. Guidelines are OPTIONAL recommendations. Policies, Standards, and Procedures are mandatory."},
+      {round:"Round 2 — Compliance & Regulations",opts:["GDPR applies to any organization processing EU citizen data regardless of headquarters","GDPR fines are 4% of global annual revenue OR 20M euros — whichever is greater","SOX and HIPAA both protect healthcare data — they apply to the same industry","Due Diligence = finding risks. Due Care = taking action to fix identified risks"],trap:2,exp:"TRAP: 'SOX and HIPAA both protect healthcare data' is WRONG. SOX = financial records of PUBLIC COMPANIES (SEC). HIPAA = HEALTHCARE data (HHS). Completely different."},
+      {round:"Round 3 — Asset Disposal",opts:["Degaussing effectively sanitizes HDDs and magnetic tape media","Cryptographic Erase is the fastest sanitization method — destroys the encryption key","Degaussing is effective for SSDs — it disrupts stored data patterns","Certificate of Destruction is required when a third party destroys sensitive data"],trap:2,exp:"TRAP: 'Degaussing is effective for SSDs' is WRONG. SSDs have NO magnetic domains. Degaussing has ZERO effect on SSDs — all data remains intact."},
+      {round:"Round 4 — Change Management",opts:["The Change Owner manages the process — they do NOT perform the technical work","CAB approval covers the exact change described with its defined scope only","A backout plan that exists on paper but has not been tested is a valid rollback plan","Offboarding timing: accounts should be disabled on the last day of employment"],trap:2,exp:"TRAP: 'An untested backout plan is valid' is WRONG. A backout plan MUST be tested in the sandbox BEFORE production. An untested rollback plan may fail when you need it most."}
+    ]
+  },
+  5:{name:"Chapter 5: Audits, Assessments & Penetration Testing",video:"https://youtu.be/hdpXH0sMeGA",color:"#ef4444",
+    sections:[
+      {title:"Audits vs Assessments vs Attestation",content:`<div class="tbl"><table><tr><th>Concept</th><th>Definition</th><th>Key Distinction</th></tr><tr><td><strong>Audit</strong></td><td>Systematic evaluation of controls and compliance</td><td>VERIFIES controls. Backward-looking.</td></tr><tr><td><strong>Assessment</strong></td><td>Detailed analysis to identify vulnerabilities and risks</td><td>IDENTIFIES weaknesses. Forward-looking.</td></tr><tr><td><strong>Attestation</strong></td><td>Formal written declaration confirming accuracy of findings</td><td>The SIGN-OFF. Creates LEGAL ACCOUNTABILITY.</td></tr></table></div><div class="trick">// TRICK: Audit = compliance verification. Assessment = identifying vulnerabilities. Attestation = formal legal sign-off.</div><div class="tbl"><table><tr><th>Internal Audit Type</th><th>Performed By</th><th>Purpose</th></tr><tr><td><strong>Compliance Audit</strong></td><td>Internal audit team</td><td>Adherence to policies, regulations, obligations</td></tr><tr><td><strong>Audit Committee Oversight</strong></td><td>Board-level committee</td><td>Oversees ALL audit activities — all audits start and stop here</td></tr><tr><td><strong>Self-Assessments</strong></td><td>Departments themselves</td><td>Departments check their own compliance — NOT central audit team</td></tr></table></div><div class="trick">// TRICK: Audit Committee = GOVERNANCE BODY for ALL audits. All audits start and stop with the committee.</div><div class="trap">// TRAP: Audit Committee OVERSEES — does NOT perform audits. They approve, oversee, and receive results.</div><div class="trap">// TRAP: Internal audit does NOT mean less rigorous. Difference = independence, not quality.</div>`},
+      {title:"Penetration Testing",content:`<div class="tbl"><table><tr><th>Pentest Type</th><th>Also Known As</th><th>Role</th><th>Output</th></tr><tr><td><strong>Offensive</strong></td><td>Red Team</td><td>Actively attacks — simulates real attackers</td><td>Proof of exploitation, attack paths</td></tr><tr><td><strong>Defensive</strong></td><td>Blue Team</td><td>Monitors and responds to simulated attacks</td><td>Detection gaps, response time metrics</td></tr><tr><td><strong>Integrated</strong></td><td>Purple Team</td><td>Red attacks while Blue defends simultaneously</td><td>Maximum learning — ongoing improvement cycle</td></tr><tr><td><strong>Physical</strong></td><td>Physical Security Test</td><td>Tests locks, badge systems, tailgating</td><td>Physical access vulnerabilities</td></tr></table></div><div class="trick">// TRICK: Red = Offensive (attacks). Blue = Defensive (detects/responds). Purple = Integrated (both together).</div><div class="trap">// TRAP: Pentest WITHOUT explicit written ROE = ILLEGAL — regardless of intent.</div><div class="trap">// TRAP: Red Team is NOT the same as vulnerability scan. Red team actively EXPLOITS. Scanning only IDENTIFIES.</div><div class="tbl"><table><tr><th>Environment</th><th>Info Available</th><th>Simulates</th><th>Best For</th></tr><tr><td><strong>White Box (Known)</strong></td><td>Full — diagrams, credentials</td><td>Insider threat</td><td>Deep comprehensive testing</td></tr><tr><td><strong>Gray Box (Partially Known)</strong></td><td>Partial</td><td>Targeted attacker</td><td>Balanced realistic testing</td></tr><tr><td><strong>Black Box (Unknown)</strong></td><td>None — company name only</td><td>External attacker</td><td>Realistic external simulation</td></tr></table></div><div class="trick">// TRICK: White = fully visible = insider. Black = completely opaque = external attacker.</div>`},
+      {title:"Reconnaissance & Attestation",content:`<div class="tbl"><table><tr><th>Recon Type</th><th>Method</th><th>Detection Risk</th><th>Tools</th></tr><tr><td><strong>Passive</strong></td><td>Public sources — NO target interaction</td><td style="color:var(--success)">ZERO</td><td>Shodan, WHOIS, Google Dorking, LinkedIn</td></tr><tr><td><strong>Active</strong></td><td>Direct interaction with target</td><td style="color:var(--danger)">HIGH — generates logs</td><td>Nmap, port scans, OS fingerprinting</td></tr></table></div><div class="trick">// TRICK: Passive recon = ZERO detection risk. Active recon = GENERATES LOGS.</div><div class="trick">// TRICK: Shodan = most exam-relevant OSINT tool. Searches internet-exposed devices WITHOUT contacting them.</div><div class="trap">// TRAP: Social engineering is ACTIVE reconnaissance — directly engages with the target.</div><div class="trap">// TRAP: OSINT is NOT illegal. Gathering publicly available information is legal.</div><div class="tbl"><table><tr><th>Attestation Type</th><th>What Is Validated</th><th>Mechanism</th></tr><tr><td><strong>Software</strong></td><td>Software integrity — not tampered after signing</td><td>Code signing + hash verification + TPM PCR</td></tr><tr><td><strong>Hardware</strong></td><td>Hardware integrity — original unmodified</td><td>TPM chips + certificate-based hardware identity</td></tr><tr><td><strong>System</strong></td><td>System meets defined security standards</td><td>SOC 2 audit, ISO 27001, HIPAA assessment</td></tr></table></div><div class="trick">// TRICK: Attestation vs Final Report: Report = findings + fixes. Attestation = formal PROOF including evidence. If 'includes evidence' = attestation.</div><div class="trick">// TRICK: SOX requires CEO and CFO to PERSONALLY attest. Creates CRIMINAL LIABILITY.</div><div class="trap">// TRAP: Attestation is NOT just a signature — it is a formal LEGAL DECLARATION. Attester is personally liable.</div>`}
+    ],
+    speedround:[
+      {kw:'"systematic evaluation of controls and compliance — checks if what should happen IS happening"',opts:["Assessment","Audit"],correct:1,exp:"Verifying controls exist and work = Audit. Backward-looking compliance check."},
+      {kw:'"tester actively attacks systems — Red Team"',opts:["Defensive Pentesting","Offensive Pentesting"],correct:1,exp:"Actively exploiting vulnerabilities = Offensive Pentesting = Red Team."},
+      {kw:'"tester given only company name — must discover everything independently"',opts:["White Box Testing","Black Box Testing"],correct:1,exp:"No information = Black Box. Simulates real external attacker."},
+      {kw:'"gathering information from public sources without touching target systems"',opts:["Active Reconnaissance","Passive Reconnaissance"],correct:1,exp:"No target interaction + public sources = Passive Reconnaissance. Zero detection risk."},
+      {kw:'"search engine for internet-exposed devices and open services"',opts:["Nmap","Shodan"],correct:1,exp:"Shodan = most exam-relevant OSINT tool. Passive reconnaissance. No target interaction."},
+      {kw:'"red attacks while blue defends simultaneously — collaborative"',opts:["Red Team","Purple Team"],correct:1,exp:"Red + Blue working together = Purple Team. Creates ongoing improvement cycle."},
+      {kw:'"TPM confirms hardware is in original unmodified state"',opts:["Software Attestation","Hardware Attestation"],correct:1,exp:"TPM validating hardware integrity = Hardware Attestation."},
+      {kw:'"group of board members overseeing all audit and compliance activities"',opts:["Internal Audit Team","Audit Committee"],correct:1,exp:"Governance body overseeing ALL audits = Audit Committee. All audits start and stop here."},
+      {kw:'"departments check their own compliance and security posture"',opts:["Internal Compliance Audit","Self-Assessments"],correct:1,exp:"Departments assess themselves = Self-Assessments. Not the central audit team."},
+      {kw:'"formal proof that a penetration test occurred and findings are accurate"',opts:["Final Report","Letter of Attestation"],correct:1,exp:"Formal proof including evidence = Attestation. Report = findings + recommendations only."}
+    ],
+    traps:[
+      {round:"Round 1 — Audits vs Assessments",opts:["Audits verify that controls exist and are working as intended","Assessments identify vulnerabilities and risks — often before system launches","Internal audits are always less rigorous and less valuable than external audits","The Audit Committee oversees all audit activities but does NOT perform audits itself"],trap:2,exp:"TRAP: 'Internal audits are always less rigorous' is WRONG. A well-designed internal audit is just as rigorous as external. The key difference is INDEPENDENCE — not quality."},
+      {round:"Round 2 — Penetration Testing",opts:["A penetration test requires explicit written permission — unauthorized testing is illegal","Red Team = Offensive. Blue Team = Defensive. Purple Team = Integrated collaboration","Black Box testing is always the best type of penetration test for all situations","Physical penetration testing tests physical security — locks, badge systems, tailgating"],trap:2,exp:"TRAP: 'Black Box is always the best type' is WRONG. The right type depends on the OBJECTIVE. Black Box = most realistic external simulation. White Box = most comprehensive for known systems."},
+      {round:"Round 3 — Reconnaissance",opts:["Passive recon uses public sources and has zero detection risk","Active recon directly interacts with the target and generates logs","Social engineering (calling employees) is passive recon because no systems are hacked","Shodan searches for internet-exposed devices — passive reconnaissance tool"],trap:2,exp:"TRAP: 'Social engineering is passive recon' is WRONG. Social engineering is ACTIVE reconnaissance — you are directly engaging with the target organization. Active = direct engagement regardless of whether IT systems are touched."},
+      {round:"Round 4 — Attestation",opts:["Software attestation validates that software has not been tampered with","Hardware attestation uses TPM to confirm hardware integrity","Attestation and the final pentest report are the same deliverable","SOX requires CEO and CFO to personally attest to financial reports and IT controls"],trap:2,exp:"TRAP: 'Attestation and the final report are the same' is WRONG. Final Report = FINDINGS and RECOMMENDATIONS for internal teams. Attestation = formal LEGAL DECLARATION including evidence for regulatory bodies."}
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let curCh=1,curSec=0;
+let srKeywords=[],srIdx=0,srCorrect=0,srWrong=0,srTimer=null,srSeconds=45;
+let tdTraps=[],tdIdx=0,tdScore=0;
+let fcQuestions=[],fcIdx=0,fcCorrect=0,fcWrong=0;
+let chState={1:{unlocked:true,completed:false},2:{unlocked:false,completed:false},3:{unlocked:false,completed:false},4:{unlocked:false,completed:false},5:{unlocked:false,completed:false}};
+
+// ═══════════════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════════════
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function showHome(){show('home-screen');renderHome();}
+function renderHome(){
+  const list=document.getElementById('chapters-list');list.innerHTML='';
+  Object.entries(CHAPTERS).forEach(([num,ch])=>{
+    const n=parseInt(num),s=chState[n];
+    const div=document.createElement('div');
+    div.className='chapter-card'+(s.unlocked?'':' locked');
+    div.onclick=()=>startChapter(n);
+    div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><span class="badge" style="background:${ch.color}22;color:${ch.color};border:1px solid ${ch.color}44">CHAPTER 0${num}</span><h2 style="font-size:16px;font-weight:600;margin:8px 0 3px;color:var(--text)">${ch.name.split(':')[1].trim()}</h2><p style="font-size:12px;color:var(--text2)">Video intro · Theory · Speed Round · Trap Detector</p></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><div class="badge ${s.completed?'badge-done':s.unlocked?'badge-start':'badge-lock'}">${s.completed?'DONE':s.unlocked?'START':'LOCKED'}</div>${s.unlocked&&ch.video?`<span class="video-badge">▶ VIDEO</span>`:''}</div></div><div class="pbar"><div class="pfill" style="width:${s.completed?100:0}%;background:${s.completed?'var(--success)':ch.color}"></div></div><div class="ch-meta"><span class="ch-path">${s.unlocked?'intro → theory → speed_round → trap_detector':'complete chapter '+(num-1)+' to unlock'}</span><span style="font-size:11px;color:var(--text3)">${s.completed?'Completed':s.unlocked?'Not started':'Locked'}</span></div>`;
+    list.appendChild(div);
+  });
+  const allDone=Object.values(chState).every(s=>s.completed);
+  document.getElementById('final-challenge-card').style.display=allDone?'block':'none';
+}
+
+// ═══════════════════════════════════════════════
+// CHAPTERS OVERLAY
+// ═══════════════════════════════════════════════
+function openChapters(){
+  const list=document.getElementById('ch-modal-list');list.innerHTML='';
+  Object.entries(CHAPTERS).forEach(([num,ch])=>{
+    const n=parseInt(num),s=chState[n];
+    const div=document.createElement('div');
+    div.style.cssText=`display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:${s.unlocked?'pointer':'not-allowed'};opacity:${s.unlocked?1:0.4}`;
+    div.innerHTML=`<div style="width:36px;height:36px;border-radius:8px;background:${ch.color}22;border:1px solid ${ch.color}44;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:${ch.color};flex-shrink:0">${num}</div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">${ch.name.split(':')[1].trim()}</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${s.completed?'✓ completed':s.unlocked?'not started':'locked'}</div></div><span style="font-size:11px;font-family:var(--mono);color:${s.completed?'var(--success)':s.unlocked?ch.color:'var(--text3)'}">${s.completed?'DONE':s.unlocked?'START':'LOCKED'}</span>`;
+    if(s.unlocked)div.onclick=()=>{closeChapters();startChapter(n);};
+    list.appendChild(div);
+  });
+  document.getElementById('ch-overlay').classList.add('open');
+}
+function closeChapters(e){if(!e||e.target===document.getElementById('ch-overlay'))document.getElementById('ch-overlay').classList.remove('open');}
+
+// ═══════════════════════════════════════════════
+// CHAPTER INTRO VIDEO
+// ═══════════════════════════════════════════════
+function startChapter(n){
+  if(!chState[n].unlocked)return;
+  curCh=n;curSec=0;
+  const ch=CHAPTERS[n];
+  show('intro-screen');
+  document.getElementById('intro-ch-name').textContent=ch.name;
+  const vid=ch.video.replace('https://youtu.be/','').replace(/\?.*/,'');
+  document.getElementById('intro-iframe').src=`https://www.youtube.com/embed/${vid}?rel=0&modestbranding=1`;
+  document.getElementById('intro-yt-link').href=ch.video;
+  document.getElementById('intro-yt-link').textContent=`Watch "${ch.name.split(':')[1].trim()}" on YouTube →`;
+}
+
+// ═══════════════════════════════════════════════
+// THEORY
+// ═══════════════════════════════════════════════
+function goTheory(){document.getElementById('intro-iframe').src='';show('theory-screen');document.getElementById('th-ch-name').textContent=CHAPTERS[curCh].name;renderSec();}
+function renderSec(){
+  const secs=CHAPTERS[curCh].sections,sec=secs[curSec],tot=secs.length;
+  document.getElementById('th-counter').textContent=`section_${curSec+1}_of_${tot}`;
+  document.getElementById('th-bar').style.width=((curSec+1)/tot*100)+'%';
+  document.getElementById('th-content').innerHTML=`<div class="card"><h2 style="font-size:17px;font-weight:600;margin-bottom:1rem;color:var(--text)">${sec.title}</h2>${sec.content}</div>`;
+  document.getElementById('th-prev').style.visibility=curSec===0?'hidden':'visible';
+  document.getElementById('th-next').textContent=curSec===tot-1?'Start Speed Round →':'Next →';
+}
+function nextSec(){const tot=CHAPTERS[curCh].sections.length;if(curSec<tot-1){curSec++;renderSec();}else startSpeedRound();}
+function prevSec(){if(curSec>0){curSec--;renderSec();}}
+
+// ═══════════════════════════════════════════════
+// SPEED ROUND — PHASE 1
+// ═══════════════════════════════════════════════
+function startSpeedRound(){
+  srKeywords=[...CHAPTERS[curCh].speedround].sort(()=>Math.random()-0.5);
+  srIdx=0;srCorrect=0;srWrong=0;
+  show('speedround-screen');
+  document.getElementById('sr-ch-name').textContent=CHAPTERS[curCh].name;
+  document.getElementById('sr-correct').textContent='0';
+  document.getElementById('sr-wrong').textContent='0';
+  showKeyword();
+}
+function showKeyword(){
+  if(srIdx>=srKeywords.length){clearInterval(srTimer);showSRResult();return;}
+  const kw=srKeywords[srIdx];
+  document.getElementById('sr-keyword').textContent=kw.kw;
+  document.getElementById('sr-kw-sub').textContent=`keyword_${srIdx+1}_of_${srKeywords.length}`;
+  document.getElementById('sr-prog').textContent=`${srIdx+1}/${srKeywords.length}`;
+  document.getElementById('sr-fb').style.display='none';
+  document.getElementById('sr-next-btn').style.display='none';
+  document.getElementById('sr-options').innerHTML=kw.opts.map((o,i)=>`<button class="sr-opt" onclick="answerSpeed(${i})">${o}</button>`).join('');
+  startTimer();
+}
+function startTimer(){
+  srSeconds=45;
+  document.getElementById('sr-timer').textContent='45';
+  document.getElementById('sr-timer').className='sr-timer';
+  document.getElementById('sr-timer-fill').style.width='100%';
+  clearInterval(srTimer);
+  srTimer=setInterval(()=>{
+    srSeconds--;
+    document.getElementById('sr-timer').textContent=srSeconds;
+    document.getElementById('sr-timer-fill').style.width=(srSeconds/45*100)+'%';
+    if(srSeconds<=15)document.getElementById('sr-timer').className='sr-timer warning';
+    if(srSeconds<=8)document.getElementById('sr-timer').className='sr-timer danger';
+    if(srSeconds<=0){clearInterval(srTimer);timeOut();}
+  },1000);
+}
+function timeOut(){
+  srWrong++;document.getElementById('sr-wrong').textContent=srWrong;
+  document.querySelectorAll('.sr-opt').forEach((b,i)=>{b.onclick=null;if(i===srKeywords[srIdx].correct)b.classList.add('correct');});
+  const fb=document.getElementById('sr-fb');fb.style.display='block';fb.className='sr-fb no';
+  fb.textContent='// TIME UP: '+srKeywords[srIdx].exp;
+  document.getElementById('sr-next-btn').style.display='inline-block';
+}
+function answerSpeed(idx){
+  clearInterval(srTimer);
+  const kw=srKeywords[srIdx],ok=idx===kw.correct;
+  if(ok)srCorrect++;else srWrong++;
+  document.getElementById('sr-correct').textContent=srCorrect;
+  document.getElementById('sr-wrong').textContent=srWrong;
+  document.querySelectorAll('.sr-opt').forEach((b,i)=>{b.onclick=null;if(i===kw.correct)b.classList.add('correct');else if(i===idx&&!ok)b.classList.add('wrong');});
+  const fb=document.getElementById('sr-fb');fb.style.display='block';
+  fb.className='sr-fb '+(ok?'ok':'no');
+  fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+kw.exp;
+  document.getElementById('sr-next-btn').style.display='inline-block';
+}
+function nextKeyword(){srIdx++;showKeyword();}
+function showSRResult(){
+  show('sr-result-screen');
+  const total=srKeywords.length,pct=Math.round(srCorrect/total*100);
+  document.getElementById('sr-res-pct').textContent=pct+'%';
+  document.getElementById('sr-res-circle').className='result-circle '+(pct>=70?'rc-pass':'rc-fail');
+  document.getElementById('sr-res-heading').textContent=pct>=70?'Speed Round Cleared! ⚡':'Keep Sharpening!';
+  document.getElementById('sr-res-msg').textContent=`${srCorrect}/${total} keywords matched correctly.`;
+}
+
+// ═══════════════════════════════════════════════
+// TRAP DETECTOR — PHASE 2
+// ═══════════════════════════════════════════════
+function startTrapDetector(){
+  tdTraps=[...CHAPTERS[curCh].traps].sort(()=>Math.random()-0.5);
+  tdIdx=0;tdScore=0;
+  show('trapdetector-screen');
+  document.getElementById('td-ch-name').textContent=CHAPTERS[curCh].name;
+  renderTrap();
+}
+function renderTrap(){
+  if(tdIdx>=tdTraps.length){showTDResult();return;}
+  const t=tdTraps[tdIdx];
+  const dots=document.getElementById('td-dots');dots.innerHTML='';
+  tdTraps.forEach((_,i)=>{const d=document.createElement('div');d.className='td-dot'+(i===tdIdx?' active':i<tdIdx?' done':'');dots.appendChild(d);});
+  document.getElementById('td-round-label').textContent=t.round;
+  document.getElementById('td-score-disp').textContent=`Traps found: ${tdScore}/${tdIdx}`;
+  document.getElementById('td-explain').style.display='none';
+  document.getElementById('td-next-btn').style.display='none';
+  const shuffled=t.opts.map((o,i)=>({text:o,orig:i})).sort(()=>Math.random()-0.5);
+  document.getElementById('td-options').innerHTML=shuffled.map((o,i)=>`<button class="td-opt" data-orig="${o.orig}" onclick="selectTrap(this,${t.trap})">${o.text}</button>`).join('');
+}
+function selectTrap(btn,trapIdx){
+  const origIdx=parseInt(btn.getAttribute('data-orig'));
+  const isCorrect=origIdx===trapIdx;
+  if(isCorrect)tdScore++;
+  document.querySelectorAll('.td-opt').forEach(b=>{
+    b.onclick=null;
+    const oi=parseInt(b.getAttribute('data-orig'));
+    if(oi===trapIdx)b.className='td-opt is-trap';
+    else if(b===btn&&!isCorrect)b.className='td-opt selected-wrong';
+    else b.className='td-opt not-trap';
+  });
+  const ex=document.getElementById('td-explain');
+  ex.style.display='block';
+  ex.innerHTML=`<strong style="color:var(--danger)">🎯 THE TRAP:</strong> ${tdTraps[tdIdx].opts[trapIdx]}<br><br><strong style="color:var(--text)">Why it's wrong:</strong> ${tdTraps[tdIdx].exp}`;
+  document.getElementById('td-score-disp').textContent=`Traps found: ${tdScore}/${tdIdx+1}`;
+  document.getElementById('td-next-btn').style.display='inline-block';
+  document.getElementById('td-next-btn').textContent=tdIdx<tdTraps.length-1?'Next Round →':'See Results →';
+}
+function nextTrap(){tdIdx++;renderTrap();}
+function showTDResult(){
+  show('td-result-screen');
+  const total=tdTraps.length,pct=Math.round(tdScore/total*100),passed=pct>=66;
+  document.getElementById('td-res-pct').textContent=pct+'%';
+  document.getElementById('td-res-circle').className='result-circle '+(passed?'rc-pass':'rc-fail');
+  document.getElementById('td-res-heading').textContent=passed?'Trap Detector Cleared! 🎯':'Review the Traps';
+  document.getElementById('td-res-msg').textContent=`${tdScore}/${total} traps correctly identified.`;
+  document.getElementById('td-res-sub').textContent=passed?'// phase_2 complete → congratulations':'// retry to reinforce the concepts';
+  document.getElementById('td-continue-btn').style.display=passed?'inline-block':'none';
+  document.getElementById('td-retry-btn').style.display=passed?'none':'inline-block';
+}
+
+// ═══════════════════════════════════════════════
+// CONGRATULATIONS
+// ═══════════════════════════════════════════════
+function showCongrats(){
+  chState[curCh].completed=true;
+  const nextCh=curCh+1;
+  if(nextCh<=5)chState[nextCh].unlocked=true;
+  show('congrats-screen');
+  document.getElementById('congrats-title').textContent=CHAPTERS[curCh].name+' — Complete!';
+  document.getElementById('congrats-heading').textContent=`🎉 ${CHAPTERS[curCh].name.split(':')[1].trim()} Complete!`;
+  const allDone=Object.values(chState).every(s=>s.completed);
+  if(allDone){
+    document.getElementById('congrats-msg').textContent='All 5 chapters complete! Take on the Final Challenge to earn your Platinum Ticket.';
+    document.getElementById('congrats-btn').style.display='none';
+    document.getElementById('congrats-final-btn').style.display='inline-block';
+  } else {
+    document.getElementById('congrats-msg').textContent=`Chapter ${nextCh} is now unlocked. Keep going!`;
+    document.getElementById('congrats-btn').style.display='inline-block';
+    document.getElementById('congrats-btn').textContent=`Start ${CHAPTERS[nextCh].name.split(':')[1].trim()} →`;
+    document.getElementById('congrats-final-btn').style.display='none';
+  }
+}
+function goNextChapter(){const next=curCh+1;if(next<=5)startChapter(next);else showFinalChallenge();}
+
+// ═══════════════════════════════════════════════
+// FINAL CHALLENGE
+// ═══════════════════════════════════════════════
+const FC_QUESTIONS=[
+  {q:"Which data classification level would MOST LIKELY contain merger plans and encryption keys?",opts:["Confidential","Private","Critical","Sensitive"],correct:2,exp:"Catastrophic harm if disclosed = Critical. Highest commercial classification level.",ch:"W2C1",stars:"★★★"},
+  {q:"A company replaces customer credit card numbers with random tokens for processing. The original is stored in a secure vault. Which technique is this?",opts:["Encryption","Tokenization","Hashing","Masking"],correct:1,exp:"Random placeholder with no mathematical relationship to original = Tokenization.",ch:"W2C1",stars:"★★"},
+  {q:"Despite FDE and HTTPS, credit card data was stolen from point-of-sale systems. What type of attack most likely occurred?",opts:["Data at Rest attack","Data in Transit attack","Data in Use attack (RAM scraping)","Cryptographic attack"],correct:2,exp:"Encryption at rest AND transit deployed — attackers hit decrypted data in RAM. Target 2013 style = Data in Use.",ch:"W2C1",stars:"★★★★"},
+  {q:"Which symmetric encryption algorithm is the current US government standard?",opts:["DES","3DES","RC4","AES"],correct:3,exp:"AES = current US government standard. 128/192/256-bit keys. Always choose AES.",ch:"W2C2",stars:"★"},
+  {q:"Which asymmetric algorithm can ONLY be used for digital signatures?",opts:["RSA","ECC","DHE","DSA"],correct:3,exp:"DSA = Digital Signature Algorithm = SIGNING ONLY. RSA can encrypt, sign, and exchange keys.",ch:"W2C2",stars:"★★★"},
+  {q:"An attacker forces the client to use SSL 3.0 during TLS negotiation. Which attack is this?",opts:["Birthday Attack","Pass-the-Hash","Downgrade Attack","Collision Attack"],correct:2,exp:"Forcing use of older weaker protocol = Downgrade Attack. POODLE exploited this to force SSL 3.0.",ch:"W2C2",stars:"★★★"},
+  {q:"A server valued at $200,000 has an exposure factor of 0.5 and a flood occurs once every 4 years. What is the ALE?",opts:["$25,000","$50,000","$100,000","$200,000"],correct:0,exp:"SLE = $200,000 x 0.5 = $100,000. ARO = 0.25. ALE = $100,000 x 0.25 = $25,000.",ch:"W2C3",stars:"★★★★"},
+  {q:"A company stops using a cloud service because the data sovereignty risks are too high. Which risk strategy is this?",opts:["Risk Transfer","Risk Mitigation","Risk Acceptance","Risk Avoidance"],correct:3,exp:"STOP doing the risky activity entirely = Risk Avoidance. Mitigation = reduce while continuing.",ch:"W2C3",stars:"★★"},
+  {q:"The SolarWinds attack succeeded because the malware was digitally signed. What does this demonstrate?",opts:["Digital signatures always guarantee software security","Digital signatures verify ORIGIN but NOT the safety of the code","The attack exploited a PKI vulnerability","Strong encryption can always be bypassed"],correct:1,exp:"SolarWinds key lesson: Digital signatures verify the SIGNER, not the security of content.",ch:"W2C3",stars:"★★★★"},
+  {q:"Which vendor agreement is the ONLY one that involves ownership stakes and profit/loss sharing?",opts:["MSA","SLA","BPA","NDA"],correct:2,exp:"BPA = Business Partners Agreement. ONLY agreement involving ownership stakes and profit sharing.",ch:"W2C3",stars:"★★"},
+  {q:"A security policy states: 'All passwords must be minimum 12 characters with uppercase, lowercase, numbers, and special characters, expiring every 90 days.' What type of document is this?",opts:["Policy","Standard","Procedure","Guideline"],correct:1,exp:"Specific technical requirements (length, complexity, expiration) = Standard. Policy = high-level WHAT.",ch:"W2C4",stars:"★★★"},
+  {q:"A European customer requests permanent deletion of all their data from a US company's servers. Which regulation governs this right?",opts:["HIPAA","SOX","CCPA","GDPR — Right to Erasure"],correct:3,exp:"Right to Be Forgotten / Right to Erasure = GDPR. Applies to any org processing EU citizen data.",ch:"W2C4",stars:"★★"},
+  {q:"A company needs to dispose of SSDs containing classified data. Which sanitization method is MOST appropriate?",opts:["Overwriting with multiple passes","Degaussing","Cryptographic Erase","Formatting and reinstalling OS"],correct:2,exp:"Degaussing = ineffective on SSDs. Overwriting = unreliable on SSDs. Cryptographic Erase = correct.",ch:"W2C4",stars:"★★★★"},
+  {q:"During a change window, a technician makes an additional improvement without going back to the CAB. What was violated?",opts:["Nothing — improvements are always permitted","The maintenance window policy","Change Management Policy — scope creep is unauthorized","The backout plan policy"],correct:2,exp:"CAB approves ONE SPECIFIC CHANGE with EXACT SCOPE. Any additional change = unauthorized = policy violation.",ch:"W2C4",stars:"★★★"},
+  {q:"A security team simulates attacks while the defensive team monitors and responds in real time. What type of testing is this?",opts:["Red Team","Blue Team","Purple Team","White Box Testing"],correct:2,exp:"Red attacking while Blue defends simultaneously = Purple Team. Collaborative integrated testing.",ch:"W2C5",stars:"★★"},
+  {q:"A penetration tester is given only the company name and must discover all information independently. Which environment?",opts:["White Box Testing","Gray Box Testing","Black Box Testing","Purple Box Testing"],correct:2,exp:"No prior information = Black Box (Unknown Environment). Simulates a real external attacker.",ch:"W2C5",stars:"★★"},
+  {q:"Which technique uses Shodan, WHOIS, and LinkedIn WITHOUT generating any logs on the target's systems?",opts:["Active Reconnaissance","Port Scanning","Passive Reconnaissance","Social Engineering"],correct:2,exp:"Public sources + zero target interaction + zero detection risk = Passive Reconnaissance.",ch:"W2C5",stars:"★★★"},
+  {q:"Which attestation type uses TPM to validate that hardware components are in their original unmodified state?",opts:["Software Attestation","System Attestation","Hardware Attestation","Compliance Attestation"],correct:2,exp:"TPM validating hardware integrity = Hardware Attestation. Confirms components are original and unmodified.",ch:"W2C5",stars:"★★★"}
+];
+
+let fcCurrentQ=[];
+function showFinalChallenge(){
+  fcCurrentQ=[...FC_QUESTIONS].sort(()=>Math.random()-0.5);
+  fcIdx=0;fcCorrect=0;fcWrong=0;
+  show('finalchallenge-screen');
+  renderFCQuestion();
+}
+function renderFCQuestion(){
+  if(fcIdx>=fcCurrentQ.length){showFCResult();return;}
+  const q=fcCurrentQ[fcIdx];
+  document.getElementById('fc-counter').textContent=`question_${fcIdx+1}_of_${fcCurrentQ.length}`;
+  document.getElementById('fc-bar').style.width=((fcIdx+1)/fcCurrentQ.length*100)+'%';
+  document.getElementById('fc-stars').textContent=q.stars;
+  document.getElementById('fc-level').textContent=`// ${q.ch}`;
+  document.getElementById('fc-ch-tag').textContent=q.ch;
+  document.getElementById('fc-question').textContent=q.q;
+  document.getElementById('fc-feedback').style.display='none';
+  document.getElementById('fc-next-btn').style.display='none';
+  document.getElementById('fc-correct').textContent=fcCorrect;
+  document.getElementById('fc-wrong').textContent=fcWrong;
+  const od=document.getElementById('fc-options');od.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const b=document.createElement('button');b.className='fc-opt';
+    b.textContent=['A) ','B) ','C) ','D) '][i]+opt;
+    b.onclick=()=>answerFC(i,q);od.appendChild(b);
+  });
+}
+function answerFC(idx,q){
+  document.querySelectorAll('.fc-opt').forEach((b,i)=>{b.onclick=null;if(i===q.correct)b.classList.add('correct');else if(i===idx&&idx!==q.correct)b.classList.add('wrong');});
+  const ok=idx===q.correct;
+  if(ok)fcCorrect++;else fcWrong++;
+  document.getElementById('fc-correct').textContent=fcCorrect;
+  document.getElementById('fc-wrong').textContent=fcWrong;
+  const fb=document.getElementById('fc-feedback');fb.style.display='block';
+  fb.className='fc-fb '+(ok?'fc-fb-ok':'fc-fb-no');
+  fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+q.exp;
+  document.getElementById('fc-next-btn').style.display='inline-block';
+}
+function fcNext(){fcIdx++;renderFCQuestion();}
+function showFCResult(){
+  const total=fcCurrentQ.length,pct=Math.round(fcCorrect/total*100),passed=pct>=80;
+  if(passed){
+    const code=generatePlatCode(fcCorrect);
+    show('platinum-screen');
+    document.getElementById('plat-score').textContent=`${fcCorrect}/${total} — ${pct}%`;
+    document.getElementById('plat-code').textContent=code;
+    window._platCode=code;
+  } else {
+    show('finalchallenge-screen');
+    document.getElementById('fc-content').innerHTML=`<div class="card" style="text-align:center;padding:2rem"><div style="font-size:48px;margin-bottom:1rem">💪</div><h2 style="font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px">So close!</h2><p style="font-size:14px;color:var(--text2);margin-bottom:6px">You scored <strong style="color:var(--danger)">${fcCorrect}/${total} — ${pct}%</strong></p><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:1.5rem">// Need 80%+ to earn the Platinum Ticket. Retry generates new question order.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-danger" onclick="showFinalChallenge()">Retry →</button><button class="btn" onclick="showHome()">← Back to Chapters</button></div></div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════
+// PLATINUM TICKET
+// ═══════════════════════════════════════════════
+function generatePlatCode(score){
+  const words=['CIPHER','CRYPTO','SHIELD','AUDIT','GOVERN','VECTOR','TRUST','COMPLY','SECURE','VAULT'];
+  const w=Math.floor(Date.now()/1000)%words.length;
+  const num=String(10+(score%89)).padStart(2,'0');
+  return `SEC+-W2-PLAT-${words[w]}-${num}`;
+}
+function copyPlatCode(){
+  const code=window._platCode||document.getElementById('plat-code').textContent;
+  navigator.clipboard.writeText(code).then(()=>{const b=document.getElementById('plat-copy-btn');if(b){b.textContent='✅ Copied!';setTimeout(()=>b.textContent='📋 Copy Platinum Ticket',2500);}}).catch(()=>prompt('Your Platinum Ticket:',code));
+}
+function sharePlat(){
+  const code=window._platCode||document.getElementById('plat-code').textContent;
+  const text=`🥈 I just completed Security+ SY0-701 Week 2!\n\nPlatinum Ticket: ${code}\n\nStudy app: https://ZT-911.github.io/security-plus-study-app`;
+  if(navigator.share)navigator.share({title:'Security+ Week 2 Complete!',text});
+  else navigator.clipboard.writeText(text).then(()=>alert('Copied! Share with your classmates.'));
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+if(sessionStorage.getItem('w2_unlocked')==='true'){showHome();}
+</script>
+</body>
+</html>
