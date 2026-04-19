@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Security+ Week 2 | Study App</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --bg:#0a0e1a;
+  --surface:#111827;
+  --surface2:#1a2235;
+  --border:#1e2d45;
+
+  --accent:#00d4ff;
+  --accent2:#7c3aed;
+
+  --success:#10b981;
+  --danger:#ef4444;
+  --warning:#f59e0b;
+
+  --text:#e2e8f0;
+  --text2:#94a3b8;
+  --text3:#64748b;
+
+  --platinum:#e5e4e2;
+
+  --mono:'Space Mono', monospace;
+  --sans:'DM Sans', sans-serif;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  min-height:100vh;
+}
+
+.app{
+  max-width:1200px;
+  margin:auto;
+  padding:2rem;
+}
+
+.screen{
+  display:none;
+}
+
+.screen.active{
+  display:block;
+}
+
+/* NAV */
+
+.nav-bar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:1.5rem;
+  padding-bottom:1rem;
+  border-bottom:1px solid var(--border);
+}
+
+.nav-title{
+  font-size:15px;
+  font-weight:600;
+}
+
+.nav-sub{
+  font-size:11px;
+  color:var(--text3);
+  font-family:var(--mono);
+}
+
+/* BUTTONS */
+
+.btn{
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.btn-primary{
+  background:rgba(0,212,255,0.1);
+  color:var(--accent);
+  border-color:rgba(0,212,255,0.3);
+}
+
+.btn:hover{
+  background:var(--surface2);
+}
+
+/* CARD */
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:1.25rem;
+  margin-bottom:1rem;
+}
+
+/* CHAPTER LIST */
+
+.chapter-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:1.2rem;
+  margin-bottom:1rem;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.chapter-card:hover{
+  border-color:var(--accent);
+}
+
+.chapter-card.locked{
+  opacity:0.4;
+  cursor:not-allowed;
+}
+
+/* PROGRESS */
+
+.pbar{
+  width:100%;
+  height:4px;
+  background:var(--border);
+  border-radius:2px;
+  margin-top:10px;
+}
+
+.pfill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:2px;
+}
+
+/* TIMER */
+
+.timer{
+  font-family:var(--mono);
+  font-size:40px;
+  text-align:center;
+  margin:1rem 0;
+}
+
+.timer.warning{color:var(--warning);}
+.timer.danger{color:var(--danger);}
+
+/* OPTIONS */
+
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:1rem;
+}
+
+.opt{
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  cursor:pointer;
+  background:var(--surface2);
+}
+
+.opt:hover{
+  border-color:var(--accent);
+}
+
+.opt.correct{
+  background:rgba(16,185,129,0.1);
+  border-color:var(--success);
+}
+
+.opt.wrong{
+  background:rgba(239,68,68,0.1);
+  border-color:var(--danger);
+}
+
+/* RESULT */
+
+.result-circle{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  margin:auto;
+}
+
+.pass{
+  border:2px solid var(--success);
+  color:var(--success);
+}
+
+.fail{
+  border:2px solid var(--danger);
+  color:var(--danger);
+}
+
+.footer{
+  text-align:center;
+  margin-top:2rem;
+  font-size:12px;
+  color:var(--text3);
+}
+
+</style>
+</head>
+
+<body>
+
+<script>
+if(sessionStorage.getItem("w2_unlocked") !== "true"){
+  window.location.href="index.html";
+}
+</script>
+
+<div class="app">
+
+<!-- HOME SCREEN -->
+<div id="home-screen" class="screen active">
+  <h1 style="margin-bottom:1rem">Week 2 — Cryptography & Risk</h1>
+  <div id="chapters"></div>
+</div>
+<!-- INTRO SCREEN -->
+<div id="intro-screen" class="screen">
+  <div class="nav-bar">
+    <div style="flex:1">
+      <div class="nav-title" id="intro-title"></div>
+      <div class="nav-sub">Intro Video</div>
+    </div>
+    <button class="btn" onclick="goHome()">Home</button>
+  </div>
+
+  <div class="card">
+    <iframe id="intro-video" width="100%" height="315" frameborder="0" allowfullscreen></iframe>
+
+    <div style="margin-top:10px">
+      <a id="intro-link" target="_blank" style="color:var(--accent)">Open on YouTube</a>
+    </div>
+
+    <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end">
+      <button class="btn" onclick="goTheory()">Skip</button>
+      <button class="btn btn-primary" onclick="goTheory()">Start Theory</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- THEORY SCREEN -->
+<div id="theory-screen" class="screen">
+  <div class="nav-bar">
+    <div style="flex:1">
+      <div class="nav-title" id="th-title"></div>
+      <div class="nav-sub" id="th-count"></div>
+    </div>
+    <button class="btn" onclick="goHome()">Home</button>
+  </div>
+
+  <div class="pbar"><div class="pfill" id="th-bar"></div></div>
+
+  <div id="th-content" style="margin-top:1rem"></div>
+
+  <div style="display:flex; justify-content:space-between; margin-top:1rem">
+    <button class="btn" onclick="prevSec()" id="prevBtn">Prev</button>
+    <button class="btn btn-primary" onclick="nextSec()" id="nextBtn">Next</button>
+  </div>
+</div>
+
+
+<!-- SPEED ROUND -->
+<div id="speed-screen" class="screen">
+  <div class="nav-bar">
+    <div style="flex:1">
+      <div class="nav-title">Speed Round</div>
+      <div class="nav-sub">Phase 1</div>
+    </div>
+  </div>
+
+  <div class="timer" id="timer">45</div>
+
+  <div id="keyword" style="text-align:center; font-size:20px; margin-top:1rem"></div>
+
+  <div class="options" id="options"></div>
+
+  <div style="text-align:center; margin-top:1rem">
+    <span>✔ <span id="correct">0</span></span>
+    <span style="margin-left:15px">✖ <span id="wrong">0</span></span>
+  </div>
+</div>
+
+
+<!-- RESULT SCREEN -->
+<div id="result-screen" class="screen">
+  <div class="card" style="text-align:center">
+    <div class="result-circle pass" id="result-circle">0%</div>
+    <h2 id="result-text"></h2>
+
+    <button class="btn btn-primary" onclick="startTrap()">Continue</button>
+  </div>
+</div>
+
+
+<!-- TRAP DETECTOR -->
+<div id="trap-screen" class="screen">
+  <div class="nav-bar">
+    <div style="flex:1">
+      <div class="nav-title">Trap Detector</div>
+      <div class="nav-sub">Phase 2</div>
+    </div>
+  </div>
+
+  <div id="trap-question" style="margin-top:1rem"></div>
+  <div class="options" id="trap-options"></div>
+</div>
+
+
+<!-- CONGRATS -->
+<div id="congrats-screen" class="screen">
+  <div class="card" style="text-align:center">
+    <h2>Chapter Completed</h2>
+    <button class="btn btn-primary" onclick="nextChapter()">Next Chapter</button>
+  </div>
+</div>
+
+
+<script>
+
+/* =========================
+   STATE
+========================= */
+
+let curCh = 1;
+let curSec = 0;
+
+const chapters = {
+  1:{
+    name:"Data Protection",
+    video:"https://www.youtube.com/embed/yXnfM0NlqIM",
+    theory:[
+      "Data Classification: Public, Private, Confidential",
+      "Data States: At Rest, In Transit, In Use",
+      "DLP: Prevents data exfiltration"
+    ],
+    speed:[
+      {q:"Stored data",a:["At Rest","In Transit"],c:0},
+      {q:"RAM data",a:["In Use","At Rest"],c:0},
+      {q:"Network transfer",a:["In Transit","At Rest"],c:0}
+    ]
+  },
+
+  2:{
+    name:"Cryptography",
+    video:"https://www.youtube.com/embed/9yWWPZuOHWM",
+    theory:[
+      "AES: symmetric encryption",
+      "RSA: asymmetric encryption",
+      "Hashing: one-way function"
+    ],
+    speed:[
+      {q:"AES type",a:["Symmetric","Asymmetric"],c:0},
+      {q:"RSA type",a:["Asymmetric","Symmetric"],c:0},
+      {q:"Hashing",a:["One-way","Reversible"],c:0}
+    ]
+  }
+};
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function goHome(){
+  show("home-screen");
+}
+
+
+/* =========================
+   HOME LOAD
+========================= */
+
+function loadChapters(){
+  const container = document.getElementById("chapters");
+  container.innerHTML="";
+
+  Object.keys(chapters).forEach(i=>{
+    const ch = chapters[i];
+
+    container.innerHTML += `
+      <div class="chapter-card" onclick="startChapter(${i})">
+        <h3>Chapter ${i} — ${ch.name}</h3>
+      </div>
+    `;
+  });
+}
+
+loadChapters();
+
+
+/* =========================
+   INTRO
+========================= */
+
+function startChapter(n){
+  curCh = n;
+  document.getElementById("intro-title").innerText = chapters[n].name;
+  document.getElementById("intro-video").src = chapters[n].video;
+  document.getElementById("intro-link").href = chapters[n].video.replace("embed","watch?v=");
+  show("intro-screen");
+}
+
+
+/* =========================
+   THEORY
+========================= */
+
+function goTheory(){
+  curSec = 0;
+  renderTheory();
+  show("theory-screen");
+}
+
+function renderTheory(){
+  const ch = chapters[curCh];
+
+  document.getElementById("th-title").innerText = ch.name;
+  document.getElementById("th-count").innerText = (curSec+1)+"/"+ch.theory.length;
+  document.getElementById("th-content").innerText = ch.theory[curSec];
+
+  document.getElementById("th-bar").style.width =
+    ((curSec+1)/ch.theory.length)*100+"%";
+}
+
+function nextSec(){
+  const ch = chapters[curCh];
+  if(curSec < ch.theory.length-1){
+    curSec++;
+    renderTheory();
+  } else {
+    startSpeed();
+  }
+}
+
+function prevSec(){
+  if(curSec > 0){
+    curSec--;
+    renderTheory();
+  }
+}
+
+
+/* =========================
+   SPEED ROUND
+========================= */
+
+let srIndex=0,correct=0,wrong=0,time=45;
+
+function startSpeed(){
+  srIndex=0;correct=0;wrong=0;time=45;
+  show("speed-screen");
+  nextQuestion();
+  timer();
+}
+
+function nextQuestion(){
+  const q = chapters[curCh].speed[srIndex];
+  document.getElementById("keyword").innerText = q.q;
+
+  document.getElementById("options").innerHTML =
+    q.a.map((opt,i)=>`<div class="opt" onclick="answer(${i})">${opt}</div>`).join("");
+}
+
+function answer(i){
+  const q = chapters[curCh].speed[srIndex];
+
+  if(i===q.c){correct++;}else{wrong++;}
+
+  document.getElementById("correct").innerText = correct;
+  document.getElementById("wrong").innerText = wrong;
+
+  srIndex++;
+
+  if(srIndex < chapters[curCh].speed.length){
+    nextQuestion();
+  } else {
+    endSpeed();
+  }
+}
+
+function timer(){
+  const t = document.getElementById("timer");
+
+  const interval = setInterval(()=>{
+    time--;
+    t.innerText = time;
+
+    if(time<=0){
+      clearInterval(interval);
+      endSpeed();
+    }
+  },1000);
+}
+
+function endSpeed(){
+  const score = Math.round((correct/(correct+wrong))*100);
+
+  document.getElementById("result-circle").innerText = score+"%";
+  document.getElementById("result-text").innerText = score>=80 ? "PASS" : "FAIL";
+
+  show("result-screen");
+}
+
+
+/* =========================
+   TRAP
+========================= */
+
+function startTrap(){
+  show("trap-screen");
+
+  document.getElementById("trap-question").innerText =
+    "Which one is NOT correct?";
+
+  document.getElementById("trap-options").innerHTML = `
+    <div class="opt">AES is symmetric</div>
+    <div class="opt">RSA is symmetric</div>
+    <div class="opt">Hashing is one-way</div>
+    <div class="opt">Data in RAM is In Use</div>
+  `;
+}
+
+
+/* =========================
+   NEXT CHAPTER
+========================= */
+
+function nextChapter(){
+  curCh++;
+
+  if(!chapters[curCh]){
+    alert("Final Challenge coming next...");
+    goHome();
+    return;
+  }
+
+  startChapter(curCh);
+}
+
+</script>
+
+<div class="footer">
+  Built by Carlos Materano · 2026
+</div>
+
+</div>
+
+</body>
+</html>
