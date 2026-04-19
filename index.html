@@ -1421,7 +1421,7 @@ if(sessionStorage.getItem('w2_unlocked')!=='true'){
 // ═══════════════════════════════════════════════
 // CHAPTER DATA — W2C1 & W2C2
 // ═══════════════════════════════════════════════
-const CHAPTERS={
+  const CHAPTERS={
   1:{name:"Chapter 1: Data Protection",video:"https://youtu.be/yXnfM0NlqIM",color:"#00d4ff",
     sections:[
       {title:"Data Classifications",content:`<div class="trick">// TRICK: Commercial: Public→Sensitive→Private→Confidential→Critical. Government: Unclassified→SBU→Confidential→Secret→Top Secret — MIX ON THE EXAM!</div><div class="tbl"><table><tr><th>Commercial Level</th><th>Description</th><th>Example</th></tr><tr><td><strong>Public</strong></td><td>Freely shareable — no harm if disclosed</td><td>Press releases, website content</td></tr><tr><td><strong>Sensitive</strong></td><td>Minor harm if disclosed</td><td>Internal financial summaries</td></tr><tr><td><strong>Private</strong></td><td>Personal employee information</td><td>HR records, salary data, PII</td></tr><tr><td><strong>Confidential</strong></td><td>Significant harm if disclosed</td><td>Trade secrets, source code</td></tr><tr><td><strong>Critical</strong></td><td>Catastrophic harm if disclosed</td><td>Classified R&D, encryption keys, merger plans</td></tr></table></div><div class="trap">// TRAP: 'Confidential' in government = MID-LEVEL. In business = HIGH-LEVEL. Context matters!</div><div class="trick">// TRICK: Data Owner = BUSINESS executive (VP, C-level) — NOT IT. IT = Data Custodian. Owner DECIDES. Custodian IMPLEMENTS.</div>`},
@@ -1436,7 +1436,7 @@ const CHAPTERS={
       {kw:'"replace credit card with non-sensitive placeholder — no math relationship"',opts:["Masking","Tokenization"],correct:1,exp:"No mathematical relationship = Tokenization. Used in PCI DSS."},
       {kw:'"senior executive accountable for data classification"',opts:["Data Custodian","Data Owner"],correct:1,exp:"Business executive who DECIDES = Data Owner. IT team = Data Custodian."},
       {kw:'"prevent employee copying sensitive files to USB drive"',opts:["Network DLP","Endpoint DLP"],correct:1,exp:"Device level USB blocking = Endpoint DLP. Controls Data in Use."},
-      {kw:'"data stored in a country is subject to that country\'s laws"',opts:["Data Residency","Data Sovereignty"],correct:1,exp:"Physical location determines applicable laws = Data Sovereignty."},
+      {kw:'"data stored in a country is subject to that country\\'s laws"',opts:["Data Residency","Data Sovereignty"],correct:1,exp:"Physical location determines applicable laws = Data Sovereignty."},
       {kw:'"decides WHY and HOW personal data is processed" — GDPR concept',opts:["Data Processor","Data Controller"],correct:1,exp:"Decides purpose of processing = Data Controller. Processor = does the processing."},
       {kw:'"health information linked to a specific individual" — HIPAA',opts:["PII","PHI"],correct:1,exp:"Health-related PII = PHI. Protected by HIPAA. PHI is always also PII."},
       {kw:'"no hardware required — SaaS-based data protection"',opts:["Storage DLP","Cloud DLP"],correct:1,exp:"SaaS-based, no hardware = Cloud DLP."}
@@ -1448,6 +1448,7 @@ const CHAPTERS={
       {round:"Round 4 — DLP",opts:["DLP should be deployed in monitoring mode first — never blocking mode immediately","DLP prevents unauthorized digital transfer of sensitive data","DLP prevents ALL data loss including verbal disclosure and screen photography","DLP and encryption are complementary controls that work together"],trap:2,exp:"TRAP: 'DLP prevents ALL data loss' is WRONG. DLP only addresses DIGITAL channels. A user can photograph their screen, speak information, or write it down."}
     ]
   },
+
   2:{name:"Chapter 2: Cryptographic Solutions",video:"https://youtu.be/9yWWPZuOHWM",color:"#7c3aed",
     sections:[
       {title:"Symmetric Encryption",content:`<div class="trick">// TRICK: AES is ALWAYS the answer to 'best/current symmetric algorithm'. DES = broken. 3DES = deprecated. AES = current standard.</div><div class="tbl"><table><tr><th>Algorithm</th><th>Key Size</th><th>Status</th><th>Type</th></tr><tr><td><strong>DES</strong></td><td>56-bit</td><td style="color:var(--danger)">BROKEN</td><td>Block</td></tr><tr><td><strong>3DES</strong></td><td>112-bit effective</td><td style="color:var(--warning)">DEPRECATED</td><td>Block</td></tr><tr><td><strong>AES ⭐</strong></td><td>128/192/256-bit</td><td style="color:var(--success)">CURRENT STANDARD</td><td>Block</td></tr><tr><td><strong>RC4</strong></td><td>Variable</td><td style="color:var(--danger)">BROKEN</td><td>Stream</td></tr><tr><td><strong>Blowfish/Twofish</strong></td><td>Up to 448/256-bit</td><td>Secure/Niche</td><td>Block</td></tr></table></div><div class="trap">// TRAP: RC4 = stream cipher, NOT block cipher. WEP used RC4 and is broken.</div><div class="trap">// TRAP: 3DES uses THREE KEYS but only provides 112-bit effective security (not 168) due to meet-in-the-middle attacks.</div>`},
@@ -1473,20 +1474,9 @@ const CHAPTERS={
       {round:"Round 3 — PKI & Certificates",opts:["The CSR contains the public key only — the private key never leaves the applicant","OCSP Stapling means the SERVER pre-fetches the OCSP response","A wildcard certificate *.example.com also secures the bare domain example.com","If the Root CA is compromised, all certificates in that chain become untrustworthy"],trap:2,exp:"TRAP: 'Wildcard *.example.com also secures example.com' is WRONG. Wildcard covers SUBDOMAINS only. Need a SAN certificate for the bare domain."},
       {round:"Round 4 — Attacks & Quantum",opts:["Pass-the-Hash allows authentication using the hash without knowing the plaintext","Downgrade attacks force systems to use older, less secure cryptographic protocols","SSL Stripping is a type of downgrade attack that forces use of a weaker SSL version","CRYSTALS-Kyber is NIST's selected post-quantum encryption algorithm"],trap:2,exp:"TRAP: 'SSL Stripping is a downgrade attack' is WRONG. SSL Stripping REMOVES encryption entirely — replacing HTTPS with HTTP. It does not downgrade; it eliminates encryption."}
     ]
-  }
+  },
 
-// === PASTE PART 2 HERE ===
-// Paste everything from Part 2 starting with a comma after this comment
-// and before the closing }; of CHAPTERS
-
-};
-  // ═══════════════════════════════════════════════
-// INSTRUCTIONS: Paste this file's content into week2_part1.html
-// Replace the line that says:  // === PASTE PART 2 HERE ===
-// with a comma followed by everything below (starting from ,3:{)
-// ═══════════════════════════════════════════════
-
-  ,3:{name:"Chapter 3: Risk Management & Vendor Security",video:"https://youtu.be/JYwVUoJRh4w",color:"#10b981",
+  3:{name:"Chapter 3: Risk Management & Vendor Security",video:"https://youtu.be/JYwVUoJRh4w",color:"#10b981",
     sections:[
       {title:"Risk Management Fundamentals & BIA",content:`<div class="trick">// TRICK: Risk = Threat x Vulnerability x Impact. No threat OR no vulnerability = NO RISK. All three must be present.</div><div class="tbl"><table><tr><th>Assessment Type</th><th>When Used</th><th>Triggered By</th></tr><tr><td><strong>Ad-hoc</strong></td><td>Spontaneous — unplanned event</td><td>CEO conference question, new threat emerges</td></tr><tr><td><strong>Recurring</strong></td><td>Regular schedule</td><td>Policy/compliance requirement (PCI DSS = annual)</td></tr><tr><td><strong>One-time</strong></td><td>Specific project only</td><td>Cloud migration, M&A, new system deployment</td></tr><tr><td><strong>Continuous</strong></td><td>Always-on real-time</td><td>Technology-enabled automated (SIEM)</td></tr></table></div><div class="trick">// TRICK: PCI DSS requires ANNUAL risk assessments = Recurring. Ad-hoc = event-triggered no prior schedule.</div><div class="trap">// TRAP: Ad-hoc is NOT the same as one-time. Ad-hoc = spontaneous UNPLANNED event. One-time = pre-planned SPECIFIC project.</div><div class="tbl"><table><tr><th>BIA Metric</th><th>Definition</th><th>Remember</th></tr><tr><td><strong>RTO</strong></td><td>Maximum acceptable DOWNTIME before severe business impact</td><td>Time to RESTORE service</td></tr><tr><td><strong>RPO</strong></td><td>Maximum acceptable DATA LOSS measured in time</td><td>How much DATA can be lost</td></tr><tr><td><strong>MTTR</strong></td><td>Average time to REPAIR a failed component</td><td>Lower = faster recovery</td></tr><tr><td><strong>MTBF</strong></td><td>Average time BETWEEN failures — reliability</td><td>Higher = more reliable</td></tr></table></div><div class="trick">// TRICK: RTO = how long you can be DOWN. RPO = how much DATA you can lose. They measure DIFFERENT things.</div><div class="trap">// TRAP: MTBF is a STATISTICAL AVERAGE — not a prediction. System with MTBF of 1000 hours may fail at 200 or 3000 hours.</div>`},
       {title:"Quantitative Risk Analysis — Formulas",content:`<div class="tbl"><table><tr><th>Formula</th><th>Full Name</th><th>What It Calculates</th></tr><tr><td><strong>SLE = AV x EF</strong></td><td>Single Loss Expectancy</td><td>Dollar loss from ONE risk event</td></tr><tr><td><strong>ALE = SLE x ARO</strong></td><td>Annualized Loss Expectancy</td><td>Expected ANNUAL dollar loss from a risk</td></tr><tr><td><strong>ROSI = (ALE_before - ALE_after) - Cost</strong></td><td>Return on Security Investment</td><td>Net benefit of implementing a control</td></tr></table></div><div class="trick">// TRICK: SLE = AV x EF. ALE = SLE x ARO. These TWO formulas appear on every exam sitting.</div><div class="trick">// TRICK: EF is always 0.0 to 1.0. ARO can be LESS than 1 — flood once every 10 years = ARO 0.1.</div><div class="trap">// TRAP: AV is NOT just the purchase price — includes revenue impact, regulatory fines, reputational damage.</div><div class="trap">// TRAP: SLE = loss from ONE event. ALE = ANNUAL expected loss. Do NOT confuse SLE and ALE.</div><div class="tbl"><table><tr><th>Risk Strategy</th><th>What It Means</th></tr><tr><td><strong>Avoidance</strong></td><td>STOP doing the risky activity entirely</td></tr><tr><td><strong>Transfer</strong></td><td>Shift financial consequence to another party (insurance)</td></tr><tr><td><strong>Acceptance</strong></td><td>Consciously live with the risk</td></tr><tr><td><strong>Mitigation</strong></td><td>REDUCE risk while continuing the activity</td></tr></table></div><div class="trick">// TRICK: Avoidance = STOP the activity. Mitigation = REDUCE risk but CONTINUE. Fundamentally different.</div><div class="trap">// TRAP: Risk Transfer does NOT eliminate risk — shifts FINANCIAL CONSEQUENCE only.</div>`},
@@ -1512,6 +1502,7 @@ const CHAPTERS={
       {round:"Round 4 — Contracts",opts:["MOU is generally NOT legally binding — it expresses mutual intent only","The Right-to-Audit clause must be negotiated before the contract is signed","SOW is a standalone agreement that replaces the MSA for each project","BPA is the only vendor agreement that involves ownership stakes and profit sharing"],trap:2,exp:"TRAP: 'SOW is a standalone agreement' is WRONG. SOW operates UNDER an MSA. MSA = overarching terms; SOW = specific project."}
     ]
   },
+
   4:{name:"Chapter 4: Governance, Compliance, Asset & Change Mgmt",video:"https://youtu.be/32qfOzPgKj4",color:"#f59e0b",
     sections:[
       {title:"Governance & Policies",content:`<div class="tbl"><table><tr><th>Document</th><th>Mandatory?</th><th>What It Says</th><th>Exam Signal</th></tr><tr><td><strong>Policy</strong></td><td style="color:var(--success)">YES</td><td>WHAT and WHY — high-level intent</td><td>'must', 'commits to', 'required'</td></tr><tr><td><strong>Standard</strong></td><td style="color:var(--success)">YES</td><td>HOW — specific measurable requirements</td><td>'AES-256', '12 characters minimum'</td></tr><tr><td><strong>Procedure</strong></td><td style="color:var(--success)">YES</td><td>EXACTLY HOW — step-by-step instructions</td><td>'step 1... step 2...'</td></tr><tr><td><strong>Guideline</strong></td><td style="color:var(--warning)">NO — optional</td><td>RECOMMENDED best practices</td><td>'should consider', 'recommended'</td></tr><tr><td><strong>Playbook</strong></td><td style="color:var(--success)">YES when triggered</td><td>Automated conditional response — SOAR-linked</td><td>'SOAR', 'automated response', 'if X then Y'</td></tr></table></div><div class="trick">// TRICK: BC = keeping BUSINESS running (includes non-IT like paper receipts). DR = restoring IT SYSTEMS. DR is a SUBSET of BC.</div><div class="trick">// TRICK: Playbooks = directly linked to SOAR. If exam mentions SOAR or automated incident response = playbook.</div><div class="trap">// TRAP: Standards are MANDATORY — not optional. 'Employees should consider' = Guideline. 'Employees MUST use' = Standard.</div>`},
@@ -1538,6 +1529,7 @@ const CHAPTERS={
       {round:"Round 4 — Change Management",opts:["The Change Owner manages the process — they do NOT perform the technical work","CAB approval covers the exact change described with its defined scope only","A backout plan that exists on paper but has not been tested is a valid rollback plan","Offboarding timing: accounts should be disabled on the last day of employment"],trap:2,exp:"TRAP: 'An untested backout plan is valid' is WRONG. A backout plan MUST be tested in the sandbox BEFORE production. An untested rollback plan may fail when you need it most."}
     ]
   },
+
   5:{name:"Chapter 5: Audits, Assessments & Penetration Testing",video:"https://youtu.be/hdpXH0sMeGA",color:"#ef4444",
     sections:[
       {title:"Audits vs Assessments vs Attestation",content:`<div class="tbl"><table><tr><th>Concept</th><th>Definition</th><th>Key Distinction</th></tr><tr><td><strong>Audit</strong></td><td>Systematic evaluation of controls and compliance</td><td>VERIFIES controls. Backward-looking.</td></tr><tr><td><strong>Assessment</strong></td><td>Detailed analysis to identify vulnerabilities and risks</td><td>IDENTIFIES weaknesses. Forward-looking.</td></tr><tr><td><strong>Attestation</strong></td><td>Formal written declaration confirming accuracy of findings</td><td>The SIGN-OFF. Creates LEGAL ACCOUNTABILITY.</td></tr></table></div><div class="trick">// TRICK: Audit = compliance verification. Assessment = identifying vulnerabilities. Attestation = formal legal sign-off.</div><div class="tbl"><table><tr><th>Internal Audit Type</th><th>Performed By</th><th>Purpose</th></tr><tr><td><strong>Compliance Audit</strong></td><td>Internal audit team</td><td>Adherence to policies, regulations, obligations</td></tr><tr><td><strong>Audit Committee Oversight</strong></td><td>Board-level committee</td><td>Oversees ALL audit activities — all audits start and stop here</td></tr><tr><td><strong>Self-Assessments</strong></td><td>Departments themselves</td><td>Departments check their own compliance — NOT central audit team</td></tr></table></div><div class="trick">// TRICK: Audit Committee = GOVERNANCE BODY for ALL audits. All audits start and stop with the committee.</div><div class="trap">// TRAP: Audit Committee OVERSEES — does NOT perform audits. They approve, oversee, and receive results.</div><div class="trap">// TRAP: Internal audit does NOT mean less rigorous. Difference = independence, not quality.</div>`},
@@ -1564,327 +1556,4 @@ const CHAPTERS={
     ]
   }
 };
-
-// ═══════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════
-let curCh=1,curSec=0;
-let srKeywords=[],srIdx=0,srCorrect=0,srWrong=0,srTimer=null,srSeconds=45;
-let tdTraps=[],tdIdx=0,tdScore=0;
-let fcQuestions=[],fcIdx=0,fcCorrect=0,fcWrong=0;
-let chState={1:{unlocked:true,completed:false},2:{unlocked:false,completed:false},3:{unlocked:false,completed:false},4:{unlocked:false,completed:false},5:{unlocked:false,completed:false}};
-
-// ═══════════════════════════════════════════════
-// SCREENS
-// ═══════════════════════════════════════════════
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
-function showHome(){show('home-screen');renderHome();}
-function renderHome(){
-  const list=document.getElementById('chapters-list');list.innerHTML='';
-  Object.entries(CHAPTERS).forEach(([num,ch])=>{
-    const n=parseInt(num),s=chState[n];
-    const div=document.createElement('div');
-    div.className='chapter-card'+(s.unlocked?'':' locked');
-    div.onclick=()=>startChapter(n);
-    div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><span class="badge" style="background:${ch.color}22;color:${ch.color};border:1px solid ${ch.color}44">CHAPTER 0${num}</span><h2 style="font-size:16px;font-weight:600;margin:8px 0 3px;color:var(--text)">${ch.name.split(':')[1].trim()}</h2><p style="font-size:12px;color:var(--text2)">Video intro · Theory · Speed Round · Trap Detector</p></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><div class="badge ${s.completed?'badge-done':s.unlocked?'badge-start':'badge-lock'}">${s.completed?'DONE':s.unlocked?'START':'LOCKED'}</div>${s.unlocked&&ch.video?`<span class="video-badge">▶ VIDEO</span>`:''}</div></div><div class="pbar"><div class="pfill" style="width:${s.completed?100:0}%;background:${s.completed?'var(--success)':ch.color}"></div></div><div class="ch-meta"><span class="ch-path">${s.unlocked?'intro → theory → speed_round → trap_detector':'complete chapter '+(num-1)+' to unlock'}</span><span style="font-size:11px;color:var(--text3)">${s.completed?'Completed':s.unlocked?'Not started':'Locked'}</span></div>`;
-    list.appendChild(div);
-  });
-  const allDone=Object.values(chState).every(s=>s.completed);
-  document.getElementById('final-challenge-card').style.display=allDone?'block':'none';
-}
-
-// ═══════════════════════════════════════════════
-// CHAPTERS OVERLAY
-// ═══════════════════════════════════════════════
-function openChapters(){
-  const list=document.getElementById('ch-modal-list');list.innerHTML='';
-  Object.entries(CHAPTERS).forEach(([num,ch])=>{
-    const n=parseInt(num),s=chState[n];
-    const div=document.createElement('div');
-    div.style.cssText=`display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:${s.unlocked?'pointer':'not-allowed'};opacity:${s.unlocked?1:0.4}`;
-    div.innerHTML=`<div style="width:36px;height:36px;border-radius:8px;background:${ch.color}22;border:1px solid ${ch.color}44;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:${ch.color};flex-shrink:0">${num}</div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">${ch.name.split(':')[1].trim()}</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${s.completed?'✓ completed':s.unlocked?'not started':'locked'}</div></div><span style="font-size:11px;font-family:var(--mono);color:${s.completed?'var(--success)':s.unlocked?ch.color:'var(--text3)'}">${s.completed?'DONE':s.unlocked?'START':'LOCKED'}</span>`;
-    if(s.unlocked)div.onclick=()=>{closeChapters();startChapter(n);};
-    list.appendChild(div);
-  });
-  document.getElementById('ch-overlay').classList.add('open');
-}
-function closeChapters(e){if(!e||e.target===document.getElementById('ch-overlay'))document.getElementById('ch-overlay').classList.remove('open');}
-
-// ═══════════════════════════════════════════════
-// CHAPTER INTRO VIDEO
-// ═══════════════════════════════════════════════
-function startChapter(n){
-  if(!chState[n].unlocked)return;
-  curCh=n;curSec=0;
-  const ch=CHAPTERS[n];
-  show('intro-screen');
-  document.getElementById('intro-ch-name').textContent=ch.name;
-  const vid=ch.video.replace('https://youtu.be/','').replace(/\?.*/,'');
-  document.getElementById('intro-iframe').src=`https://www.youtube.com/embed/${vid}?rel=0&modestbranding=1`;
-  document.getElementById('intro-yt-link').href=ch.video;
-  document.getElementById('intro-yt-link').textContent=`Watch "${ch.name.split(':')[1].trim()}" on YouTube →`;
-}
-
-// ═══════════════════════════════════════════════
-// THEORY
-// ═══════════════════════════════════════════════
-function goTheory(){document.getElementById('intro-iframe').src='';show('theory-screen');document.getElementById('th-ch-name').textContent=CHAPTERS[curCh].name;renderSec();}
-function renderSec(){
-  const secs=CHAPTERS[curCh].sections,sec=secs[curSec],tot=secs.length;
-  document.getElementById('th-counter').textContent=`section_${curSec+1}_of_${tot}`;
-  document.getElementById('th-bar').style.width=((curSec+1)/tot*100)+'%';
-  document.getElementById('th-content').innerHTML=`<div class="card"><h2 style="font-size:17px;font-weight:600;margin-bottom:1rem;color:var(--text)">${sec.title}</h2>${sec.content}</div>`;
-  document.getElementById('th-prev').style.visibility=curSec===0?'hidden':'visible';
-  document.getElementById('th-next').textContent=curSec===tot-1?'Start Speed Round →':'Next →';
-}
-function nextSec(){const tot=CHAPTERS[curCh].sections.length;if(curSec<tot-1){curSec++;renderSec();}else startSpeedRound();}
-function prevSec(){if(curSec>0){curSec--;renderSec();}}
-
-// ═══════════════════════════════════════════════
-// SPEED ROUND — PHASE 1
-// ═══════════════════════════════════════════════
-function startSpeedRound(){
-  srKeywords=[...CHAPTERS[curCh].speedround].sort(()=>Math.random()-0.5);
-  srIdx=0;srCorrect=0;srWrong=0;
-  show('speedround-screen');
-  document.getElementById('sr-ch-name').textContent=CHAPTERS[curCh].name;
-  document.getElementById('sr-correct').textContent='0';
-  document.getElementById('sr-wrong').textContent='0';
-  showKeyword();
-}
-function showKeyword(){
-  if(srIdx>=srKeywords.length){clearInterval(srTimer);showSRResult();return;}
-  const kw=srKeywords[srIdx];
-  document.getElementById('sr-keyword').textContent=kw.kw;
-  document.getElementById('sr-kw-sub').textContent=`keyword_${srIdx+1}_of_${srKeywords.length}`;
-  document.getElementById('sr-prog').textContent=`${srIdx+1}/${srKeywords.length}`;
-  document.getElementById('sr-fb').style.display='none';
-  document.getElementById('sr-next-btn').style.display='none';
-  document.getElementById('sr-options').innerHTML=kw.opts.map((o,i)=>`<button class="sr-opt" onclick="answerSpeed(${i})">${o}</button>`).join('');
-  startTimer();
-}
-function startTimer(){
-  srSeconds=45;
-  document.getElementById('sr-timer').textContent='45';
-  document.getElementById('sr-timer').className='sr-timer';
-  document.getElementById('sr-timer-fill').style.width='100%';
-  clearInterval(srTimer);
-  srTimer=setInterval(()=>{
-    srSeconds--;
-    document.getElementById('sr-timer').textContent=srSeconds;
-    document.getElementById('sr-timer-fill').style.width=(srSeconds/45*100)+'%';
-    if(srSeconds<=15)document.getElementById('sr-timer').className='sr-timer warning';
-    if(srSeconds<=8)document.getElementById('sr-timer').className='sr-timer danger';
-    if(srSeconds<=0){clearInterval(srTimer);timeOut();}
-  },1000);
-}
-function timeOut(){
-  srWrong++;document.getElementById('sr-wrong').textContent=srWrong;
-  document.querySelectorAll('.sr-opt').forEach((b,i)=>{b.onclick=null;if(i===srKeywords[srIdx].correct)b.classList.add('correct');});
-  const fb=document.getElementById('sr-fb');fb.style.display='block';fb.className='sr-fb no';
-  fb.textContent='// TIME UP: '+srKeywords[srIdx].exp;
-  document.getElementById('sr-next-btn').style.display='inline-block';
-}
-function answerSpeed(idx){
-  clearInterval(srTimer);
-  const kw=srKeywords[srIdx],ok=idx===kw.correct;
-  if(ok)srCorrect++;else srWrong++;
-  document.getElementById('sr-correct').textContent=srCorrect;
-  document.getElementById('sr-wrong').textContent=srWrong;
-  document.querySelectorAll('.sr-opt').forEach((b,i)=>{b.onclick=null;if(i===kw.correct)b.classList.add('correct');else if(i===idx&&!ok)b.classList.add('wrong');});
-  const fb=document.getElementById('sr-fb');fb.style.display='block';
-  fb.className='sr-fb '+(ok?'ok':'no');
-  fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+kw.exp;
-  document.getElementById('sr-next-btn').style.display='inline-block';
-}
-function nextKeyword(){srIdx++;showKeyword();}
-function showSRResult(){
-  show('sr-result-screen');
-  const total=srKeywords.length,pct=Math.round(srCorrect/total*100);
-  document.getElementById('sr-res-pct').textContent=pct+'%';
-  document.getElementById('sr-res-circle').className='result-circle '+(pct>=70?'rc-pass':'rc-fail');
-  document.getElementById('sr-res-heading').textContent=pct>=70?'Speed Round Cleared! ⚡':'Keep Sharpening!';
-  document.getElementById('sr-res-msg').textContent=`${srCorrect}/${total} keywords matched correctly.`;
-}
-
-// ═══════════════════════════════════════════════
-// TRAP DETECTOR — PHASE 2
-// ═══════════════════════════════════════════════
-function startTrapDetector(){
-  tdTraps=[...CHAPTERS[curCh].traps].sort(()=>Math.random()-0.5);
-  tdIdx=0;tdScore=0;
-  show('trapdetector-screen');
-  document.getElementById('td-ch-name').textContent=CHAPTERS[curCh].name;
-  renderTrap();
-}
-function renderTrap(){
-  if(tdIdx>=tdTraps.length){showTDResult();return;}
-  const t=tdTraps[tdIdx];
-  const dots=document.getElementById('td-dots');dots.innerHTML='';
-  tdTraps.forEach((_,i)=>{const d=document.createElement('div');d.className='td-dot'+(i===tdIdx?' active':i<tdIdx?' done':'');dots.appendChild(d);});
-  document.getElementById('td-round-label').textContent=t.round;
-  document.getElementById('td-score-disp').textContent=`Traps found: ${tdScore}/${tdIdx}`;
-  document.getElementById('td-explain').style.display='none';
-  document.getElementById('td-next-btn').style.display='none';
-  const shuffled=t.opts.map((o,i)=>({text:o,orig:i})).sort(()=>Math.random()-0.5);
-  document.getElementById('td-options').innerHTML=shuffled.map((o,i)=>`<button class="td-opt" data-orig="${o.orig}" onclick="selectTrap(this,${t.trap})">${o.text}</button>`).join('');
-}
-function selectTrap(btn,trapIdx){
-  const origIdx=parseInt(btn.getAttribute('data-orig'));
-  const isCorrect=origIdx===trapIdx;
-  if(isCorrect)tdScore++;
-  document.querySelectorAll('.td-opt').forEach(b=>{
-    b.onclick=null;
-    const oi=parseInt(b.getAttribute('data-orig'));
-    if(oi===trapIdx)b.className='td-opt is-trap';
-    else if(b===btn&&!isCorrect)b.className='td-opt selected-wrong';
-    else b.className='td-opt not-trap';
-  });
-  const ex=document.getElementById('td-explain');
-  ex.style.display='block';
-  ex.innerHTML=`<strong style="color:var(--danger)">🎯 THE TRAP:</strong> ${tdTraps[tdIdx].opts[trapIdx]}<br><br><strong style="color:var(--text)">Why it's wrong:</strong> ${tdTraps[tdIdx].exp}`;
-  document.getElementById('td-score-disp').textContent=`Traps found: ${tdScore}/${tdIdx+1}`;
-  document.getElementById('td-next-btn').style.display='inline-block';
-  document.getElementById('td-next-btn').textContent=tdIdx<tdTraps.length-1?'Next Round →':'See Results →';
-}
-function nextTrap(){tdIdx++;renderTrap();}
-function showTDResult(){
-  show('td-result-screen');
-  const total=tdTraps.length,pct=Math.round(tdScore/total*100),passed=pct>=66;
-  document.getElementById('td-res-pct').textContent=pct+'%';
-  document.getElementById('td-res-circle').className='result-circle '+(passed?'rc-pass':'rc-fail');
-  document.getElementById('td-res-heading').textContent=passed?'Trap Detector Cleared! 🎯':'Review the Traps';
-  document.getElementById('td-res-msg').textContent=`${tdScore}/${total} traps correctly identified.`;
-  document.getElementById('td-res-sub').textContent=passed?'// phase_2 complete → congratulations':'// retry to reinforce the concepts';
-  document.getElementById('td-continue-btn').style.display=passed?'inline-block':'none';
-  document.getElementById('td-retry-btn').style.display=passed?'none':'inline-block';
-}
-
-// ═══════════════════════════════════════════════
-// CONGRATULATIONS
-// ═══════════════════════════════════════════════
-function showCongrats(){
-  chState[curCh].completed=true;
-  const nextCh=curCh+1;
-  if(nextCh<=5)chState[nextCh].unlocked=true;
-  show('congrats-screen');
-  document.getElementById('congrats-title').textContent=CHAPTERS[curCh].name+' — Complete!';
-  document.getElementById('congrats-heading').textContent=`🎉 ${CHAPTERS[curCh].name.split(':')[1].trim()} Complete!`;
-  const allDone=Object.values(chState).every(s=>s.completed);
-  if(allDone){
-    document.getElementById('congrats-msg').textContent='All 5 chapters complete! Take on the Final Challenge to earn your Platinum Ticket.';
-    document.getElementById('congrats-btn').style.display='none';
-    document.getElementById('congrats-final-btn').style.display='inline-block';
-  } else {
-    document.getElementById('congrats-msg').textContent=`Chapter ${nextCh} is now unlocked. Keep going!`;
-    document.getElementById('congrats-btn').style.display='inline-block';
-    document.getElementById('congrats-btn').textContent=`Start ${CHAPTERS[nextCh].name.split(':')[1].trim()} →`;
-    document.getElementById('congrats-final-btn').style.display='none';
-  }
-}
-function goNextChapter(){const next=curCh+1;if(next<=5)startChapter(next);else showFinalChallenge();}
-
-// ═══════════════════════════════════════════════
-// FINAL CHALLENGE
-// ═══════════════════════════════════════════════
-const FC_QUESTIONS=[
-  {q:"Which data classification level would MOST LIKELY contain merger plans and encryption keys?",opts:["Confidential","Private","Critical","Sensitive"],correct:2,exp:"Catastrophic harm if disclosed = Critical. Highest commercial classification level.",ch:"W2C1",stars:"★★★"},
-  {q:"A company replaces customer credit card numbers with random tokens for processing. The original is stored in a secure vault. Which technique is this?",opts:["Encryption","Tokenization","Hashing","Masking"],correct:1,exp:"Random placeholder with no mathematical relationship to original = Tokenization.",ch:"W2C1",stars:"★★"},
-  {q:"Despite FDE and HTTPS, credit card data was stolen from point-of-sale systems. What type of attack most likely occurred?",opts:["Data at Rest attack","Data in Transit attack","Data in Use attack (RAM scraping)","Cryptographic attack"],correct:2,exp:"Encryption at rest AND transit deployed — attackers hit decrypted data in RAM. Target 2013 style = Data in Use.",ch:"W2C1",stars:"★★★★"},
-  {q:"Which symmetric encryption algorithm is the current US government standard?",opts:["DES","3DES","RC4","AES"],correct:3,exp:"AES = current US government standard. 128/192/256-bit keys. Always choose AES.",ch:"W2C2",stars:"★"},
-  {q:"Which asymmetric algorithm can ONLY be used for digital signatures?",opts:["RSA","ECC","DHE","DSA"],correct:3,exp:"DSA = Digital Signature Algorithm = SIGNING ONLY. RSA can encrypt, sign, and exchange keys.",ch:"W2C2",stars:"★★★"},
-  {q:"An attacker forces the client to use SSL 3.0 during TLS negotiation. Which attack is this?",opts:["Birthday Attack","Pass-the-Hash","Downgrade Attack","Collision Attack"],correct:2,exp:"Forcing use of older weaker protocol = Downgrade Attack. POODLE exploited this to force SSL 3.0.",ch:"W2C2",stars:"★★★"},
-  {q:"A server valued at $200,000 has an exposure factor of 0.5 and a flood occurs once every 4 years. What is the ALE?",opts:["$25,000","$50,000","$100,000","$200,000"],correct:0,exp:"SLE = $200,000 x 0.5 = $100,000. ARO = 0.25. ALE = $100,000 x 0.25 = $25,000.",ch:"W2C3",stars:"★★★★"},
-  {q:"A company stops using a cloud service because the data sovereignty risks are too high. Which risk strategy is this?",opts:["Risk Transfer","Risk Mitigation","Risk Acceptance","Risk Avoidance"],correct:3,exp:"STOP doing the risky activity entirely = Risk Avoidance. Mitigation = reduce while continuing.",ch:"W2C3",stars:"★★"},
-  {q:"The SolarWinds attack succeeded because the malware was digitally signed. What does this demonstrate?",opts:["Digital signatures always guarantee software security","Digital signatures verify ORIGIN but NOT the safety of the code","The attack exploited a PKI vulnerability","Strong encryption can always be bypassed"],correct:1,exp:"SolarWinds key lesson: Digital signatures verify the SIGNER, not the security of content.",ch:"W2C3",stars:"★★★★"},
-  {q:"Which vendor agreement is the ONLY one that involves ownership stakes and profit/loss sharing?",opts:["MSA","SLA","BPA","NDA"],correct:2,exp:"BPA = Business Partners Agreement. ONLY agreement involving ownership stakes and profit sharing.",ch:"W2C3",stars:"★★"},
-  {q:"A security policy states: 'All passwords must be minimum 12 characters with uppercase, lowercase, numbers, and special characters, expiring every 90 days.' What type of document is this?",opts:["Policy","Standard","Procedure","Guideline"],correct:1,exp:"Specific technical requirements (length, complexity, expiration) = Standard. Policy = high-level WHAT.",ch:"W2C4",stars:"★★★"},
-  {q:"A European customer requests permanent deletion of all their data from a US company's servers. Which regulation governs this right?",opts:["HIPAA","SOX","CCPA","GDPR — Right to Erasure"],correct:3,exp:"Right to Be Forgotten / Right to Erasure = GDPR. Applies to any org processing EU citizen data.",ch:"W2C4",stars:"★★"},
-  {q:"A company needs to dispose of SSDs containing classified data. Which sanitization method is MOST appropriate?",opts:["Overwriting with multiple passes","Degaussing","Cryptographic Erase","Formatting and reinstalling OS"],correct:2,exp:"Degaussing = ineffective on SSDs. Overwriting = unreliable on SSDs. Cryptographic Erase = correct.",ch:"W2C4",stars:"★★★★"},
-  {q:"During a change window, a technician makes an additional improvement without going back to the CAB. What was violated?",opts:["Nothing — improvements are always permitted","The maintenance window policy","Change Management Policy — scope creep is unauthorized","The backout plan policy"],correct:2,exp:"CAB approves ONE SPECIFIC CHANGE with EXACT SCOPE. Any additional change = unauthorized = policy violation.",ch:"W2C4",stars:"★★★"},
-  {q:"A security team simulates attacks while the defensive team monitors and responds in real time. What type of testing is this?",opts:["Red Team","Blue Team","Purple Team","White Box Testing"],correct:2,exp:"Red attacking while Blue defends simultaneously = Purple Team. Collaborative integrated testing.",ch:"W2C5",stars:"★★"},
-  {q:"A penetration tester is given only the company name and must discover all information independently. Which environment?",opts:["White Box Testing","Gray Box Testing","Black Box Testing","Purple Box Testing"],correct:2,exp:"No prior information = Black Box (Unknown Environment). Simulates a real external attacker.",ch:"W2C5",stars:"★★"},
-  {q:"Which technique uses Shodan, WHOIS, and LinkedIn WITHOUT generating any logs on the target's systems?",opts:["Active Reconnaissance","Port Scanning","Passive Reconnaissance","Social Engineering"],correct:2,exp:"Public sources + zero target interaction + zero detection risk = Passive Reconnaissance.",ch:"W2C5",stars:"★★★"},
-  {q:"Which attestation type uses TPM to validate that hardware components are in their original unmodified state?",opts:["Software Attestation","System Attestation","Hardware Attestation","Compliance Attestation"],correct:2,exp:"TPM validating hardware integrity = Hardware Attestation. Confirms components are original and unmodified.",ch:"W2C5",stars:"★★★"}
-];
-
-let fcCurrentQ=[];
-function showFinalChallenge(){
-  fcCurrentQ=[...FC_QUESTIONS].sort(()=>Math.random()-0.5);
-  fcIdx=0;fcCorrect=0;fcWrong=0;
-  show('finalchallenge-screen');
-  renderFCQuestion();
-}
-function renderFCQuestion(){
-  if(fcIdx>=fcCurrentQ.length){showFCResult();return;}
-  const q=fcCurrentQ[fcIdx];
-  document.getElementById('fc-counter').textContent=`question_${fcIdx+1}_of_${fcCurrentQ.length}`;
-  document.getElementById('fc-bar').style.width=((fcIdx+1)/fcCurrentQ.length*100)+'%';
-  document.getElementById('fc-stars').textContent=q.stars;
-  document.getElementById('fc-level').textContent=`// ${q.ch}`;
-  document.getElementById('fc-ch-tag').textContent=q.ch;
-  document.getElementById('fc-question').textContent=q.q;
-  document.getElementById('fc-feedback').style.display='none';
-  document.getElementById('fc-next-btn').style.display='none';
-  document.getElementById('fc-correct').textContent=fcCorrect;
-  document.getElementById('fc-wrong').textContent=fcWrong;
-  const od=document.getElementById('fc-options');od.innerHTML='';
-  q.opts.forEach((opt,i)=>{
-    const b=document.createElement('button');b.className='fc-opt';
-    b.textContent=['A) ','B) ','C) ','D) '][i]+opt;
-    b.onclick=()=>answerFC(i,q);od.appendChild(b);
-  });
-}
-function answerFC(idx,q){
-  document.querySelectorAll('.fc-opt').forEach((b,i)=>{b.onclick=null;if(i===q.correct)b.classList.add('correct');else if(i===idx&&idx!==q.correct)b.classList.add('wrong');});
-  const ok=idx===q.correct;
-  if(ok)fcCorrect++;else fcWrong++;
-  document.getElementById('fc-correct').textContent=fcCorrect;
-  document.getElementById('fc-wrong').textContent=fcWrong;
-  const fb=document.getElementById('fc-feedback');fb.style.display='block';
-  fb.className='fc-fb '+(ok?'fc-fb-ok':'fc-fb-no');
-  fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+q.exp;
-  document.getElementById('fc-next-btn').style.display='inline-block';
-}
-function fcNext(){fcIdx++;renderFCQuestion();}
-function showFCResult(){
-  const total=fcCurrentQ.length,pct=Math.round(fcCorrect/total*100),passed=pct>=80;
-  if(passed){
-    const code=generatePlatCode(fcCorrect);
-    show('platinum-screen');
-    document.getElementById('plat-score').textContent=`${fcCorrect}/${total} — ${pct}%`;
-    document.getElementById('plat-code').textContent=code;
-    window._platCode=code;
-  } else {
-    show('finalchallenge-screen');
-    document.getElementById('fc-content').innerHTML=`<div class="card" style="text-align:center;padding:2rem"><div style="font-size:48px;margin-bottom:1rem">💪</div><h2 style="font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px">So close!</h2><p style="font-size:14px;color:var(--text2);margin-bottom:6px">You scored <strong style="color:var(--danger)">${fcCorrect}/${total} — ${pct}%</strong></p><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:1.5rem">// Need 80%+ to earn the Platinum Ticket. Retry generates new question order.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-danger" onclick="showFinalChallenge()">Retry →</button><button class="btn" onclick="showHome()">← Back to Chapters</button></div></div>`;
-  }
-}
-
-// ═══════════════════════════════════════════════
-// PLATINUM TICKET
-// ═══════════════════════════════════════════════
-function generatePlatCode(score){
-  const words=['CIPHER','CRYPTO','SHIELD','AUDIT','GOVERN','VECTOR','TRUST','COMPLY','SECURE','VAULT'];
-  const w=Math.floor(Date.now()/1000)%words.length;
-  const num=String(10+(score%89)).padStart(2,'0');
-  return `SEC+-W2-PLAT-${words[w]}-${num}`;
-}
-function copyPlatCode(){
-  const code=window._platCode||document.getElementById('plat-code').textContent;
-  navigator.clipboard.writeText(code).then(()=>{const b=document.getElementById('plat-copy-btn');if(b){b.textContent='✅ Copied!';setTimeout(()=>b.textContent='📋 Copy Platinum Ticket',2500);}}).catch(()=>prompt('Your Platinum Ticket:',code));
-}
-function sharePlat(){
-  const code=window._platCode||document.getElementById('plat-code').textContent;
-  const text=`🥈 I just completed Security+ SY0-701 Week 2!\n\nPlatinum Ticket: ${code}\n\nStudy app: https://ZT-911.github.io/security-plus-study-app`;
-  if(navigator.share)navigator.share({title:'Security+ Week 2 Complete!',text});
-  else navigator.clipboard.writeText(text).then(()=>alert('Copied! Share with your classmates.'));
-}
-
-// ═══════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════
-if(sessionStorage.getItem('w2_unlocked')==='true'){showHome();}
-</script>
-</body>
-</html>
+  
