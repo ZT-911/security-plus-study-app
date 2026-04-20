@@ -101,10 +101,10 @@ if(sessionStorage.getItem("w2_unlocked") !== "true"){ window.location.href = "in
   <header class="site-header">
     <div class="tag">CompTIA Security+ SY0-701</div>
     <h1>Week 2 — Cryptography & Risk</h1>
-    <p>Five chapters, each with a skippable intro, focused theory, a 10-question Speed Round with 45 seconds per question, and a 4-question Trap Detector based on the tricks, traps, and Messer notes from your Week 2 reports.</p>
+    <p>Five chapters, each with a skippable intro, focused theory, a 10-question Speed Round with 10 questions and a single 10-minute timer for the full phase, plus a 4-question Trap Detector based on the tricks, traps, and Messer notes from your Week 2 reports.</p>
     <div class="badge-row">
       <span class="pill">5 Chapters</span>
-      <span class="pill">Speed Round: 10 / 45s each</span>
+      <span class="pill">Speed Round: 10 / 10 min total</span>
       <span class="pill">Trap Detector: 4</span>
       <span class="pill">Final Challenge: 80%+</span>
     </div>
@@ -597,29 +597,35 @@ function goTheory(){
 function startSpeedRound(){
   const ch = CHAPTERS[currentChapter];
   speedSet = sample(ch.speedBank, 10);
-  speedIndex = 0; speedCorrect = 0; speedWrong = 0; speedTimeLeft = 45;
+  speedIndex = 0; speedCorrect = 0; speedWrong = 0; speedTimeLeft = 600;
   clearInterval(speedTimer);
   document.getElementById("speed-title").textContent = `${ch.code} — Speed Round`;
-  document.getElementById("speed-sub").textContent = "phase 1 · 10 questions · 45 seconds per question";
+  document.getElementById("speed-sub").textContent = "phase 1 · 10 questions · 10 minutes total";
   document.getElementById("speed-correct").textContent = "0";
   document.getElementById("speed-wrong").textContent = "0";
   renderSpeedQuestion();
   showScreen("speed-screen");
+  updateSpeedTimerDisplay();
   speedTimer = setInterval(() => {
     speedTimeLeft--;
-    const timerEl = document.getElementById("speed-timer");
-    timerEl.textContent = speedTimeLeft;
-    timerEl.className = "timer" + (speedTimeLeft <= 10 ? " danger" : speedTimeLeft <= 20 ? " warning" : "");
+    updateSpeedTimerDisplay();
     if(speedTimeLeft <= 0){
       clearInterval(speedTimer);
       endSpeedRound();
     }
   }, 1000);
 }
+function updateSpeedTimerDisplay(){
+  const timerEl = document.getElementById("speed-timer");
+  const mins = Math.floor(speedTimeLeft / 60);
+  const secs = speedTimeLeft % 60;
+  timerEl.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  timerEl.className = "timer" + (speedTimeLeft <= 60 ? " danger" : speedTimeLeft <= 180 ? " warning" : "");
+}
 function renderSpeedQuestion(){
   if(speedIndex >= speedSet.length){ endSpeedRound(); return; }
   const q = speedSet[speedIndex];
-  document.getElementById("speed-timer").textContent = speedTimeLeft;
+  updateSpeedTimerDisplay();
   document.getElementById("speed-counter").textContent = `question_${speedIndex+1}_of_${speedSet.length}`;
   document.getElementById("speed-question").textContent = q.q;
   document.getElementById("speed-options").innerHTML = q.opts.map((opt, i) => `<button class="opt" onclick="answerSpeed(${i})">${opt}</button>`).join("");
