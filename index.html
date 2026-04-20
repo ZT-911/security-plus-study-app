@@ -14,9 +14,9 @@
   --surface2:#1a2235;
   --border:#1e2d45;
   --accent:#00d4ff;
-  --accent2:#7c3aed;
   --text:#e2e8f0;
   --text2:#94a3b8;
+  --text3:#64748b;
   --mono:'Space Mono', monospace;
   --sans:'DM Sans', sans-serif;
 }
@@ -29,11 +29,10 @@ body{
   font-family:var(--sans);
 }
 
-/* TOP BAR */
+/* TOP */
 .topbar{
   display:flex;
   justify-content:space-between;
-  align-items:center;
   padding:16px 24px;
   border-bottom:1px solid var(--border);
 }
@@ -47,9 +46,9 @@ body{
 
 .badge{
   font-size:10px;
+  border:1px solid var(--border);
   padding:4px 10px;
   border-radius:100px;
-  border:1px solid var(--border);
   color:var(--text2);
 }
 
@@ -57,64 +56,22 @@ body{
 .hero{
   text-align:center;
   padding:60px 20px;
-  max-width:800px;
-  margin:auto;
-}
-
-.tag{
-  font-family:var(--mono);
-  font-size:11px;
-  color:var(--accent);
-  margin-bottom:10px;
 }
 
 .hero h1{
   font-size:36px;
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
 
 .hero p{
   font-size:14px;
   color:var(--text2);
-  line-height:1.7;
 }
 
-/* PILLS */
-.pills{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
-  margin-top:20px;
-}
-
-.pill{
-  font-size:11px;
-  padding:6px 12px;
-  border-radius:100px;
-  border:1px solid var(--border);
-  color:var(--text2);
-}
-
-/* STATS */
-.stats{
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  flex-wrap:wrap;
-  font-family:var(--mono);
-  font-size:11px;
-  padding:20px;
-  border-top:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  margin-top:40px;
-}
-
-/* WEEK SELECTOR */
+/* WEEK */
 .weeks{
   max-width:600px;
   margin:40px auto;
-  padding:0 20px;
 }
 
 .week-card{
@@ -123,17 +80,6 @@ body{
   padding:20px;
   border-radius:12px;
   margin-bottom:15px;
-}
-
-.week-title{
-  font-size:16px;
-  margin-bottom:8px;
-}
-
-.week-sub{
-  font-size:13px;
-  color:var(--text2);
-  line-height:1.6;
 }
 
 .btn{
@@ -175,17 +121,22 @@ body{
   max-width:400px;
 }
 
+.modal-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
 input{
   width:100%;
   padding:10px;
-  margin-top:10px;
+  margin-top:15px;
   background:var(--surface2);
   border:1px solid var(--border);
   color:var(--text);
   border-radius:8px;
 }
 
-/* FOOTER */
 .footer{
   text-align:center;
   font-size:11px;
@@ -203,49 +154,36 @@ input{
 </div>
 
 <div class="hero">
-  <div class="tag">CompTIA Security+ SY0-701</div>
-  <h1>Study smarter. Prove it.</h1>
-  <p>
-  Every chapter must be earned. Learn the theory, pass the quiz,
-  complete the exercises and unlock the next stage.
-  </p>
-
-  <div class="pills">
-    <div class="pill">▶ Intro Videos</div>
-    <div class="pill">📚 Theory</div>
-    <div class="pill">🧠 Quiz</div>
-    <div class="pill">⚡ Exercises</div>
-    <div class="pill">🎯 Scenarios</div>
-    <div class="pill">🏆 Golden Ticket</div>
-  </div>
-</div>
-
-<div class="stats">
-  <span>2 Weeks</span>
-  <span>10 Chapters</span>
-  <span>AI Questions</span>
-  <span>80% to Pass</span>
+  <h1>Study smarter</h1>
+  <p>Complete Week 1 to unlock Week 2</p>
 </div>
 
 <div class="weeks">
+
   <div class="week-card">
-    <div class="week-title">WEEK 01 — Security Fundamentals</div>
-    <div class="week-sub">Start your journey</div>
-    <button class="btn btn-primary" onclick="goWeek1()">Enter Week 1 →</button>
+    <h3>WEEK 01</h3>
+    <button class="btn btn-primary" onclick="goWeek1()">Enter Week 1</button>
   </div>
 
   <div class="week-card">
-    <div class="week-title">WEEK 02 — Cryptography & Risk</div>
-    <div class="week-sub">Locked behind Golden Ticket</div>
-    <button class="btn" onclick="openModal()">Enter Code →</button>
+    <h3>WEEK 02 (LOCKED)</h3>
+    <button class="btn" onclick="openModal()">Enter Code</button>
   </div>
+
 </div>
 
 <div class="modal" id="modal">
   <div class="modal-box">
-    <h3>Golden Ticket</h3>
+
+    <div class="modal-top">
+      <h3>Golden Ticket</h3>
+      <button class="btn" onclick="closeModal()">← Back</button>
+    </div>
+
     <input id="codeInput" placeholder="SEC+-W2-PLAT-XXXX">
+
     <button class="btn btn-primary" onclick="unlock()">Unlock</button>
+
   </div>
 </div>
 
@@ -254,12 +192,17 @@ input{
 </div>
 
 <script>
+
 function goWeek1(){
   window.location.href="week1.html";
 }
 
 function openModal(){
   document.getElementById("modal").classList.add("active");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("active");
 }
 
 function unlock(){
@@ -272,6 +215,28 @@ function unlock(){
     alert("Invalid Code");
   }
 }
+
+/* ESC CLOSE */
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape"){
+    closeModal();
+  }
+});
+
+/* CLICK OUTSIDE CLOSE */
+document.getElementById("modal").addEventListener("click",function(e){
+  if(e.target.id==="modal"){
+    closeModal();
+  }
+});
+
+/* ENTER KEY */
+document.getElementById("codeInput").addEventListener("keydown",function(e){
+  if(e.key==="Enter"){
+    unlock();
+  }
+});
+
 </script>
 
 </body>
