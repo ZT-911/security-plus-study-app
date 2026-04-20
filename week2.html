@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -101,10 +101,10 @@ if(sessionStorage.getItem("w2_unlocked") !== "true"){ window.location.href = "in
   <header class="site-header">
     <div class="tag">CompTIA Security+ SY0-701</div>
     <h1>Week 2 — Cryptography & Risk</h1>
-    <p>Five chapters, each with a skippable intro, focused theory, a 10-question Speed Round in 45 seconds, and a 4-question Trap Detector based on the tricks, traps, and Messer notes from your Week 2 reports.</p>
+    <p>Five chapters, each with a skippable intro, focused theory, a 10-question Speed Round with 45 seconds per question, and a 4-question Trap Detector based on the tricks, traps, and Messer notes from your Week 2 reports.</p>
     <div class="badge-row">
       <span class="pill">5 Chapters</span>
-      <span class="pill">Speed Round: 10 / 45s</span>
+      <span class="pill">Speed Round: 10 / 45s each</span>
       <span class="pill">Trap Detector: 4</span>
       <span class="pill">Final Challenge: 80%+</span>
     </div>
@@ -548,7 +548,7 @@ function renderHome(){
         <div>
           <span class="badge ${completed ? "badge-done" : unlocked ? "badge-open" : "badge-lock"}">${ch.code}</span>
           <h2 style="font-size:18px;margin:10px 0 4px">${ch.title}</h2>
-          <p style="font-size:13px;color:var(--text2);line-height:1.65">Video intro → Theory → Speed Round (10/45s) → Trap Detector (4) → Congratulations</p>
+          <p style="font-size:13px;color:var(--text2);line-height:1.65">Video intro → Theory → Speed Round (10 × 45s) → Trap Detector (4) → Congratulations</p>
         </div>
         <span class="badge ${completed ? "badge-done" : unlocked ? "badge-open" : "badge-lock"}">${completed ? "DONE" : unlocked ? "OPEN" : "LOCKED"}</span>
       </div>
@@ -600,7 +600,7 @@ function startSpeedRound(){
   speedIndex = 0; speedCorrect = 0; speedWrong = 0; speedTimeLeft = 45;
   clearInterval(speedTimer);
   document.getElementById("speed-title").textContent = `${ch.code} — Speed Round`;
-  document.getElementById("speed-sub").textContent = "phase 1 · 10 questions · 45 seconds";
+  document.getElementById("speed-sub").textContent = "phase 1 · 10 questions · 45 seconds per question";
   document.getElementById("speed-correct").textContent = "0";
   document.getElementById("speed-wrong").textContent = "0";
   renderSpeedQuestion();
@@ -670,8 +670,8 @@ function answerTrap(i){
     else if(idx === i && i !== q.a) btn.classList.add("wrong");
   });
   const explain = document.getElementById("trap-explain");
-  if(i === q.a){ trapCorrect++; explain.className = "explain good"; explain.textContent = "Correct: " + q.exp; }
-  else { explain.className = "explain bad"; explain.textContent = "Incorrect: " + q.exp; }
+  if(i === q.a){ trapCorrect++; explain.className = "explain good"; explain.textContent = "Correct — Messer trap explained: " + q.exp; }
+  else { explain.className = "explain bad"; explain.textContent = "Incorrect — Messer trap explained: " + q.exp; }
   explain.style.display = "block";
   document.getElementById("trap-next-btn").style.display = "inline-flex";
 }
