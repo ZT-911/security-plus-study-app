@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -320,7 +321,95 @@ const _seed=Math.floor(Math.random()*80)+1;
 let curCh=1,curSec=0,curQ=0,correct=0,wrong=0,curLvl=1,answered=false;
 let exIdx=0,exAttempt=_seed,quizAttempt=_seed;
 let currentQuestions=[],currentExercises=[];
-let chState={1:{unlocked:true,completed:false},2:{unlocked:false,completed:false},3:{unlocked:false,completed:false},4:{unlocked:false,completed:false},5:{unlocked:false,completed:false}};
+const PROGRESS_KEY='security_plus_week1_progress_v1';
+const DEFAULT_CHECKPOINT=3;
+
+function buildDefaultProgress(checkpoint=1){
+  const state={1:{unlocked:true,completed:false},2:{unlocked:false,completed:false},3:{unlocked:false,completed:false},4:{unlocked:false,completed:false},5:{unlocked:false,completed:false}};
+  for(let i=1;i<=5;i++){
+    if(i<checkpoint){ state[i].unlocked=true; state[i].completed=true; }
+    if(i===checkpoint){ state[i].unlocked=true; }
+  }
+  return state;
+}
+
+function loadProgress(){
+  try{
+    const saved=localStorage.getItem(PROGRESS_KEY);
+    if(saved){
+      const parsed=JSON.parse(saved);
+      if(parsed&&parsed.chState) return parsed.chState;
+    }
+  }catch(e){}
+  return buildDefaultProgress(DEFAULT_CHECKPOINT);
+}
+
+function saveProgress(){
+  try{
+    localStorage.setItem(PROGRESS_KEY,JSON.stringify({chState,lastChapter:curCh,updatedAt:Date.now()}));
+  }catch(e){}
+}
+
+function resetSavedProgress(checkpoint=1){
+  chState=buildDefaultProgress(checkpoint);
+  saveProgress();
+  showHome();
+}
+
+let chState=loadProgress();
+
+
+function deepClone(v){return JSON.parse(JSON.stringify(v));}
+function shuffleArray(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function shuffleQuestion(q){
+  const indexed=q.opts.map((opt,i)=>({opt,i}));
+  const shuffled=shuffleArray(indexed);
+  return {...q,opts:shuffled.map(x=>x.opt),correct:shuffled.findIndex(x=>x.i===q.correct)};
+}
+function shuffleMultiSelectCase(cas){
+  const indexed=cas.opts.map((opt,i)=>({opt,i}));
+  const shuffled=shuffleArray(indexed);
+  const correctSet=new Set(cas.correct);
+  return {...cas,opts:shuffled.map(x=>x.opt),correct:shuffled.map((x,newIdx)=>correctSet.has(x.i)?newIdx:null).filter(v=>v!==null)};
+}
+const BLANK_VARIANTS={
+  1:[
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence with the correct term.",blanks:[{before:"In Zero Trust, the component that decides whether to grant access is the",after:".",answer:"Policy Engine",hint:"Policy E"},{before:"Five nines uptime allows a maximum of",after:"of downtime per year.",answer:"5.26 minutes",hint:"5.2"},{before:"When a company cannot implement smart cards and uses MFA instead, this is a",after:"control.",answer:"Compensating",hint:"Com"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence with the correct term.",blanks:[{before:"A SIEM used to track who accessed which record supports the AAA function called",after:".",answer:"Accounting",hint:"Acc"},{before:"The Zero Trust component that executes the decision by allowing or blocking traffic is the",after:".",answer:"PEP",hint:"PEP"},{before:"A key fob belongs to the authentication factor",after:".",answer:"Something You Have",hint:"Have"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence with the correct term.",blanks:[{before:"If an antivirus quarantines malware after infection, that is a",after:"control.",answer:"Corrective",hint:"Corr"},{before:"The uptime target 99.9% is also known as",after:".",answer:"three nines",hint:"three"},{before:"A control that gives guidance to user behavior, like an AUP, is a",after:"control.",answer:"Directive",hint:"Dir"}]}
+  ],
+  2:[
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A cyber attack disguised to appear from another country is called a",after:"attack.",answer:"False Flag",hint:"False F"},{before:"Multiple interconnected decoy systems simulating a network is called a",after:".",answer:"Honeynet",hint:"Honey"},{before:"An employee receiving a phone call from someone impersonating IT support is targeted by",after:".",answer:"Vishing",hint:"Vish"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A fake file placed to trigger an alert when opened is a",after:".",answer:"Honeyfile",hint:"Honeyf"},{before:"Using a malicious USB drive with an enticing label is called",after:".",answer:"Baiting",hint:"Bait"},{before:"An actor motivated by ideology rather than money is usually a",after:".",answer:"Hacktivist",hint:"Hack"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A long-term, stealthy intrusion with persistence is an",after:".",answer:"APT",hint:"APT"},{before:"Using unauthorized personal cloud tools without malicious intent is",after:".",answer:"Shadow IT",hint:"Shadow"},{before:"A single decoy host intended to attract attackers is a",after:".",answer:"Honeypot",hint:"Honeyp"}]}
+  ],
+  3:[
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"When authorized person KNOWINGLY allows unauthorized entry, this is",after:".",answer:"Piggybacking",hint:"Piggy"},{before:"The biometric metric measuring rate of unauthorized users incorrectly accepted is",after:".",answer:"FAR",hint:"F"},{before:"Best countermeasure against electromagnetic jamming is to use",after:"cameras with encrypted signals.",answer:"wired",hint:"wir"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"Following an employee in WITHOUT their knowledge is called",after:".",answer:"Tailgating",hint:"Tail"},{before:"The point where FAR equals FRR is called the",after:".",answer:"CER",hint:"CER"},{before:"Bollards are used mainly to stop",after:"attacks.",answer:"vehicle",hint:"veh"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A double-door entry system that prevents one person from following another is an access control",after:".",answer:"vestibule",hint:"vest"},{before:"Lighting is mainly a",after:"physical control.",answer:"deterrent",hint:"deter"},{before:"Badge cloning usually targets",after:"or NFC technology.",answer:"RFID",hint:"RFI"}]}
+  ],
+  4:[
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A phishing email that targets a specific executive is called",after:".",answer:"Whaling",hint:"Whal"},{before:"A fake domain like goog1e.com is an example of",after:".",answer:"Typosquatting",hint:"Typo"},{before:"The strongest defense against social engineering is",after:".",answer:"Security Awareness Training",hint:"Train"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A phone call scam pretending to be support is",after:".",answer:"Vishing",hint:"Vish"},{before:"False information spread without harmful intent is",after:".",answer:"Misinformation",hint:"Misin"},{before:"Using fake testimonials to influence trust relies on the trigger called",after:".",answer:"Social Proof",hint:"Social"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A fabricated scenario created to extract information is called",after:".",answer:"Pretexting",hint:"Prete"},{before:"A real hijacked company email used for financial fraud is often a",after:"attack.",answer:"BEC",hint:"BEC"},{before:"Creating time pressure to force action uses the trigger of",after:".",answer:"Urgency",hint:"Urg"}]}
+  ],
+  5:[
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"Malware that spreads without user action is a",after:".",answer:"Worm",hint:"Wor"},{before:"Malware that executes only in RAM and avoids disk files is",after:".",answer:"Fileless Malware",hint:"Filel"},{before:"The response to a ransomware attack: DO NOT pay, disconnect systems, notify authorities, then restore from",after:".",answer:"clean backups",hint:"clean"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A virus that changes its signature each time is",after:".",answer:"Polymorphic",hint:"Poly"},{before:"A hidden kernel-level malware that traditional AV struggles with is a",after:".",answer:"Rootkit",hint:"Root"},{before:"A network of compromised devices controlled remotely is a",after:".",answer:"Botnet",hint:"Bot"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A malware trigger tied to a date or event is called a",after:".",answer:"Logic Bomb",hint:"Logic"},{before:"A Trojan used to give full remote control is a",after:".",answer:"RAT",hint:"RAT"},{before:"Using PowerShell or WMI maliciously while blending in is called",after:".",answer:"Living Off the Land",hint:"Living"}]}
+  ]
+};
+function getRandomBlankVariant(ch){
+  const pool=BLANK_VARIANTS[ch]||BLANK_VARIANTS[1];
+  return deepClone(pool[Math.floor(Math.random()*pool.length)]);
+}
 
 // ═══════════════════════════════════════════════════════════════
 // HOME
@@ -369,6 +458,7 @@ function renderHome(){
 // ═══════════════════════════════════════════════════════════════
 function startChapter(n){
   if(!chState[n].unlocked)return;
+  saveProgress();
   curCh=n;curSec=0;
   const ch=CHAPTERS[n];
   if(ch.video){
@@ -441,7 +531,8 @@ function retryQuiz(){startQuiz();}
 
 function renderQ(){
   if(curQ>=currentQuestions.length){showResult();return;}
-  const q=currentQuestions[curQ],tot=currentQuestions.length;
+  const rawQ=currentQuestions[curQ],tot=currentQuestions.length;
+  const q=shuffleQuestion(rawQ);
   const stars=['★','★★','★★★','★★★★','★★★★★'],labels=['Easy','Medium','Medium-Hard','Hard','Expert'];
   document.getElementById('qz-counter').textContent=`question_${curQ+1}_of_${tot}`;
   document.getElementById('qz-bar').style.width=((curQ+1)/tot*100)+'%';
@@ -517,7 +608,7 @@ function renderScenario(ex,c){
   let qIdx=0,sc=0;
   function renderSQ(){
     if(qIdx>=ex.questions.length){const pct=Math.round(sc/ex.questions.length*100),passed=pct>=66;document.getElementById('sc-qs').innerHTML=`<div class="feedback-box ${passed?'feedback-correct':'feedback-wrong'}" style="text-align:center;margin-top:1rem"><strong>// Score: ${sc}/${ex.questions.length} — ${pct}%</strong>${!passed?'<br><span style="font-size:11px;opacity:0.8">Need 66%+ to pass.</span>':''}</div><div style="text-align:right;margin-top:1rem">${passed?`<button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button>`:`<button class="btn btn-danger" onclick="retryCurrentEx()">Retry this exercise →</button>`}</div>`;return;}
-    const q=ex.questions[qIdx];
+    const q=shuffleQuestion(ex.questions[qIdx]);
     document.getElementById('sc-qs').innerHTML=`<p style="font-size:14px;font-weight:500;color:var(--text);margin:1rem 0 8px">Q${qIdx+1}: ${q.q}</p>${q.opts.map((o,i)=>`<button class="option-btn" onclick="pickSQ(${i})">${['A) ','B) ','C) ','D) '][i]}${o}</button>`).join('')}<div id="sc-fb" style="display:none"></div><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" id="sc-next" style="display:none" onclick="advSQ()">Next →</button></div>`;
     window.pickSQ=function(idx){document.querySelectorAll('.option-btn').forEach((b,i)=>{b.onclick=null;if(i===q.correct)b.classList.add('correct');else if(i===idx&&idx!==q.correct)b.classList.add('wrong');});const ok=idx===q.correct;if(ok)sc++;const fb=document.getElementById('sc-fb');fb.style.display='block';fb.className='feedback-box '+(ok?'feedback-correct':'feedback-wrong');fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+q.exp;document.getElementById('sc-next').style.display='inline-block';};
     window.advSQ=function(){qIdx++;renderSQ();};
@@ -540,7 +631,7 @@ function renderDragDrop(ex,c){
   });
   window.checkDrag=function(){
     let sc=0;
-    pairs.forEach((p,i)=>{const zone=document.getElementById('dz-'+i);const droppedOrig=zone.getAttribute('data-dropped-orig');const ok=droppedOrig!==null&&parseInt(droppedOrig)===i;if(ok){sc++;zone.classList.add('matched');}else zone.classList.add('wrong-drop');});
+    pairs.forEach((p,i)=>{const zone=document.getElementById('dz-'+i);const droppedOrig=zone.getAttribute('data-dropped-orig');let ok=false;if(droppedOrig!==null){const droppedPair=pairs[parseInt(droppedOrig)];ok=!!droppedPair && droppedPair.zone===p.zone;}if(ok){sc++;zone.classList.add('matched');}else zone.classList.add('wrong-drop');});
     const pct=Math.round(sc/pairs.length*100),passed=pct>=75;
     const fb=document.getElementById('drag-fb');fb.className='feedback-box '+(passed?'feedback-correct':'feedback-wrong');
     fb.innerHTML=passed?`<strong>// Score: ${sc}/${pairs.length} — ${pct}% ✓</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`:`<strong>// Score: ${sc}/${pairs.length} — ${pct}%</strong><br><span style="font-size:11px;opacity:0.8">Need 75%+ to pass.</span><div style="text-align:right;margin-top:8px"><button class="btn btn-danger" onclick="retryCurrentEx()">Retry this exercise →</button></div>`;
@@ -549,6 +640,7 @@ function renderDragDrop(ex,c){
 }
 
 function renderBlank(ex,c){
+  ex={...ex,blanks:shuffleArray(ex.blanks)};
   c.innerHTML=`<div class="card"><span class="badge badge-ex">FILL IN THE BLANK</span><span class="ai-tag">// ai_generated</span><h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p>${ex.blanks.map((b,i)=>`<div style="margin:1rem 0;padding:12px;border:1px solid var(--border);border-radius:9px;background:var(--surface2)"><p style="font-size:14px;color:var(--text2);line-height:1.9">${b.before} <input class="blank-input" id="bl-${i}" placeholder="${b.hint}..." type="text"> ${b.after}</p></div>`).join('')}<div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" id="check-blanks-btn" onclick="checkBlanks()">Check Answers →</button></div><div id="blank-fb"></div></div>`;
   window.checkBlanks=function(){
     let sc=0;
@@ -588,6 +680,7 @@ function showExResult(){
 function finishChapter(){
   chState[curCh].completed=true;
   if(curCh<5)chState[curCh+1].unlocked=true;
+  saveProgress();
   showHome();
 }
 
@@ -797,9 +890,9 @@ function getFallbackEx(ch){
       {type:"multiselect4",ch:5}
     ]
   };
-  const pool=exMap[ch]||exMap[1];
-  const shuffled=[...pool];
-  return shuffled;
+  const pool=deepClone(exMap[ch]||exMap[1]);
+  if(pool[2] && pool[2].type==='blank') pool[2]=getRandomBlankVariant(ch);
+  return pool;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -880,9 +973,15 @@ const MULTISELECT_BANKS={
 
 function getMultiselect4(ch){
   const sets=MULTISELECT_BANKS[ch]||MULTISELECT_BANKS[1];
-  // Rotate set based on exAttempt so different set each visit/retry
-  const setIdx=exAttempt%sets.length;
-  return sets[setIdx];
+  const key=`ms-used-ch${ch}`;
+  let used=JSON.parse(sessionStorage.getItem(key)||'[]');
+  if(used.length>=sets.length) used=[];
+  const available=[];
+  for(let i=0;i<sets.length;i++) if(!used.includes(i)) available.push(i);
+  const setIdx=available[Math.floor(Math.random()*available.length)];
+  used.push(setIdx);
+  sessionStorage.setItem(key,JSON.stringify(used));
+  return deepClone(sets[setIdx]).map(cas=>shuffleMultiSelectCase(cas));
 }
 
 function renderMultiselect4(ch,c){
@@ -1079,7 +1178,8 @@ function shareResult(code,score,total){
 // ═══════════════════════════════════════════════════════════════
 // INIT — Start directly at Chapter 1
 // ═══════════════════════════════════════════════════════════════
-startChapter(1);
+saveProgress();
+showHome();
 </script>
 </body>
 </html>
