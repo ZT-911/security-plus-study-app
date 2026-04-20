@@ -16,7 +16,6 @@
   --accent:#00d4ff;
   --text:#e2e8f0;
   --text2:#94a3b8;
-  --text3:#64748b;
   --mono:'Space Mono', monospace;
   --sans:'DM Sans', sans-serif;
 }
@@ -177,7 +176,7 @@ input{
 
     <div class="modal-top">
       <h3>Golden Ticket</h3>
-      <button class="btn" onclick="closeModal()">← Back</button>
+      <button class="btn" onclick="goBackHome()">← Back</button>
     </div>
 
     <input id="codeInput" placeholder="SEC+-W2-PLAT-XXXX">
@@ -205,6 +204,10 @@ function closeModal(){
   document.getElementById("modal").classList.remove("active");
 }
 
+function goBackHome(){
+  window.location.href="index.html";
+}
+
 function unlock(){
   const code=document.getElementById("codeInput").value.trim();
 
@@ -216,21 +219,21 @@ function unlock(){
   }
 }
 
-/* ESC CLOSE */
+/* ESC → vuelve al menú */
 document.addEventListener("keydown",function(e){
   if(e.key==="Escape"){
-    closeModal();
+    goBackHome();
   }
 });
 
-/* CLICK OUTSIDE CLOSE */
+/* Click fuera → solo cierra modal */
 document.getElementById("modal").addEventListener("click",function(e){
   if(e.target.id==="modal"){
     closeModal();
   }
 });
 
-/* ENTER KEY */
+/* ENTER → unlock */
 document.getElementById("codeInput").addEventListener("keydown",function(e){
   if(e.key==="Enter"){
     unlock();
