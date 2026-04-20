@@ -321,43 +321,7 @@ const _seed=Math.floor(Math.random()*80)+1;
 let curCh=1,curSec=0,curQ=0,correct=0,wrong=0,curLvl=1,answered=false;
 let exIdx=0,exAttempt=_seed,quizAttempt=_seed;
 let currentQuestions=[],currentExercises=[];
-const PROGRESS_KEY='security_plus_week1_progress_v1';
-const DEFAULT_CHECKPOINT=1;
-
-function buildDefaultProgress(checkpoint=1){
-  const state={1:{unlocked:true,completed:false},2:{unlocked:false,completed:false},3:{unlocked:false,completed:false},4:{unlocked:false,completed:false},5:{unlocked:false,completed:false}};
-  for(let i=1;i<=5;i++){
-    if(i<checkpoint){ state[i].unlocked=true; state[i].completed=true; }
-    if(i===checkpoint){ state[i].unlocked=true; }
-  }
-  return state;
-}
-
-function loadProgress(){
-  try{
-    const saved=localStorage.getItem(PROGRESS_KEY);
-    if(saved){
-      const parsed=JSON.parse(saved);
-      if(parsed&&parsed.chState) return parsed.chState;
-    }
-  }catch(e){}
-  return buildDefaultProgress(DEFAULT_CHECKPOINT);
-}
-
-function saveProgress(){
-  try{
-    localStorage.setItem(PROGRESS_KEY,JSON.stringify({chState,lastChapter:curCh,updatedAt:Date.now()}));
-  }catch(e){}
-}
-
-function resetSavedProgress(checkpoint=1){
-  chState=buildDefaultProgress(checkpoint);
-  saveProgress();
-  showHome();
-}
-
-let chState=loadProgress();
-
+let chState={1:{unlocked:true,completed:false},2:{unlocked:false,completed:false},3:{unlocked:false,completed:false},4:{unlocked:false,completed:false},5:{unlocked:false,completed:false}};
 
 function deepClone(v){return JSON.parse(JSON.stringify(v));}
 function shuffleArray(arr){
@@ -368,103 +332,26 @@ function shuffleArray(arr){
   }
   return a;
 }
-function shuffleQuestion(q){
-  const indexed=q.opts.map((opt,i)=>({opt,i}));
-  const shuffled=shuffleArray(indexed);
-  return {...q,opts:shuffled.map(x=>x.opt),correct:shuffled.findIndex(x=>x.i===q.correct)};
+function randomChoice(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function randomChoiceDifferent(arr, currentTitle){
+  const filtered=arr.filter(x=>x.title!==currentTitle);
+  return deepClone(filtered.length?randomChoice(filtered):randomChoice(arr));
 }
-function shuffleMultiSelectCase(cas){
+
+function shuffleMultiCase(cas){
   const indexed=cas.opts.map((opt,i)=>({opt,i}));
   const shuffled=shuffleArray(indexed);
   const correctSet=new Set(cas.correct);
-  return {...cas,opts:shuffled.map(x=>x.opt),correct:shuffled.map((x,newIdx)=>correctSet.has(x.i)?newIdx:null).filter(v=>v!==null)};
-}
-const BLANK_VARIANTS={
-  1:[
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence with the correct term.",blanks:[{before:"In Zero Trust, the component that decides whether to grant access is the",after:".",answer:"Policy Engine",hint:"Policy E"},{before:"Five nines uptime allows a maximum of",after:"of downtime per year.",answer:"5.26 minutes",hint:"5.2"},{before:"When a company cannot implement smart cards and uses MFA instead, this is a",after:"control.",answer:"Compensating",hint:"Com"}]},
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence with the correct term.",blanks:[{before:"A SIEM used to track who accessed which record supports the AAA function called",after:".",answer:"Accounting",hint:"Acc"},{before:"The Zero Trust component that executes the decision by allowing or blocking traffic is the",after:".",answer:"PEP",hint:"PEP"},{before:"A key fob belongs to the authentication factor",after:".",answer:"Something You Have",hint:"Have"}]},
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence with the correct term.",blanks:[{before:"If an antivirus quarantines malware after infection, that is a",after:"control.",answer:"Corrective",hint:"Corr"},{before:"The uptime target 99.9% is also known as",after:".",answer:"three nines",hint:"three"},{before:"A control that gives guidance to user behavior, like an AUP, is a",after:"control.",answer:"Directive",hint:"Dir"}]}
-  ],
-  2:[
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A cyber attack disguised to appear from another country is called a",after:"attack.",answer:"False Flag",hint:"False F"},{before:"Multiple interconnected decoy systems simulating a network is called a",after:".",answer:"Honeynet",hint:"Honey"},{before:"An employee receiving a phone call from someone impersonating IT support is targeted by",after:".",answer:"Vishing",hint:"Vish"}]},
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A fake file placed to trigger an alert when opened is a",after:".",answer:"Honeyfile",hint:"Honeyf"},{before:"Using a malicious USB drive with an enticing label is called",after:".",answer:"Baiting",hint:"Bait"},{before:"An actor motivated by ideology rather than money is usually a",after:".",answer:"Hacktivist",hint:"Hack"}]},
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A long-term, stealthy intrusion with persistence is an",after:".",answer:"APT",hint:"APT"},{before:"Using unauthorized personal cloud tools without malicious intent is",after:".",answer:"Shadow IT",hint:"Shadow"},{before:"A single decoy host intended to attract attackers is a",after:".",answer:"Honeypot",hint:"Honeyp"}]}
-  ],
-  3:[
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"When authorized person KNOWINGLY allows unauthorized entry, this is",after:".",answer:"Piggybacking",hint:"Piggy"},{before:"The biometric metric measuring rate of unauthorized users incorrectly accepted is",after:".",answer:"FAR",hint:"F"},{before:"Best countermeasure against electromagnetic jamming is to use",after:"cameras with encrypted signals.",answer:"wired",hint:"wir"}]},
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"Following an employee in WITHOUT their knowledge is called",after:".",answer:"Tailgating",hint:"Tail"},{before:"The point where FAR equals FRR is called the",after:".",answer:"CER",hint:"CER"},{before:"Bollards are used mainly to stop",after:"attacks.",answer:"vehicle",hint:"veh"}]},
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A double-door entry system that prevents one person from following another is an access control",after:".",answer:"vestibule",hint:"vest"},{before:"Lighting is mainly a",after:"physical control.",answer:"deterrent",hint:"deter"},{before:"Badge cloning usually targets",after:"or NFC technology.",answer:"RFID",hint:"RFI"}]}
-  ],
-  4:[
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A phishing email that targets a specific executive is called",after:".",answer:"Whaling",hint:"Whal"},{before:"A fake domain like goog1e.com is an example of",after:".",answer:"Typosquatting",hint:"Typo"},{before:"The strongest defense against social engineering is",after:".",answer:"Security Awareness Training",hint:"Train"}]},
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A phone call scam pretending to be support is",after:".",answer:"Vishing",hint:"Vish"},{before:"False information spread without harmful intent is",after:".",answer:"Misinformation",hint:"Misin"},{before:"Using fake testimonials to influence trust relies on the trigger called",after:".",answer:"Social Proof",hint:"Social"}]},
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A fabricated scenario created to extract information is called",after:".",answer:"Pretexting",hint:"Prete"},{before:"A real hijacked company email used for financial fraud is often a",after:"attack.",answer:"BEC",hint:"BEC"},{before:"Creating time pressure to force action uses the trigger of",after:".",answer:"Urgency",hint:"Urg"}]}
-  ],
-  5:[
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"Malware that spreads without user action is a",after:".",answer:"Worm",hint:"Wor"},{before:"Malware that executes only in RAM and avoids disk files is",after:".",answer:"Fileless Malware",hint:"Filel"},{before:"The response to a ransomware attack: DO NOT pay, disconnect systems, notify authorities, then restore from",after:".",answer:"clean backups",hint:"clean"}]},
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A virus that changes its signature each time is",after:".",answer:"Polymorphic",hint:"Poly"},{before:"A hidden kernel-level malware that traditional AV struggles with is a",after:".",answer:"Rootkit",hint:"Root"},{before:"A network of compromised devices controlled remotely is a",after:".",answer:"Botnet",hint:"Bot"}]},
-    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[{before:"A malware trigger tied to a date or event is called a",after:".",answer:"Logic Bomb",hint:"Logic"},{before:"A Trojan used to give full remote control is a",after:".",answer:"RAT",hint:"RAT"},{before:"Using PowerShell or WMI maliciously while blending in is called",after:".",answer:"Living Off the Land",hint:"Living"}]}
-  ]
-};
-function getRandomBlankVariant(ch){
-  const pool=BLANK_VARIANTS[ch]||BLANK_VARIANTS[1];
-  return deepClone(pool[Math.floor(Math.random()*pool.length)]);
+  return {
+    ...deepClone(cas),
+    opts: shuffled.map(x=>x.opt),
+    correct: shuffled.map((x,newIdx)=>correctSet.has(x.i)?newIdx:null).filter(v=>v!==null)
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════
 // HOME
 // ═══════════════════════════════════════════════════════════════
-
-const DRAGDROP_VARIANTS={
-  1:[
-    {type:"dragdrop",title:"Exercise 2 — Match the Control Type",instruction:"Drag each example to its correct control type.",pairs:[{item:"Warning sign: 'CCTV in operation'",zone:"Deterrent"},{item:"Restore from backup after ransomware",zone:"Corrective"},{item:"Firewall blocking port 23",zone:"Preventive"},{item:"IDS alerting on suspicious traffic",zone:"Detective"}]},
-    {type:"dragdrop",title:"Exercise 2 — Match the AAA Function",instruction:"Drag each activity to the correct AAA function.",pairs:[{item:"Verifying a user's fingerprint",zone:"Authentication"},{item:"Checking if user can access payroll records",zone:"Authorization"},{item:"Reviewing SIEM logs after a breach",zone:"Accounting"},{item:"Assigning role-based access permissions",zone:"Authorization"}]},
-    {type:"dragdrop",title:"Exercise 2 — Match the Zero Trust Component",instruction:"Drag each description to the correct Zero Trust component.",pairs:[{item:"Decides whether access should be granted",zone:"Policy Engine"},{item:"Communicates the decision to enforcement points",zone:"Policy Administrator"},{item:"Allows or blocks traffic based on the decision",zone:"PEP"},{item:"Verifies identity using context and behavior",zone:"Adaptive Identity"}]}
-  ],
-  2:[
-    {type:"dragdrop",title:"Exercise 2 — Match the Threat Actor",instruction:"Drag each description to its correct threat actor.",pairs:[{item:"Uses LOIC, motivated by thrill, no advanced skills",zone:"Script Kiddie"},{item:"Custom malware, structured hierarchy, financial only",zone:"Organized Crime"},{item:"APTs, false flag attacks, government-sponsored",zone:"Nation-State Actor"},{item:"Website defacement, data leaks, ideological motivation",zone:"Hacktivist"}]},
-    {type:"dragdrop",title:"Exercise 2 — Match the Deception Tech",instruction:"Drag each description to the correct deception technology.",pairs:[{item:"Single decoy system",zone:"Honeypot"},{item:"Multiple interconnected decoys",zone:"Honeynet"},{item:"Fake file used to trigger alerts",zone:"Honeyfile"},{item:"Fake credentials planted to detect misuse",zone:"Honeytoken"}]},
-    {type:"dragdrop",title:"Exercise 2 — Match the Threat Vector",instruction:"Drag each attack example to its primary vector.",pairs:[{item:"Fake IT support phone call",zone:"Voice / Vishing"},{item:"Malicious PDF sent by email",zone:"Message / Phishing"},{item:"USB drive labeled 'Payroll' left in parking lot",zone:"Removable Device / Baiting"},{item:"Rogue coffee shop access point",zone:"Unsecured Network"}]}
-  ],
-  3:[
-    {type:"dragdrop",title:"Exercise 2 — Match the Physical Control",instruction:"Drag each example to its correct control type.",pairs:[{item:"Access control vestibule",zone:"Preventive — Physical"},{item:"Bollards at building entrance",zone:"Preventive — Physical"},{item:"CCTV cameras recording activity",zone:"Detective — Technical"},{item:"Motion-activated lighting",zone:"Deterrent — Physical"}]},
-    {type:"dragdrop",title:"Exercise 2 — Match the Physical Attack",instruction:"Drag each incident to the correct attack category.",pairs:[{item:"Attacker follows employee through turnstile unnoticed",zone:"Tailgating"},{item:"Authorized employee knowingly opens secure door for stranger",zone:"Piggybacking"},{item:"Wireless CCTV signals jammed with handheld device",zone:"Electromagnetic Interference"},{item:"RFID badge copied onto a blank card",zone:"Badge Cloning"}]},
-    {type:"dragdrop",title:"Exercise 2 — Match the Physical Countermeasure",instruction:"Drag each threat to its best countermeasure.",pairs:[{item:"Vehicle ramming risk at gate",zone:"Bollards"},{item:"Unauthorized access through main entrance",zone:"Access Control Vestibule"},{item:"Wireless camera jamming",zone:"Wired Cameras + Encrypted Signals"},{item:"People peeking over shoulders at passwords",zone:"Privacy Screen"}]}
-  ],
-  4:[
-    {type:"dragdrop",title:"Exercise 2 — Match Phishing Type to Target",instruction:"Drag each phishing type to its primary target.",pairs:[{item:"Mass email campaign — no personalization",zone:"Phishing"},{item:"Personalized email using victim's specific info",zone:"Spear Phishing"},{item:"Targets CEO, CFO, CISO specifically",zone:"Whaling"},{item:"Uses hijacked legitimate email account",zone:"BEC"}]},
-    {type:"dragdrop",title:"Exercise 2 — Match the Trigger",instruction:"Drag each example to the social engineering trigger.",pairs:[{item:"'Only 3 licenses left — buy now'",zone:"Scarcity"},{item:"'The IRS is calling about unpaid taxes'",zone:"Authority"},{item:"'Everyone already upgraded their account'",zone:"Social Proof"},{item:"'Act in 10 minutes or lose access'",zone:"Urgency"}]},
-    {type:"dragdrop",title:"Exercise 2 — Match the Attack Type",instruction:"Drag each scenario to the correct social engineering attack.",pairs:[{item:"Phone call from fake bank representative",zone:"Vishing"},{item:"SMS claiming package delivery issue",zone:"Smishing"},{item:"Fake invoice for nonexistent service",zone:"Invoice Scam"},{item:"Similar-looking domain like micr0soft.com",zone:"Typosquatting"}]}
-  ],
-  5:[
-    {type:"dragdrop",title:"Exercise 2 — Match Malware to Key Characteristic",instruction:"Drag each characteristic to its correct malware type.",pairs:[{item:"Self-replicates across networks WITHOUT user action",zone:"Worm"},{item:"Changes its signature with each execution",zone:"Polymorphic Virus"},{item:"Operates in Ring 0 — invisible to traditional AV",zone:"Rootkit"},{item:"Executes when specific date or event occurs",zone:"Logic Bomb"}]},
-    {type:"dragdrop",title:"Exercise 2 — Match the Malware Technique",instruction:"Drag each description to the correct technique.",pairs:[{item:"Malicious code inserted into a legitimate process",zone:"DLL Injection"},{item:"Legitimate process hollowed and replaced with malware",zone:"Process Hollowing"},{item:"Malware runs only in RAM",zone:"Fileless Malware"},{item:"Uses PowerShell and WMI for malicious actions",zone:"Living Off the Land"}]},
-    {type:"dragdrop",title:"Exercise 2 — Match the Botnet Term",instruction:"Drag each definition to the correct botnet term.",pairs:[{item:"Single compromised machine",zone:"Zombie"},{item:"Central controller sending instructions",zone:"C2 Node"},{item:"Entire network of compromised devices",zone:"Botnet"},{item:"Remote control Trojan providing full access",zone:"RAT"}]}
-  ]
-};
-
-function getDragDropVariant(ch,currentTitle=''){
-  const variants=DRAGDROP_VARIANTS[ch]||[];
-  if(!variants.length) return null;
-  let pool=variants;
-  if(currentTitle) {
-    const filtered=variants.filter(v=>v.title!==currentTitle);
-    if(filtered.length) pool=filtered;
-  }
-  return deepClone(pool[Math.floor(Math.random()*pool.length)]);
-}
-
-function getBlankVariant(ch,currentTitle=''){
-  const variants=BLANK_VARIANTS[ch]||[];
-  if(!variants.length) return null;
-  let pool=variants;
-  if(currentTitle){
-    const filtered=variants.filter(v=>v.title!==currentTitle);
-    if(filtered.length) pool=filtered;
-  }
-  return deepClone(pool[Math.floor(Math.random()*pool.length)]);
-}
-
 function showHome(){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('home-screen').classList.add('active');
@@ -509,7 +396,6 @@ function renderHome(){
 // ═══════════════════════════════════════════════════════════════
 function startChapter(n){
   if(!chState[n].unlocked)return;
-  saveProgress();
   curCh=n;curSec=0;
   const ch=CHAPTERS[n];
   if(ch.video){
@@ -582,8 +468,7 @@ function retryQuiz(){startQuiz();}
 
 function renderQ(){
   if(curQ>=currentQuestions.length){showResult();return;}
-  const rawQ=currentQuestions[curQ],tot=currentQuestions.length;
-  const q=shuffleQuestion(rawQ);
+  const q=currentQuestions[curQ],tot=currentQuestions.length;
   const stars=['★','★★','★★★','★★★★','★★★★★'],labels=['Easy','Medium','Medium-Hard','Hard','Expert'];
   document.getElementById('qz-counter').textContent=`question_${curQ+1}_of_${tot}`;
   document.getElementById('qz-bar').style.width=((curQ+1)/tot*100)+'%';
@@ -637,11 +522,7 @@ async function startExercises(){
   document.getElementById('ex-loading').style.display='block';
   document.getElementById('ex-content').innerHTML='';
   exIdx=0;
-  const ctx=getCtx(exAttempt),ts=Date.now();
-  try{
-    const d=await callClaude(`CompTIA Security+ SY0-701. Session:${ts} attempt:${exAttempt}. Generate 4 UNIQUE exercises about: ${CHAPTERS[curCh].topics}\nContexts: ${ctx[1]}\nRules: ${CHAPTERS[curCh].keyRules}\nTypes in order: scenario, dragdrop, blank, scenario. ALL different from any previous attempt.\nReturn ONLY JSON: {"exercises":[{"type":"scenario","title":"Exercise 1 — title","instruction":"text","scenario":"text","questions":[{"q":"","opts":["","","",""],"correct":0,"exp":""}]},{"type":"dragdrop","title":"Exercise 2 — title","instruction":"text","pairs":[{"item":"","zone":""}]},{"type":"blank","title":"Exercise 3 — title","instruction":"text","blanks":[{"before":"","after":"","answer":"","hint":""}]},{"type":"scenario","title":"Exercise 4 — title","instruction":"text","scenario":"text","questions":[{"q":"","opts":["","","",""],"correct":0,"exp":""}]}]}`);
-    currentExercises=d.exercises;
-  }catch(e){currentExercises=getFallbackEx(curCh);currentExercises=currentExercises.map(ex=>{if(ex.type==='dragdrop'){return getDragDropVariant(curCh,ex.title)||ex;} if(ex.type==='blank'){return getBlankVariant(curCh,ex.title)||ex;} return ex;});}
+  currentExercises=getLocalExercises(curCh);
   document.getElementById('ex-loading').style.display='none';
   renderExDots();renderEx();
 }
@@ -659,7 +540,7 @@ function renderScenario(ex,c){
   let qIdx=0,sc=0;
   function renderSQ(){
     if(qIdx>=ex.questions.length){const pct=Math.round(sc/ex.questions.length*100),passed=pct>=66;document.getElementById('sc-qs').innerHTML=`<div class="feedback-box ${passed?'feedback-correct':'feedback-wrong'}" style="text-align:center;margin-top:1rem"><strong>// Score: ${sc}/${ex.questions.length} — ${pct}%</strong>${!passed?'<br><span style="font-size:11px;opacity:0.8">Need 66%+ to pass.</span>':''}</div><div style="text-align:right;margin-top:1rem">${passed?`<button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button>`:`<button class="btn btn-danger" onclick="retryCurrentEx()">Retry this exercise →</button>`}</div>`;return;}
-    const q=shuffleQuestion(ex.questions[qIdx]);
+    const q=ex.questions[qIdx];
     document.getElementById('sc-qs').innerHTML=`<p style="font-size:14px;font-weight:500;color:var(--text);margin:1rem 0 8px">Q${qIdx+1}: ${q.q}</p>${q.opts.map((o,i)=>`<button class="option-btn" onclick="pickSQ(${i})">${['A) ','B) ','C) ','D) '][i]}${o}</button>`).join('')}<div id="sc-fb" style="display:none"></div><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" id="sc-next" style="display:none" onclick="advSQ()">Next →</button></div>`;
     window.pickSQ=function(idx){document.querySelectorAll('.option-btn').forEach((b,i)=>{b.onclick=null;if(i===q.correct)b.classList.add('correct');else if(i===idx&&idx!==q.correct)b.classList.add('wrong');});const ok=idx===q.correct;if(ok)sc++;const fb=document.getElementById('sc-fb');fb.style.display='block';fb.className='feedback-box '+(ok?'feedback-correct':'feedback-wrong');fb.textContent=(ok?'// CORRECT: ':'// INCORRECT: ')+q.exp;document.getElementById('sc-next').style.display='inline-block';};
     window.advSQ=function(){qIdx++;renderSQ();};
@@ -669,11 +550,15 @@ function renderScenario(ex,c){
 
 function renderDragDrop(ex,c){
   const pairs=deepClone(ex.pairs);
-  const items=shuffleArray(pairs.map((p,i)=>({text:p.item,origIdx:i,zone:p.zone})));
-  let html=`<div class="card"><span class="badge badge-ex">DRAG & DROP</span><span class="ai-tag">// ai_generated</span><h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div><p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">// ITEMS — drag these</p><div id="drag-items">${items.map((it,i)=>`<div class="drag-item" draggable="true" id="di-${i}" data-idx="${it.origIdx}" data-zone="${it.zone}">${it.text}</div>`).join('')}</div></div><div><p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">// DROP ZONES</p>${pairs.map((p,i)=>`<div class="drop-zone" id="dz-${i}" data-zone-idx="${i}" data-expected-zone="${p.zone}"><div style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700;margin-bottom:3px">${p.zone}</div><div id="dzc-${i}" style="font-size:11px;color:var(--text3);font-style:italic;min-height:14px">drop here...</div></div>`).join('')}</div></div><div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" id="check-drag-btn" onclick="checkDrag()">Check Answers →</button></div><div id="drag-fb"></div></div>`;
+  const zones=pairs.map((p,i)=>({label:p.zone, expectedItem:p.item, zoneIdx:i}));
+  const items=shuffleArray(pairs.map((p,i)=>({text:p.item, expectedZone:p.zone, origIdx:i})));
+  let html=`<div class="card"><span class="badge badge-ex">DRAG & DROP</span><span class="ai-tag">// curated_local</span><h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem"><div><p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">// ITEMS — drag these</p><div id="drag-items">${items.map((it,i)=>`<div class="drag-item" draggable="true" id="di-${i}" data-zone="${it.expectedZone.replace(/"/g,'&quot;')}" data-item="${it.text.replace(/"/g,'&quot;')}">${it.text}</div>`).join('')}</div></div><div><p style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">// DROP ZONES</p>${zones.map((z,i)=>`<div class="drop-zone" id="dz-${i}" data-zone-label="${z.label.replace(/"/g,'&quot;')}" data-expected-item="${z.expectedItem.replace(/"/g,'&quot;')}"><div style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700;margin-bottom:3px">${z.label}</div><div id="dzc-${i}" style="font-size:11px;color:var(--text3);font-style:italic;min-height:14px">drop here...</div></div>`).join('')}</div></div><div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" id="check-drag-btn" onclick="checkDrag()">Check Answers →</button></div><div id="drag-fb"></div></div>`;
   c.innerHTML=html;
   let dragSrc=null;
-  document.querySelectorAll('#drag-items .drag-item').forEach(el=>{el.addEventListener('dragstart',()=>{dragSrc=el;});el.addEventListener('dragend',()=>{dragSrc=null;});});
+  document.querySelectorAll('#drag-items .drag-item').forEach(el=>{
+    el.addEventListener('dragstart',()=>{dragSrc=el;});
+    el.addEventListener('dragend',()=>{dragSrc=null;});
+  });
   document.querySelectorAll('.drop-zone').forEach(zone=>{
     zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over');});
     zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
@@ -681,40 +566,48 @@ function renderDragDrop(ex,c){
       e.preventDefault();
       zone.classList.remove('over');
       if(!dragSrc)return;
-      const zIdx=zone.getAttribute('data-zone-idx');
       const prev=zone.getAttribute('data-dropped-id');
       if(prev){
         const old=document.getElementById(prev);
         if(old) old.style.display='block';
       }
       zone.setAttribute('data-dropped-id',dragSrc.id);
-      zone.setAttribute('data-dropped-orig',dragSrc.getAttribute('data-idx'));
+      zone.setAttribute('data-dropped-item',dragSrc.getAttribute('data-item'));
       zone.setAttribute('data-dropped-zone',dragSrc.getAttribute('data-zone'));
-      document.getElementById('dzc-'+zIdx).textContent=dragSrc.textContent;
-      document.getElementById('dzc-'+zIdx).style.fontStyle='normal';
-      document.getElementById('dzc-'+zIdx).style.color='var(--text2)';
+      const labelEl=zone.querySelector('[id^="dzc-"]');
+      if(labelEl){
+        labelEl.textContent=dragSrc.textContent;
+        labelEl.style.fontStyle='normal';
+        labelEl.style.color='var(--text2)';
+      }
       dragSrc.style.display='none';
       dragSrc=null;
     });
   });
   window.checkDrag=function(){
     let sc=0;
-    pairs.forEach((p,i)=>{
+    zones.forEach((z,i)=>{
       const zone=document.getElementById('dz-'+i);
-      const droppedZone=zone.getAttribute('data-dropped-zone');
-      const ok=droppedZone!==null && droppedZone===p.zone;
-      if(ok){sc++;zone.classList.add('matched');}
-      else zone.classList.add('wrong-drop');
+      const droppedItem=zone.getAttribute('data-dropped-item');
+      const ok=droppedItem!==null && droppedItem===z.expectedItem;
+      if(ok){
+        sc++;
+        zone.classList.add('matched');
+      }else{
+        zone.classList.add('wrong-drop');
+      }
     });
-    const pct=Math.round(sc/pairs.length*100),passed=pct>=75;
-    const fb=document.getElementById('drag-fb');fb.className='feedback-box '+(passed?'feedback-correct':'feedback-wrong');
-    fb.innerHTML=passed?`<strong>// Score: ${sc}/${pairs.length} — ${pct}% ✓</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`:`<strong>// Score: ${sc}/${pairs.length} — ${pct}%</strong><br><span style="font-size:11px;opacity:0.8">Need 75%+ to pass.</span><div style="text-align:right;margin-top:8px"><button class="btn btn-danger" onclick="retryCurrentEx()">Retry this exercise →</button></div>`;
+    const pct=Math.round(sc/zones.length*100),passed=pct>=75;
+    const fb=document.getElementById('drag-fb');
+    fb.className='feedback-box '+(passed?'feedback-correct':'feedback-wrong');
+    fb.innerHTML=passed
+      ? `<strong>// Score: ${sc}/${zones.length} — ${pct}% ✓</strong><div style="text-align:right;margin-top:8px"><button class="btn btn-primary" onclick="nextEx()">Next Exercise →</button></div>`
+      : `<strong>// Score: ${sc}/${zones.length} — ${pct}%</strong><br><span style="font-size:11px;opacity:0.8">Need 75%+ to pass.</span><div style="text-align:right;margin-top:8px"><button class="btn btn-danger" onclick="retryCurrentEx()">Retry this exercise →</button></div>`;
     document.getElementById('check-drag-btn').remove();
   };
 }
 
-function renderBlank(ex,c){
-  ex={...ex,blanks:shuffleArray(ex.blanks)};
+function renderBlankfunction renderBlank(ex,c){
   c.innerHTML=`<div class="card"><span class="badge badge-ex">FILL IN THE BLANK</span><span class="ai-tag">// ai_generated</span><h2 style="font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text)">${ex.title}</h2><p style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:10px">${ex.instruction}</p>${ex.blanks.map((b,i)=>`<div style="margin:1rem 0;padding:12px;border:1px solid var(--border);border-radius:9px;background:var(--surface2)"><p style="font-size:14px;color:var(--text2);line-height:1.9">${b.before} <input class="blank-input" id="bl-${i}" placeholder="${b.hint}..." type="text"> ${b.after}</p></div>`).join('')}<div style="text-align:right;margin-top:1rem"><button class="btn btn-primary" id="check-blanks-btn" onclick="checkBlanks()">Check Answers →</button></div><div id="blank-fb"></div></div>`;
   window.checkBlanks=function(){
     let sc=0;
@@ -733,16 +626,28 @@ async function retryCurrentEx(){
   document.getElementById('ex-attempt-badge').textContent=`attempt_${exAttempt}`;
   document.getElementById('ex-loading').style.display='block';
   document.getElementById('ex-content').innerHTML='';
-  const ctx=getCtx(exAttempt),exType=currentExercises[exIdx].type,ts=Date.now();
-  try{
-    const d=await callClaude(`CompTIA Security+ SY0-701. Session:${ts}. Generate 1 UNIQUE exercise of type "${exType}" about: ${CHAPTERS[curCh].topics}\nContext: ${ctx[1]}\nRules: ${CHAPTERS[curCh].keyRules}\nReturn ONLY JSON: {"exercise":{"type":"${exType}","title":"Exercise — title","instruction":"text"${exType==='dragdrop'?',"pairs":[{"item":"","zone":""}]':exType==='blank'?',"blanks":[{"before":"","after":"","answer":"","hint":""}]':',"scenario":"text","questions":[{"q":"","opts":["","","",""],"correct":0,"exp":""}]'}}}`);
-    if(d.exercise)currentExercises[exIdx]=d.exercise;
-  }catch(e){}
+  const exType=currentExercises[exIdx].type;
+  const currentTitle=currentExercises[exIdx].title || '';
+
+  if(exType==='dragdrop' || exType==='blank'){
+    const replacement=getVariantExercise(curCh, exType, currentTitle);
+    if(replacement){
+      currentExercises[exIdx]=replacement;
+    }
+  }else if(exType==='multiselect4'){
+    currentExercises[exIdx]={type:'multiselect4', ch:curCh};
+  }else{
+    const fallbackSet=getFallbackEx(curCh).filter(ex=>ex.type===exType);
+    if(fallbackSet.length){
+      currentExercises[exIdx]=randomChoiceDifferent(fallbackSet, currentTitle);
+    }
+  }
+
   document.getElementById('ex-loading').style.display='none';
   renderExDots();renderEx();
 }
 
-function showExResult(){
+function showExResultfunction showExResult(){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('ex-result-screen').classList.add('active');
   document.getElementById('exres-title').textContent='Chapter '+curCh+' — Complete';
@@ -754,7 +659,6 @@ function showExResult(){
 function finishChapter(){
   chState[curCh].completed=true;
   if(curCh<5)chState[curCh+1].unlocked=true;
-  saveProgress();
   showHome();
 }
 
@@ -931,6 +835,167 @@ function getFallbackQ(ch){
 // ═══════════════════════════════════════════════════════════════
 // FALLBACK EXERCISES
 // ═══════════════════════════════════════════════════════════════
+
+const DRAGDROP_BANKS={
+  1:[
+    {type:"dragdrop",title:"Exercise 2 — Match the Control Type",instruction:"Drag each example to its correct control type.",pairs:[
+      {item:"Warning sign: 'CCTV in operation'",zone:"Deterrent"},
+      {item:"Restore from backup after ransomware",zone:"Corrective"},
+      {item:"Firewall blocking port 23",zone:"Preventive"},
+      {item:"IDS alerting on suspicious traffic",zone:"Detective"}]},
+    {type:"dragdrop",title:"Exercise 2 — Match the AAA Function",instruction:"Drag each activity to its correct AAA function.",pairs:[
+      {item:"User enters password and fingerprint",zone:"Authentication"},
+      {item:"Manager grants HR folder access",zone:"Authorization"},
+      {item:"SOC reviews SIEM audit trail",zone:"Accounting"},
+      {item:"System records who changed a file",zone:"Accounting"}]},
+    {type:"dragdrop",title:"Exercise 2 — Match the Zero Trust Component",instruction:"Drag each function to the correct Zero Trust component.",pairs:[
+      {item:"Decides whether access should be granted",zone:"Policy Engine"},
+      {item:"Communicates the decision to the enforcement point",zone:"Policy Administrator"},
+      {item:"Allows or blocks traffic based on decision",zone:"PEP"},
+      {item:"Reassesses trust dynamically based on context",zone:"Adaptive Identity"}]}
+  ],
+  2:[
+    {type:"dragdrop",title:"Exercise 2 — Match the Threat Actor",instruction:"Drag each description to its correct threat actor.",pairs:[
+      {item:"Uses LOIC, motivated by thrill, no advanced skills",zone:"Script Kiddie"},
+      {item:"Custom malware, structured hierarchy, financial only",zone:"Organized Crime"},
+      {item:"APTs, false flag attacks, government-sponsored",zone:"Nation-State Actor"},
+      {item:"Website defacement, data leaks, ideological motivation",zone:"Hacktivist"}]},
+    {type:"dragdrop",title:"Exercise 2 — Match the Deception Technology",instruction:"Drag each decoy asset to the correct deception technology.",pairs:[
+      {item:"One fake Linux server exposed to attackers",zone:"Honeypot"},
+      {item:"Network of several decoy systems",zone:"Honeynet"},
+      {item:"A fake spreadsheet named payroll.xlsx",zone:"Honeyfile"},
+      {item:"Fake admin credentials planted in logs",zone:"Honeytoken"}]},
+    {type:"dragdrop",title:"Exercise 2 — Match the Threat Vector",instruction:"Drag each scenario to its correct vector.",pairs:[
+      {item:"Phone call pretending to be IT support",zone:"Voice Calls"},
+      {item:"USB drive left in parking lot with 'Salary Data'",zone:"Removable Devices"},
+      {item:"Malicious PDF sent by email",zone:"Messages"},
+      {item:"Rogue cafe Wi‑Fi access point",zone:"Unsecured Networks"}]}
+  ],
+  3:[
+    {type:"dragdrop",title:"Exercise 2 — Match the Physical Control",instruction:"Drag each example to its correct control type.",pairs:[
+      {item:"Bollards at building entrance",zone:"Preventive — Physical"},
+      {item:"Motion-activated lighting",zone:"Deterrent — Physical"},
+      {item:"CCTV cameras recording activity",zone:"Detective — Technical"},
+      {item:"Access control vestibule",zone:"Preventive — Physical"}]},
+    {type:"dragdrop",title:"Exercise 2 — Match the Entry Technique",instruction:"Drag each situation to its correct physical security concept.",pairs:[
+      {item:"Unauthorized person follows employee in without permission",zone:"Tailgating"},
+      {item:"Employee knowingly lets friend in behind them",zone:"Piggybacking"},
+      {item:"RFID badge data copied onto a blank card",zone:"Badge Cloning"},
+      {item:"Attacker sprays camera lens with black paint",zone:"Visual Obstruction"}]},
+    {type:"dragdrop",title:"Exercise 2 — Match the Biometrics Metric",instruction:"Drag each description to the correct biometric metric.",pairs:[
+      {item:"System accepts an unauthorized person",zone:"FAR"},
+      {item:"System rejects a valid employee",zone:"FRR"},
+      {item:"Point where false accepts equal false rejects",zone:"CER"},
+      {item:"Lower value indicates a better biometric system",zone:"CER"}]}
+  ],
+  4:[
+    {type:"dragdrop",title:"Exercise 2 — Match the Attack Type",instruction:"Drag each scenario to the correct social engineering attack.",pairs:[
+      {item:"Fake invoice for nonexistent service",zone:"Invoice Scam"},
+      {item:"SMS claiming package delivery issue",zone:"Smishing"},
+      {item:"Phone call from fake bank representative",zone:"Vishing"},
+      {item:"Similar-looking domain like micr0soft.com",zone:"Typosquatting"}]},
+    {type:"dragdrop",title:"Exercise 2 — Match the Phishing Type",instruction:"Drag each description to the correct phishing type.",pairs:[
+      {item:"Mass email campaign with no personalization",zone:"Phishing"},
+      {item:"Targeted email using the victim's job role and LinkedIn data",zone:"Spear Phishing"},
+      {item:"Attack specifically crafted for CEO or CFO",zone:"Whaling"},
+      {item:"Uses a real hijacked company mailbox to request payment",zone:"BEC"}]},
+    {type:"dragdrop",title:"Exercise 2 — Match the Motivational Trigger",instruction:"Drag each lure to the correct trigger.",pairs:[
+      {item:"'Only 2 subscriptions left — buy now!'",zone:"Scarcity"},
+      {item:"'Everyone in your company already upgraded security'",zone:"Social Proof"},
+      {item:"'You have 47 viruses — call immediately'",zone:"Fear"},
+      {item:"'This is the CEO's assistant and this must be done today'",zone:"Authority + Urgency"}]}
+  ],
+  5:[
+    {type:"dragdrop",title:"Exercise 2 — Match Malware to Key Characteristic",instruction:"Drag each characteristic to its correct malware type.",pairs:[
+      {item:"Self-replicates across networks WITHOUT user action",zone:"Worm"},
+      {item:"Changes its signature with each execution",zone:"Polymorphic Virus"},
+      {item:"Operates in Ring 0 — invisible to traditional AV",zone:"Rootkit"},
+      {item:"Executes when specific date or event occurs",zone:"Logic Bomb"}]},
+    {type:"dragdrop",title:"Exercise 2 — Match the IoC",instruction:"Drag each indicator to the correct meaning.",pairs:[
+      {item:"Same account logs in from Berlin and Tokyo 5 minutes apart",zone:"Impossible Travel"},
+      {item:"Ten workstations CPU at 98% overnight",zone:"Resource Consumption"},
+      {item:"Tuesday logs are completely gone",zone:"Missing Logs"},
+      {item:"Files renamed .locked with ransom note",zone:"Resource Inaccessibility"}]},
+    {type:"dragdrop",title:"Exercise 2 — Match the Malware Technique",instruction:"Drag each description to the correct malware technique.",pairs:[
+      {item:"Runs only in RAM and leaves no file on disk",zone:"Fileless Malware"},
+      {item:"Uses PowerShell and WMI for malicious actions",zone:"Living Off the Land"},
+      {item:"Injects code into a legitimate running process",zone:"DLL Injection"},
+      {item:"Creates legitimate process then replaces its memory with malware",zone:"Process Hollowing"}]}
+  ]
+};
+
+const BLANK_BANKS={
+  1:[
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence with the correct term.",blanks:[
+      {before:"In Zero Trust, the component that decides whether to grant access is the",after:".",answer:"Policy Engine",hint:"Policy E"},
+      {before:"Five nines uptime allows a maximum of",after:"of downtime per year.",answer:"5.26 minutes",hint:"5.2"},
+      {before:"When a company cannot implement smart cards and uses MFA instead, this is a",after:"control.",answer:"Compensating",hint:"Com"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[
+      {before:"Logs reviewed to reconstruct a user's actions belong to the AAA function called",after:".",answer:"Accounting",hint:"Acc"},
+      {before:"A key fob is an example of Something You",after:".",answer:"Have",hint:"H"},
+      {before:"An IPS is placed",after:"the traffic path, while IDS is out-of-band.",answer:"inline",hint:"inl"}]}
+  ],
+  2:[
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[
+      {before:"A cyber attack disguised to appear from another country is called a",after:"attack.",answer:"False Flag",hint:"False F"},
+      {before:"Multiple interconnected decoy systems simulating a network is called a",after:".",answer:"Honeynet",hint:"Honey"},
+      {before:"An employee receiving a phone call from someone impersonating IT support is targeted by",after:".",answer:"Vishing",hint:"Vish"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[
+      {before:"An attacker motivated mainly by ideology rather than money is a",after:".",answer:"Hacktivist",hint:"Hack"},
+      {before:"A single fake decoy server is a",after:".",answer:"Honeypot",hint:"Honey"},
+      {before:"Using a USB drive with an enticing label to trick users is called",after:".",answer:"Baiting",hint:"Bait"}]}
+  ],
+  3:[
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[
+      {before:"When authorized person KNOWINGLY allows unauthorized entry, this is",after:".",answer:"Piggybacking",hint:"Piggy"},
+      {before:"The biometric metric measuring rate of unauthorized users incorrectly accepted is",after:".",answer:"FAR",hint:"F"},
+      {before:"Best countermeasure against electromagnetic jamming is to use",after:"cameras with encrypted signals.",answer:"wired",hint:"wir"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[
+      {before:"Following an employee through a secure door without their knowledge is",after:".",answer:"Tailgating",hint:"Tail"},
+      {before:"The point where FAR equals FRR is called",after:".",answer:"CER",hint:"C"},
+      {before:"Short metal posts designed to stop vehicles are called",after:".",answer:"Bollards",hint:"Bol"}]}
+  ],
+  4:[
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[
+      {before:"False information shared WITHOUT harmful intent is called",after:".",answer:"Misinformation",hint:"Mis"},
+      {before:"The most dangerous motivational trigger combination is Authority combined with",after:".",answer:"Urgency",hint:"Urg"},
+      {before:"The primary defense against ALL social engineering attacks is",after:"training.",answer:"security awareness",hint:"security"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[
+      {before:"A fake message sent by SMS is called",after:".",answer:"Smishing",hint:"Smi"},
+      {before:"A nearly identical web domain used to fool users is",after:".",answer:"Typosquatting",hint:"Typo"},
+      {before:"A fake scenario created to extract information is called",after:".",answer:"Pretexting",hint:"Pret"}]}
+  ],
+  5:[
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[
+      {before:"Malware that executes entirely in RAM with no files written to disk is called",after:"malware.",answer:"Fileless",hint:"File"},
+      {before:"Using legitimate system tools like PowerShell for malicious activities is called",after:".",answer:"Living Off the Land",hint:"Livin"},
+      {before:"The response to a ransomware attack: DO NOT pay, disconnect systems, notify authorities, then restore from",after:".",answer:"clean backups",hint:"clean"}]},
+    {type:"blank",title:"Exercise 3 — Fill in the Blank",instruction:"Complete each sentence.",blanks:[
+      {before:"A single compromised device inside a botnet is called a",after:".",answer:"Zombie",hint:"Zom"},
+      {before:"The botnet's controlling node is called",after:".",answer:"Command and Control",hint:"C2"},
+      {before:"Malware that activates only when a condition is met is a",after:".",answer:"Logic Bomb",hint:"Logic"}]}
+  ]
+};
+
+function getVariantExercise(ch,type,currentTitle=''){
+  if(type==='dragdrop'){
+    return randomChoiceDifferent(DRAGDROP_BANKS[ch]||DRAGDROP_BANKS[1], currentTitle);
+  }
+  if(type==='blank'){
+    return randomChoiceDifferent(BLANK_BANKS[ch]||BLANK_BANKS[1], currentTitle);
+  }
+  return null;
+}
+
+function getLocalExercises(ch){
+  const base=deepClone(getFallbackEx(ch));
+  return base.map(ex=>{
+    if(ex.type==='dragdrop') return getVariantExercise(ch,'dragdrop', ex.title) || ex;
+    if(ex.type==='blank') return getVariantExercise(ch,'blank', ex.title) || ex;
+    return ex;
+  });
+}
+
 function getFallbackEx(ch){
   const exMap={
     1:[
@@ -965,8 +1030,7 @@ function getFallbackEx(ch){
     ]
   };
   const pool=deepClone(exMap[ch]||exMap[1]);
-  if(pool[2] && pool[2].type==='blank') pool[2]=getRandomBlankVariant(ch);
-  return pool;
+  return shuffleArray(pool);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1047,15 +1111,8 @@ const MULTISELECT_BANKS={
 
 function getMultiselect4(ch){
   const sets=MULTISELECT_BANKS[ch]||MULTISELECT_BANKS[1];
-  const key=`ms-used-ch${ch}`;
-  let used=JSON.parse(sessionStorage.getItem(key)||'[]');
-  if(used.length>=sets.length) used=[];
-  const available=[];
-  for(let i=0;i<sets.length;i++) if(!used.includes(i)) available.push(i);
-  const setIdx=available[Math.floor(Math.random()*available.length)];
-  used.push(setIdx);
-  sessionStorage.setItem(key,JSON.stringify(used));
-  return deepClone(sets[setIdx]).map(cas=>shuffleMultiSelectCase(cas));
+  const setIdx=Math.floor(Math.random()*sets.length);
+  return deepClone(sets[setIdx]).map(cas=>shuffleMultiCase(cas));
 }
 
 function renderMultiselect4(ch,c){
@@ -1252,8 +1309,7 @@ function shareResult(code,score,total){
 // ═══════════════════════════════════════════════════════════════
 // INIT — Start directly at Chapter 1
 // ═══════════════════════════════════════════════════════════════
-saveProgress();
-showHome();
+startChapter(1);
 </script>
 </body>
 </html>
