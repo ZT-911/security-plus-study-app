@@ -101,6 +101,7 @@ body{
   display:flex;
   justify-content:center;
   gap:20px;
+  flex-wrap:wrap;
   font-family:var(--mono);
   font-size:11px;
   padding:20px;
@@ -129,6 +130,12 @@ body{
   margin-bottom:8px;
 }
 
+.week-sub{
+  font-size:13px;
+  color:var(--text2);
+  line-height:1.6;
+}
+
 .btn{
   margin-top:10px;
   padding:10px 16px;
@@ -137,6 +144,10 @@ body{
   cursor:pointer;
   background:transparent;
   color:var(--text2);
+}
+
+.btn:hover{
+  background:var(--surface2);
 }
 
 .btn-primary{
@@ -195,10 +206,8 @@ input{
   <div class="tag">CompTIA Security+ SY0-701</div>
   <h1>Study smarter. Prove it.</h1>
   <p>
-  This isn't a flashcard app. Every chapter has to be earned — 
-  watch the intro, learn the theory, pass an adaptive quiz, 
-  and complete real-world exercises modeled after the actual exam. 
-  No skipping. No shortcuts.
+  Every chapter must be earned. Learn the theory, pass the quiz,
+  complete the exercises and unlock the next stage.
   </p>
 
   <div class="pills">
@@ -216,27 +225,32 @@ input{
   <span>10 Chapters</span>
   <span>AI Questions</span>
   <span>80% to Pass</span>
-  <span>🏆</span>
 </div>
 
 <div class="weeks">
   <div class="week-card">
     <div class="week-title">WEEK 01 — Security Fundamentals</div>
+    <div class="week-sub">Start your journey</div>
     <button class="btn btn-primary" onclick="goWeek1()">Enter Week 1 →</button>
   </div>
 
   <div class="week-card">
     <div class="week-title">WEEK 02 — Cryptography & Risk</div>
-    <button class="btn" onclick="openModal()">🎫 Enter Golden Ticket →</button>
+    <div class="week-sub">Locked behind Golden Ticket</div>
+    <button class="btn" onclick="openModal()">Enter Code →</button>
   </div>
 </div>
 
 <div class="modal" id="modal">
   <div class="modal-box">
-    <h3>Enter Golden Ticket</h3>
+    <h3>Golden Ticket</h3>
     <input id="codeInput" placeholder="SEC+-W2-PLAT-XXXX">
     <button class="btn btn-primary" onclick="unlock()">Unlock</button>
   </div>
+</div>
+
+<div class="footer">
+  Built by Carlos Materano · 2026
 </div>
 
 <script>
@@ -249,66 +263,16 @@ function openModal(){
 }
 
 function unlock(){
-  const code=document.getElementById("codeInput").value;
-
-  if(code.startsWith("SEC+-W2-PLAT")){
-    sessionStorage.setItem("w2_unlocked","true");
-    window.location.href="week2.html";
-  }else{
-    alert("Invalid Ticket");
-  }
-}
-
-function goWeek1(){
-  window.location.href="week1.html";
-}
-
-function openModal(){
-  document.getElementById("modal").classList.add("active");
-}
-
-function closeModal(e){
-  if(!e || e.target.id==="modal"){
-    document.getElementById("modal").classList.remove("active");
-  }
-}
-
-function unlock(){
   const code=document.getElementById("codeInput").value.trim();
 
   if(code.startsWith("SEC+-W2-PLAT")){
     sessionStorage.setItem("w2_unlocked","true");
     window.location.href="week2.html";
   }else{
-    alert("Invalid Ticket");
+    alert("Invalid Code");
   }
 }
-
-document.addEventListener("keydown",function(e){
-  if(e.key==="Escape"){
-    closeModal();
-  }
-});
-
-document.addEventListener("DOMContentLoaded",function(){
-  const modal=document.getElementById("modal");
-  if(modal){
-    modal.addEventListener("click",closeModal);
-  }
-
-  const input=document.getElementById("codeInput");
-  if(input){
-    input.addEventListener("keydown",function(e){
-      if(e.key==="Enter"){
-        unlock();
-      }
-    });
-  }
-});
 </script>
 
-<div class="footer">
-  Built by Carlos Materano · 2026
-</div>
-
 </body>
+</html>
