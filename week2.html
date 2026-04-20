@@ -1,584 +1,782 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Security+ Week 2 | Study App</title>
-
+<title>Week 2 — Security+ Study App</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-
 :root{
-  --bg:#0a0e1a;
-  --surface:#111827;
-  --surface2:#1a2235;
-  --border:#1e2d45;
-
-  --accent:#00d4ff;
-  --accent2:#7c3aed;
-
-  --success:#10b981;
-  --danger:#ef4444;
-  --warning:#f59e0b;
-
-  --text:#e2e8f0;
-  --text2:#94a3b8;
-  --text3:#64748b;
-
-  --platinum:#e5e4e2;
-
-  --mono:'Space Mono', monospace;
-  --sans:'DM Sans', sans-serif;
+  --bg:#0a0e1a; --surface:#111827; --surface2:#1a2235; --border:#1e2d45;
+  --accent:#00d4ff; --accent2:#7c3aed; --success:#10b981; --danger:#ef4444; --warning:#f59e0b;
+  --text:#e2e8f0; --text2:#94a3b8; --text3:#64748b; --platinum:#e5e4e2;
+  --mono:'Space Mono', monospace; --sans:'DM Sans', sans-serif;
 }
-
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
+*{box-sizing:border-box;margin:0;padding:0}
 body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--sans);
-  min-height:100vh;
+  background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; overflow-x:hidden;
 }
-
-.app{
-  max-width:1200px;
-  margin:auto;
-  padding:2rem;
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(0,212,255,.06), transparent 32%),
+    radial-gradient(circle at 90% 15%, rgba(124,58,237,.05), transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(16,185,129,.03), transparent 30%);
 }
-
-.screen{
-  display:none;
+.app{max-width:980px;margin:0 auto;padding:24px;position:relative;z-index:1}
+.screen{display:none}.screen.active{display:block}
+.site-header{text-align:center;padding:12px 0 24px}
+.site-header .tag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:3px;margin-bottom:12px}
+.site-header h1{font-size:clamp(28px,5vw,40px);font-weight:700;margin-bottom:10px}
+.site-header p{color:var(--text2);font-size:14px;line-height:1.75;max-width:720px;margin:0 auto}
+.badge-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+.pill{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);color:var(--text2)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 12px 35px rgba(0,0,0,.18)}
+.chapter-card{cursor:pointer;transition:transform .15s ease,border-color .15s ease,opacity .15s ease}
+.chapter-card:hover{transform:translateY(-2px);border-color:rgba(0,212,255,.35)}
+.chapter-card.locked{opacity:.45;cursor:not-allowed}
+.chapter-card.locked:hover{transform:none;border-color:var(--border)}
+.badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:4px 8px;border-radius:8px;letter-spacing:1px;font-weight:700}
+.badge-open{background:rgba(0,212,255,.12);color:var(--accent);border:1px solid rgba(0,212,255,.24)}
+.badge-done{background:rgba(16,185,129,.12);color:var(--success);border:1px solid rgba(16,185,129,.24)}
+.badge-lock{background:rgba(100,116,139,.12);color:var(--text3);border:1px solid var(--border)}
+.pbar{width:100%;height:5px;background:var(--border);border-radius:999px;overflow:hidden;margin:12px 0 6px}
+.pfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px;transition:width .25s ease}
+.btn{border:1px solid var(--border);background:transparent;color:var(--text2);padding:10px 16px;border-radius:10px;cursor:pointer;font-size:13px;font-family:var(--sans);transition:.15s}
+.btn:hover{background:var(--surface2);color:var(--text)}
+.btn-primary{border-color:rgba(0,212,255,.35);color:var(--accent);background:rgba(0,212,255,.08)}
+.btn-success{border-color:rgba(16,185,129,.35);color:var(--success);background:rgba(16,185,129,.08)}
+.btn-warning{border-color:rgba(245,158,11,.35);color:var(--warning);background:rgba(245,158,11,.08)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.nav-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.nav-main{flex:1}
+.nav-title{font-size:16px;font-weight:700}
+.nav-sub{font-size:11px;color:var(--text3);font-family:var(--mono);letter-spacing:1px}
+.video-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:14px;overflow:hidden;margin-bottom:14px;border:1px solid var(--border)}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%}
+.theory-section{border-left:2px solid var(--accent);padding-left:14px;margin:16px 0}
+.theory-title{font-size:15px;font-weight:700;margin-bottom:6px}
+.theory-body{font-size:14px;color:var(--text2);line-height:1.75}
+.tip-box{background:rgba(245,158,11,.08);color:var(--warning);border:1px solid rgba(245,158,11,.22);border-radius:10px;padding:10px 12px;margin:10px 0;font-family:var(--mono);font-size:12px;line-height:1.6}
+.tip-box::before{content:"// ";opacity:.7}
+.table-wrap{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--surface2);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--text2)}
+td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.stat-row{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--text3);margin-top:10px}
+.center{text-align:center}
+.timer{font-family:var(--mono);font-size:42px;text-align:center;margin:8px 0 4px}
+.timer.warning{color:var(--warning)} .timer.danger{color:var(--danger)}
+.question-title{font-size:20px;font-weight:700;text-align:center;margin:8px 0 10px}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.opt{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);cursor:pointer;color:var(--text2);font-size:13px;line-height:1.55;transition:.15s}
+.opt:hover{border-color:rgba(0,212,255,.35);color:var(--text)}
+.opt.correct{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.4);color:var(--success)}
+.opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.4);color:var(--danger)}
+.explain{margin-top:12px;padding:12px;border-radius:12px;font-size:13px;line-height:1.65;font-family:var(--mono)}
+.explain.good{background:rgba(16,185,129,.08);color:var(--success);border:1px solid rgba(16,185,129,.22)}
+.explain.bad{background:rgba(239,68,68,.08);color:var(--danger);border:1px solid rgba(239,68,68,.22)}
+.result-circle{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;font-family:var(--mono);margin:0 auto 12px;border:2px solid}
+.result-pass{color:var(--success);border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.08)}
+.result-fail{color:var(--danger);border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08)}
+.final-box{background:linear-gradient(135deg, rgba(229,228,226,.12), rgba(124,58,237,.12));border:1px solid rgba(229,228,226,.26);border-radius:20px;padding:22px}
+.unlock-code{font-family:var(--mono);font-weight:700;font-size:20px;color:#f5f5f5;letter-spacing:3px;text-align:center;word-break:break-word;margin:14px 0}
+.footer{text-align:center;padding:16px 0;color:var(--text3);font-size:11px;font-family:var(--mono)}
+@media (max-width:720px){
+  .options-grid{grid-template-columns:1fr}
+  .nav-bar{align-items:flex-start;flex-direction:column}
+  .btn-row{width:100%}
+  .btn-row .btn{flex:1}
 }
-
-.screen.active{
-  display:block;
-}
-
-/* NAV */
-
-.nav-bar{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:1.5rem;
-  padding-bottom:1rem;
-  border-bottom:1px solid var(--border);
-}
-
-.nav-title{
-  font-size:15px;
-  font-weight:600;
-}
-
-.nav-sub{
-  font-size:11px;
-  color:var(--text3);
-  font-family:var(--mono);
-}
-
-/* BUTTONS */
-
-.btn{
-  border:1px solid var(--border);
-  background:transparent;
-  color:var(--text);
-  padding:8px 14px;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:13px;
-}
-
-.btn-primary{
-  background:rgba(0,212,255,0.1);
-  color:var(--accent);
-  border-color:rgba(0,212,255,0.3);
-}
-
-.btn:hover{
-  background:var(--surface2);
-}
-
-/* CARD */
-
-.card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:1.25rem;
-  margin-bottom:1rem;
-}
-
-/* CHAPTER LIST */
-
-.chapter-card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:1.2rem;
-  margin-bottom:1rem;
-  cursor:pointer;
-  transition:0.2s;
-}
-
-.chapter-card:hover{
-  border-color:var(--accent);
-}
-
-.chapter-card.locked{
-  opacity:0.4;
-  cursor:not-allowed;
-}
-
-/* PROGRESS */
-
-.pbar{
-  width:100%;
-  height:4px;
-  background:var(--border);
-  border-radius:2px;
-  margin-top:10px;
-}
-
-.pfill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  border-radius:2px;
-}
-
-/* TIMER */
-
-.timer{
-  font-family:var(--mono);
-  font-size:40px;
-  text-align:center;
-  margin:1rem 0;
-}
-
-.timer.warning{color:var(--warning);}
-.timer.danger{color:var(--danger);}
-
-/* OPTIONS */
-
-.options{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:1rem;
-}
-
-.opt{
-  padding:12px;
-  border:1px solid var(--border);
-  border-radius:10px;
-  cursor:pointer;
-  background:var(--surface2);
-}
-
-.opt:hover{
-  border-color:var(--accent);
-}
-
-.opt.correct{
-  background:rgba(16,185,129,0.1);
-  border-color:var(--success);
-}
-
-.opt.wrong{
-  background:rgba(239,68,68,0.1);
-  border-color:var(--danger);
-}
-
-/* RESULT */
-
-.result-circle{
-  width:100px;
-  height:100px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
-  margin:auto;
-}
-
-.pass{
-  border:2px solid var(--success);
-  color:var(--success);
-}
-
-.fail{
-  border:2px solid var(--danger);
-  color:var(--danger);
-}
-
-.footer{
-  text-align:center;
-  margin-top:2rem;
-  font-size:12px;
-  color:var(--text3);
-}
-
 </style>
 </head>
-
 <body>
-
 <script>
-if(sessionStorage.getItem("w2_unlocked") !== "true"){
-  window.location.href="index.html";
-}
+if(sessionStorage.getItem("w2_unlocked") !== "true"){ window.location.href = "index.html"; }
 </script>
-
 <div class="app">
 
-<!-- HOME SCREEN -->
 <div id="home-screen" class="screen active">
-  <h1 style="margin-bottom:1rem">Week 2 — Cryptography & Risk</h1>
-  <div id="chapters"></div>
+  <header class="site-header">
+    <div class="tag">CompTIA Security+ SY0-701</div>
+    <h1>Week 2 — Cryptography & Risk</h1>
+    <p>Five chapters, each with a skippable intro, focused theory, a 10-question Speed Round in 45 seconds, and a 4-question Trap Detector based on the tricks, traps, and Messer notes from your Week 2 reports.</p>
+    <div class="badge-row">
+      <span class="pill">5 Chapters</span>
+      <span class="pill">Speed Round: 10 / 45s</span>
+      <span class="pill">Trap Detector: 4</span>
+      <span class="pill">Final Challenge: 80%+</span>
+    </div>
+  </header>
+  <div id="chapters-list"></div>
+  <div id="final-card" class="card chapter-card locked" onclick="startFinalChallenge()">
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+      <div>
+        <span class="badge badge-lock" id="final-badge">LOCKED</span>
+        <h2 style="font-size:18px;margin:10px 0 4px">FINAL CHALLENGE — Week 2</h2>
+        <p style="font-size:13px;color:var(--text2);line-height:1.65">Mixed challenge using all Week 2 theory, tricks, traps, and Messer-style pitfalls. Score 80% or higher to earn the Platinum Ticket.</p>
+      </div>
+      <span class="badge badge-lock" id="final-side-badge">FINAL</span>
+    </div>
+    <div class="pbar"><div class="pfill" id="final-pfill" style="width:0%"></div></div>
+    <div class="stat-row"><span>Uses all 5 chapters</span><span>Difficulty progresses</span><span>80% required</span></div>
+  </div>
+  <div class="footer">Built by Carlos Materano · Week 2 Study App · 2026</div>
 </div>
-<!-- INTRO SCREEN -->
+
 <div id="intro-screen" class="screen">
   <div class="nav-bar">
-    <div style="flex:1">
+    <button class="btn" onclick="showHome()">← Chapters</button>
+    <div class="nav-main">
       <div class="nav-title" id="intro-title"></div>
-      <div class="nav-sub">Intro Video</div>
+      <div class="nav-sub">optional intro video</div>
     </div>
-    <button class="btn" onclick="goHome()">Home</button>
   </div>
-
   <div class="card">
-    <iframe id="intro-video" width="100%" height="315" frameborder="0" allowfullscreen></iframe>
-
-    <div style="margin-top:10px">
-      <a id="intro-link" target="_blank" style="color:var(--accent)">Open on YouTube</a>
-    </div>
-
-    <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end">
-      <button class="btn" onclick="goTheory()">Skip</button>
-      <button class="btn btn-primary" onclick="goTheory()">Start Theory</button>
+    <div class="video-wrap"><iframe id="intro-video" src="" frameborder="0" allowfullscreen></iframe></div>
+    <div class="btn-row" style="justify-content:flex-end">
+      <button class="btn" onclick="goTheory()">Skip video →</button>
+      <button class="btn btn-primary" onclick="goTheory()">Start Theory →</button>
     </div>
   </div>
 </div>
 
-
-<!-- THEORY SCREEN -->
 <div id="theory-screen" class="screen">
   <div class="nav-bar">
-    <div style="flex:1">
-      <div class="nav-title" id="th-title"></div>
-      <div class="nav-sub" id="th-count"></div>
+    <button class="btn" onclick="showHome()">← Chapters</button>
+    <div class="nav-main">
+      <div class="nav-title" id="theory-title"></div>
+      <div class="nav-sub" id="theory-sub">chapter theory</div>
     </div>
-    <button class="btn" onclick="goHome()">Home</button>
   </div>
-
-  <div class="pbar"><div class="pfill" id="th-bar"></div></div>
-
-  <div id="th-content" style="margin-top:1rem"></div>
-
-  <div style="display:flex; justify-content:space-between; margin-top:1rem">
-    <button class="btn" onclick="prevSec()" id="prevBtn">Prev</button>
-    <button class="btn btn-primary" onclick="nextSec()" id="nextBtn">Next</button>
+  <div class="pbar"><div class="pfill" id="theory-pfill" style="width:0%"></div></div>
+  <div id="theory-content" style="margin-top:16px"></div>
+  <div class="btn-row" style="justify-content:flex-end;margin-top:12px">
+    <button class="btn btn-primary" onclick="startSpeedRound()">Start Speed Round →</button>
   </div>
 </div>
 
-
-<!-- SPEED ROUND -->
 <div id="speed-screen" class="screen">
   <div class="nav-bar">
-    <div style="flex:1">
-      <div class="nav-title">Speed Round</div>
-      <div class="nav-sub">Phase 1</div>
+    <button class="btn" onclick="showHome()">← Exit</button>
+    <div class="nav-main">
+      <div class="nav-title" id="speed-title">Speed Round</div>
+      <div class="nav-sub" id="speed-sub"></div>
     </div>
   </div>
-
-  <div class="timer" id="timer">45</div>
-
-  <div id="keyword" style="text-align:center; font-size:20px; margin-top:1rem"></div>
-
-  <div class="options" id="options"></div>
-
-  <div style="text-align:center; margin-top:1rem">
-    <span>✔ <span id="correct">0</span></span>
-    <span style="margin-left:15px">✖ <span id="wrong">0</span></span>
+  <div class="card">
+    <div class="timer" id="speed-timer">45</div>
+    <div class="center" style="font-size:12px;color:var(--text3);font-family:var(--mono)" id="speed-counter"></div>
+    <div class="question-title" id="speed-question"></div>
+    <div class="options-grid" id="speed-options"></div>
+    <div class="stat-row" style="justify-content:center"><span>Correct: <strong id="speed-correct" style="color:var(--success)">0</strong></span><span>Wrong: <strong id="speed-wrong" style="color:var(--danger)">0</strong></span></div>
   </div>
 </div>
 
-
-<!-- RESULT SCREEN -->
-<div id="result-screen" class="screen">
-  <div class="card" style="text-align:center">
-    <div class="result-circle pass" id="result-circle">0%</div>
-    <h2 id="result-text"></h2>
-
-    <button class="btn btn-primary" onclick="startTrap()">Continue</button>
+<div id="speed-result-screen" class="screen">
+  <div class="nav-bar">
+    <div class="nav-main">
+      <div class="nav-title">Speed Round Complete</div>
+      <div class="nav-sub">phase 1 finished</div>
+    </div>
+  </div>
+  <div class="card center">
+    <div id="speed-circle" class="result-circle result-pass">0%</div>
+    <h2 id="speed-result-title" style="margin-bottom:8px">Phase 1 complete</h2>
+    <p id="speed-result-msg" style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:14px"></p>
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn btn-warning" onclick="startTrapDetector()">Start Trap Detector →</button>
+    </div>
   </div>
 </div>
 
-
-<!-- TRAP DETECTOR -->
 <div id="trap-screen" class="screen">
   <div class="nav-bar">
-    <div style="flex:1">
-      <div class="nav-title">Trap Detector</div>
-      <div class="nav-sub">Phase 2</div>
+    <button class="btn" onclick="showHome()">← Exit</button>
+    <div class="nav-main">
+      <div class="nav-title" id="trap-title">Trap Detector</div>
+      <div class="nav-sub" id="trap-sub"></div>
     </div>
   </div>
-
-  <div id="trap-question" style="margin-top:1rem"></div>
-  <div class="options" id="trap-options"></div>
-</div>
-
-
-<!-- CONGRATS -->
-<div id="congrats-screen" class="screen">
-  <div class="card" style="text-align:center">
-    <h2>Chapter Completed</h2>
-    <button class="btn btn-primary" onclick="nextChapter()">Next Chapter</button>
+  <div class="card">
+    <div class="center" style="font-size:12px;color:var(--text3);font-family:var(--mono)" id="trap-counter"></div>
+    <div class="question-title" id="trap-question"></div>
+    <div class="options-grid" id="trap-options"></div>
+    <div id="trap-explain" style="display:none"></div>
+    <div class="btn-row" style="justify-content:flex-end;margin-top:14px">
+      <button class="btn btn-primary" id="trap-next-btn" onclick="nextTrapQuestion()" style="display:none">Next →</button>
+    </div>
   </div>
 </div>
 
+<div id="congrats-screen" class="screen">
+  <div class="nav-bar">
+    <div class="nav-main">
+      <div class="nav-title">Chapter Completed</div>
+      <div class="nav-sub">progress saved</div>
+    </div>
+  </div>
+  <div class="card center">
+    <div style="font-size:48px;margin-bottom:10px">✅</div>
+    <h2 id="congrats-title" style="margin-bottom:8px">Congratulations!</h2>
+    <p id="congrats-msg" style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:14px"></p>
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn btn-success" id="congrats-next-btn" onclick="goNextFromCongrats()">Next Chapter →</button>
+      <button class="btn" onclick="showHome()">Back to Chapters</button>
+    </div>
+  </div>
+</div>
+
+<div id="final-screen" class="screen">
+  <div class="nav-bar">
+    <button class="btn" onclick="showHome()">← Chapters</button>
+    <div class="nav-main">
+      <div class="nav-title">FINAL CHALLENGE — Week 2</div>
+      <div class="nav-sub">all five chapters · 80% required</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="center" style="font-size:12px;color:var(--text3);font-family:var(--mono)" id="final-counter"></div>
+    <div class="question-title" id="final-question"></div>
+    <div class="options-grid" id="final-options"></div>
+    <div id="final-explain" style="display:none"></div>
+    <div class="btn-row" style="justify-content:flex-end;margin-top:14px">
+      <button class="btn btn-primary" id="final-next-btn" onclick="nextFinalQuestion()" style="display:none">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div id="final-result-screen" class="screen">
+  <div class="nav-bar">
+    <div class="nav-main">
+      <div class="nav-title">Final Challenge Result</div>
+      <div class="nav-sub">week 2 completion check</div>
+    </div>
+  </div>
+  <div class="card center" id="final-result-card"></div>
+</div>
+
+</div>
 
 <script>
-
-/* =========================
-   STATE
-========================= */
-
-let curCh = 1;
-let curSec = 0;
-
-const chapters = {
-  1:{
-    name:"Data Protection",
-    video:"https://www.youtube.com/embed/yXnfM0NlqIM",
+const CHAPTERS = [
+  {
+    id:1,
+    code:"W2C1",
+    title:"Data Protection",
+    video:"yXnfM0NlqIM",
     theory:[
-      "Data Classification: Public, Private, Confidential",
-      "Data States: At Rest, In Transit, In Use",
-      "DLP: Prevents data exfiltration"
+      {title:"Data classifications", body:"Classify data by business value and sensitivity. Public has minimal harm if exposed, Sensitive causes minor harm, Private covers personal employee or salary data, Confidential creates significant harm, and Critical represents catastrophic damage if disclosed."},
+      {title:"Data states", body:"Security+ expects you to separate data at rest, in transit, and in use. Stored file on disk = at rest, moving across the network = in transit, active in RAM or being processed = in use."},
+      {title:"Protection controls", body:"Encryption protects confidentiality, access controls limit exposure, and DLP reduces exfiltration risk. DLP does not classify data by itself; it enforces protection around sensitive data and prevents unauthorized movement."},
+      {title:"Exam focus", body:"This chapter is trap-heavy because one scenario can test classification, data state, encryption, and DLP at the same time. Messer notes also highlight proprietary data as organization-owned trade-secret style information unique to the company."}
     ],
-    speed:[
-      {q:"Stored data",a:["At Rest","In Transit"],c:0},
-      {q:"RAM data",a:["In Use","At Rest"],c:0},
-      {q:"Network transfer",a:["In Transit","At Rest"],c:0}
+    tricks:[
+      "Private = personal employee or salary information",
+      "Confidential = significant harm if disclosed",
+      "Critical = catastrophic harm",
+      "Data in RAM = in use",
+      "Moving over network = in transit",
+      "Stored file = at rest",
+      "DLP = prevents exfiltration",
+      "Encryption = confidentiality, not classification",
+      "Proprietary data = organization-owned trade secret",
+      "One scenario can test classification + state + control together"
+    ],
+    speedBank:[
+      {q:"Which data state describes information actively processed in RAM?", opts:["At Rest","At Archive","In Use","In Transit"], a:2},
+      {q:"Salary records are BEST classified as:", opts:["Public","Sensitive","Private","Operational"], a:2},
+      {q:"Trade secrets and client contracts usually map to:", opts:["Private","Confidential","Public","Disposable"], a:1},
+      {q:"Catastrophic harm if disclosed points to:", opts:["Critical","Sensitive","Confidential","Public"], a:0},
+      {q:"Data moving across a VPN tunnel is:", opts:["At Rest","In Use","In Transit","Classified"], a:2},
+      {q:"The control most associated with preventing exfiltration is:", opts:["DLP","RAID","Sandboxing","Tokenization only"], a:0},
+      {q:"Which control directly protects confidentiality?", opts:["Hashing","Encryption","Logging","Backups"], a:1},
+      {q:"A press release on a company website is:", opts:["Confidential","Private","Sensitive","Public"], a:3},
+      {q:"Company-created trade secret data is called:", opts:["Public metadata","Proprietary data","Disposable data","Open data"], a:1},
+      {q:"A scenario mentioning PII sent over email tests classification plus:", opts:["Latency","Data state","Change control","Asset disposal"], a:1},
+      {q:"Minor harm if disclosed usually maps to:", opts:["Sensitive","Critical","Confidential","Private"], a:0},
+      {q:"Source code with major business impact if leaked is most likely:", opts:["Public","Confidential","At-rest only","Private"], a:1}
+    ],
+    trapBank:[
+      {q:"Which statement is NOT correct?", opts:["Data in RAM is in use","DLP prevents exfiltration","Encryption determines the official classification label","A file on disk is at rest"], a:2, exp:"Encryption protects confidentiality, but the data owner assigns the classification. That is the trap."},
+      {q:"Which one is the trap answer in a PII-over-email scenario?", opts:["In transit","Private","Encryption may help","Hashing alone solves confidentiality"], a:3, exp:"Hashing gives integrity, not confidentiality. Exam questions love that switch."},
+      {q:"Which statement is false?", opts:["Private data can include salary records","Critical data is the most sensitive level here","Public data requires the strictest need-to-know","Confidential data causes significant harm if exposed"], a:2, exp:"Public data has the lowest protection requirement, not the strictest."},
+      {q:"Which answer looks close but is wrong?", opts:["Proprietary data is unique to the organization","DLP can help stop sensitive data leaving the network","At rest means data is being processed in memory","Data state questions often combine with classification"], a:2, exp:"At rest is stored data. In memory is in use."}
     ]
   },
-
-  2:{
-    name:"Cryptography",
-    video:"https://www.youtube.com/embed/9yWWPZuOHWM",
+  {
+    id:2,
+    code:"W2C2",
+    title:"Cryptographic Solutions",
+    video:"9yWWPZuOHWM",
     theory:[
-      "AES: symmetric encryption",
-      "RSA: asymmetric encryption",
-      "Hashing: one-way function"
+      {title:"Cryptography fundamentals", body:"Encryption converts plaintext to ciphertext for confidentiality. Hashing is one-way and preserves integrity. Digital signatures provide authentication, integrity, and non-repudiation. PKI manages trust using certificates and certificate authorities."},
+      {title:"Symmetric vs asymmetric", body:"Symmetric encryption uses the same key to encrypt and decrypt. It is faster but suffers from key distribution challenges. Asymmetric cryptography uses a public/private key pair and solves key distribution at the cost of speed."},
+      {title:"Algorithms and exam favorites", body:"AES is the current best-practice symmetric algorithm and the expected answer when the exam asks for the best current symmetric option. RSA is asymmetric. DES, 3DES, and RC4 show up as older or deprecated technologies."},
+      {title:"Messer and trap notes", body:"The exam regularly tries to make you swap encryption with hashing, signatures with encryption, or symmetric with asymmetric. Remember: confidentiality = encryption, integrity = hashing, and signature = non-repudiation plus authenticity."}
     ],
-    speed:[
-      {q:"AES type",a:["Symmetric","Asymmetric"],c:0},
-      {q:"RSA type",a:["Asymmetric","Symmetric"],c:0},
-      {q:"Hashing",a:["One-way","Reversible"],c:0}
+    tricks:[
+      "AES = best/current symmetric algorithm",
+      "RSA = asymmetric",
+      "Hashing = one-way, integrity",
+      "Digital signature = hash encrypted with private key",
+      "Symmetric = fast, key distribution problem",
+      "Asymmetric = slower, solves key distribution",
+      "DES/3DES/RC4 = legacy or deprecated answers",
+      "Encryption = confidentiality",
+      "Hashing = not reversible",
+      "PKI manages certificate trust"
+    ],
+    speedBank:[
+      {q:"What is the best current symmetric algorithm on Security+?", opts:["DES","AES","RC4","3DES"], a:1},
+      {q:"RSA is:", opts:["Hashing","Symmetric","Asymmetric","A stream cipher"], a:2},
+      {q:"Hashing primarily supports:", opts:["Confidentiality","Integrity","Availability","Classification"], a:1},
+      {q:"A digital signature provides:", opts:["Compression only","Authentication and non-repudiation","Key escrow","Data destruction"], a:1},
+      {q:"Which is one-way?", opts:["AES","RSA encryption","Hashing","Digital certificate"], a:2},
+      {q:"Which cryptographic family has a key distribution problem?", opts:["Symmetric","Asymmetric","Hashing","PKI"], a:0},
+      {q:"RC4 is best described as:", opts:["Current best practice","Deprecated stream cipher","Asymmetric algorithm","Hash function"], a:1},
+      {q:"Public/private key pairs belong to:", opts:["Symmetric cryptography","Asymmetric cryptography","Salting","Tokenization"], a:1},
+      {q:"PKI primarily manages:", opts:["Disk quotas","Certificate trust","Patch scheduling","Backups"], a:1},
+      {q:"Encryption is tied most directly to:", opts:["Confidentiality","Integrity","Attribution","Noncompliance"], a:0},
+      {q:"Which statement is true?", opts:["Hashing is reversible with the right key","AES is asymmetric","DES is weak and retired","RSA is a hash function"], a:2},
+      {q:"Which is faster for bulk data encryption?", opts:["Asymmetric","Symmetric","Hashing","Signing"], a:1}
+    ],
+    trapBank:[
+      {q:"Which statement is NOT correct?", opts:["Hashing is one-way","AES is the current symmetric favorite","RSA is symmetric","Digital signatures support non-repudiation"], a:2, exp:"RSA is asymmetric. The exam loves flipping AES and RSA roles."},
+      {q:"Which option is the trap?", opts:["Encryption = confidentiality","Hashing = integrity","Digital signature = non-repudiation","Hashing = confidentiality"], a:3, exp:"Hashing does not give confidentiality. It gives integrity."},
+      {q:"Which statement is false?", opts:["Symmetric is usually faster","Asymmetric helps with key distribution","RC4 is a strong recommended modern option","PKI manages trust and certificates"], a:2, exp:"RC4 is deprecated. That is the bait answer."},
+      {q:"Which answer looks right but is wrong in exam context?", opts:["AES-256 is usually the best current answer","A signature can involve a hash","DES is legacy","Encryption replaces the need for key management"], a:3, exp:"Encryption still depends heavily on key management. Messer hits that point hard."}
+    ]
+  },
+  {
+    id:3,
+    code:"W2C3",
+    title:"Risk Management & Vendor Security",
+    video:"JYwVUoJRh4w",
+    theory:[
+      {title:"Risk management core", body:"Risk exists when a threat can exploit a vulnerability and create impact to an asset. The lifecycle is identify, analyze, treat, monitor, and report. Risk management aims to reduce risk to an acceptable level, not to eliminate all risk."},
+      {title:"Treatment strategies", body:"Avoid removes the activity, transfer shifts cost or liability, accept tolerates the risk, and mitigate reduces likelihood or impact. Security+ often asks you to identify the treatment based on business context."},
+      {title:"Third-party vendor risk", body:"Vendors, MSPs, suppliers, and partners expand your attack surface. Supply-chain compromise is a classic exam theme. Trusting a signed vendor update does not make it safe if the supplier was compromised."},
+      {title:"Vendor agreements and selection", body:"The exam likes real-world scenarios about vendor questionnaires, due diligence, due care, ongoing monitoring, and selecting the right contract or assessment mechanism before and after onboarding a provider."}
+    ],
+    tricks:[
+      "No threat OR no vulnerability = no risk",
+      "Risk management reduces to acceptable level, not zero",
+      "Avoid / Transfer / Accept / Mitigate must match scenario",
+      "SolarWinds = software supply-chain example",
+      "MSP breach can affect many clients",
+      "You cannot fully control a service provider",
+      "Vendor risk spans assessment, selection, agreements, monitoring",
+      "Attack surface expands with each vendor connection",
+      "Threat + vulnerability + impact = real risk context",
+      "Due diligence happens before commitment; due care is ongoing"
+    ],
+    speedBank:[
+      {q:"If there is no vulnerability, there is:", opts:["High risk","Residual risk only","No risk","Automatic transfer"], a:2},
+      {q:"Risk management aims to:", opts:["Eliminate all risk forever","Reduce risk to an acceptable level","Ignore low risks","Only buy insurance"], a:1},
+      {q:"Paying a third party to cover losses is:", opts:["Mitigation","Acceptance","Transfer","Avoidance"], a:2},
+      {q:"Shutting down a risky activity entirely is:", opts:["Avoidance","Transfer","Acceptance","Monitoring"], a:0},
+      {q:"SolarWinds is the classic example of:", opts:["Password spraying","Software supply-chain risk","Physical tailgating","Data retention"], a:1},
+      {q:"An MSP compromise is dangerous because it can:", opts:["Erase all asset labels","Affect many customers at once","Replace PKI","Remove legal contracts"], a:1},
+      {q:"Threat + vulnerability + impact together describe:", opts:["A policy exception","Risk","Only compliance","A service-level agreement"], a:1},
+      {q:"Choosing to live with the risk is:", opts:["Transfer","Mitigate","Accept","Avoid"], a:2},
+      {q:"Evaluating a vendor before signing is most aligned with:", opts:["Due diligence","Attestation","Penetration testing","Destruction"], a:0},
+      {q:"Ongoing responsible operation after onboarding is closest to:", opts:["Due care","Key escrow","Data remanence","Hashing"], a:0},
+      {q:"Each third-party API and credential generally does what?", opts:["Shrinks attack surface","Expands attack surface","Eliminates risk","Creates attestation"], a:1},
+      {q:"A vendor with signed malicious updates shows attackers exploiting:", opts:["Trust assumption","Data sanitization","Backout planning","Asset accounting"], a:0}
+    ],
+    trapBank:[
+      {q:"Which statement is NOT correct?", opts:["No threat and no vulnerability means no risk","Risk management tries to reach acceptable risk","You fully control a service provider's security posture","Supply-chain issues are heavily scenario-tested"], a:2, exp:"You cannot fully control a third party. That limitation is the whole tension in vendor risk."},
+      {q:"Which one is the trap answer?", opts:["Insurance can support transfer","Stopping the risky project can be avoidance","Accepting risk means reducing it with controls","Vendor relationships can become attack vectors"], a:2, exp:"Accepting risk is not the same as mitigating it with controls."},
+      {q:"Which statement is false?", opts:["SolarWinds is a supply-chain example","MSPs can increase blast radius","Due diligence happens before selection","Every vendor automatically decreases attack surface"], a:3, exp:"Vendors generally increase, not decrease, the attack surface."},
+      {q:"Which answer looks right but is wrong in exam context?", opts:["A risk needs threat and vulnerability context","Transfer can move financial impact","Risk management is formula-heavy","Good vendor relationships remove all third-party risk"], a:3, exp:"They may reduce risk, but they never remove all of it."}
+    ]
+  },
+  {
+    id:4,
+    code:"W2C4",
+    title:"Governance, Compliance, Asset & Change Management",
+    video:"32qfOzPgKj4",
+    theory:[
+      {title:"Governance and compliance", body:"Governance aligns IT and security with business strategy through structure, policy, committees, and oversight. Compliance is adherence to laws, standards, regulations, and internal requirements. The board sets strategy; committees handle more specific implementation decisions."},
+      {title:"Policy and committee traps", body:"CAB is a committee for change decisions, not the board of directors. Centralized governance brings consistency but slower response. Decentralized governance moves faster but can be inconsistent."},
+      {title:"Asset management lifecycle", body:"Assets move from acquisition through assignment/accounting, monitoring/tracking, disposal/decommissioning, and destruction or sanitization. Security+ likes asking which lifecycle phase a scenario is describing."},
+      {title:"Change management", body:"Changes should be evaluated, approved, tested, scheduled, and reversible. Key elements include impact analysis, stakeholders, maintenance windows, backout plans, dependencies, version control, and documented procedures."}
+    ],
+    tricks:[
+      "CAB = committee, not board",
+      "Board sets strategy; committees handle implementation decisions",
+      "Centralized = consistent but slower",
+      "Decentralized = faster but less consistent",
+      "Asset lifecycle phases are heavily tested",
+      "Acquisition must include security vetting",
+      "Assignment/accounting ties asset to owner",
+      "Change management loves rollback/backout plan questions",
+      "Change mgmt scenarios often feel like operations but test Domain 1.3",
+      "Asset management appears in disposal, tracking, ownership, sanitization scenarios"
+    ],
+    speedBank:[
+      {q:"CAB stands for:", opts:["Corporate Audit Bureau","Change Advisory Board","Control Authorization Baseline","Central Approval Branch"], a:1},
+      {q:"The board of directors primarily sets:", opts:["Each firewall rule","Strategy","Every password reset","Daily patch commands"], a:1},
+      {q:"Centralized governance is usually:", opts:["Faster and less consistent","Consistent but slower","Committee-free","Only for startups"], a:1},
+      {q:"Associating an asset with an owner is part of:", opts:["Acquisition","Assignment / accounting","Destruction","Penetration testing"], a:1},
+      {q:"Vendor vetting of new hardware belongs mainly to:", opts:["Acquisition / procurement","Disposal","Attestation","Risk acceptance"], a:0},
+      {q:"A rollback procedure in a change request is also called:", opts:["CAB note","Backout plan","Data retention","Attestation"], a:1},
+      {q:"A scenario about an IT change causing problems most likely tests:", opts:["1.3 Change management","Only vendor selection","Physical controls","DLP"], a:0},
+      {q:"Monitoring an asset during operation belongs to:", opts:["Tracking / monitoring","Governance committee election","Pen test rules","Public classification"], a:0},
+      {q:"Disposal of media with data focuses heavily on:", opts:["Salting","Sanitization / destruction","CAB membership","Board strategy"], a:1},
+      {q:"Decentralized governance is usually:", opts:["More flexible","More uniform","Board-only","Not used in business"], a:0},
+      {q:"Who evaluates proposed changes before approval?", opts:["The board of directors","CAB / committee","Any user","The ISP"], a:1},
+      {q:"Which one belongs in change management?", opts:["Maintenance window","Hash collision","DLP policy only","RAID level"], a:0}
+    ],
+    trapBank:[
+      {q:"Which statement is NOT correct?", opts:["CAB is a committee","The board approves every individual technical change","Centralized governance is more uniform","Backout plans belong in change management"], a:1, exp:"The board sets strategic direction. Detailed change approval is a committee-level function like CAB."},
+      {q:"Which answer is the trap?", opts:["Acquisition should include security checks","Assignment/accounting links asset ownership","Change management can ignore rollback if downtime is short","Sanitization matters before disposal"], a:2, exp:"Rollback planning is one of the classic required change-management elements."},
+      {q:"Which statement is false?", opts:["Decentralized governance can move faster","Asset tracking is part of asset management","Change scenarios are often tested through operational stories","Board and CAB are interchangeable terms"], a:3, exp:"They are not interchangeable. That is one of the big governance traps."},
+      {q:"Which option looks close but is wrong?", opts:["Committees often handle implementation decisions","Acquisition is a lifecycle phase","Assignment happens after destruction","Version control can be part of change management"], a:2, exp:"Assignment/accounting happens early in the lifecycle, not after destruction."}
+    ]
+  },
+  {
+    id:5,
+    code:"W2C5",
+    title:"Audits, Assessments & Penetration Testing",
+    video:"hdpXH0sMeGA",
+    theory:[
+      {title:"Audits vs assessments", body:"Audits verify whether controls, policies, and compliance requirements are being followed. Assessments identify vulnerabilities, weaknesses, and gaps, often before changes or launches. The exam is very specific with those words."},
+      {title:"Attestation", body:"Attestation is the formal written sign-off that confirms the truth and accuracy of findings. It creates legal accountability and is often tied to external validation or required reporting."},
+      {title:"Internal, external, and purpose", body:"External audits are independent and compliance-focused. Internal audits and assessments help find problems before outsiders or attackers do. The value is in identifying issues before a breach exposes them."},
+      {title:"Pentesting angle", body:"This chapter also pairs naturally with assessment logic: rules of engagement, scope, authorization, and identifying what kind of testing is happening. The exam likes to blur audit, assessment, and pentest terms so you choose the exact one."}
+    ],
+    tricks:[
+      "Audit = verify controls/compliance",
+      "Assessment = identify weaknesses/risks",
+      "Attestation = formal sign-off",
+      "External audit = independent compliance verification",
+      "Assessment often comes before rollout or major change",
+      "Audits ask 'is what should happen actually happening?'",
+      "Assessments ask 'what could go wrong?'",
+      "Rules of engagement matter in pentesting",
+      "Independent party wording often points to external audit",
+      "Formal sign-off wording often points to attestation"
+    ],
+    speedBank:[
+      {q:"Which activity verifies controls and compliance?", opts:["Audit","Assessment","Tokenization","Hashing"], a:0},
+      {q:"Which activity identifies weaknesses before launch?", opts:["Audit","Assessment","Retention","Attestation"], a:1},
+      {q:"Formal sign-off on findings is:", opts:["Assessment","Audit","Attestation","Mitigation"], a:2},
+      {q:"Independent compliance verification points to:", opts:["External audit","Data sanitization","Asset assignment","Symmetric crypto"], a:0},
+      {q:"'What could go wrong?' is most aligned with:", opts:["Audit","Assessment","Governance board","Backout plan"], a:1},
+      {q:"'Is what should happen actually happening?' best fits:", opts:["Audit","Tokenization","CAB","Transfer"], a:0},
+      {q:"A rules-of-engagement document belongs closely with:", opts:["Penetration testing","Public data","Key rotation","Hash salting"], a:0},
+      {q:"Attestation creates:", opts:["Legal accountability","Faster encryption","Asset disposal","Key escrow"], a:0},
+      {q:"Which usually comes before deploying a major new system?", opts:["Assessment","Destruction","Board election","DLP tuning only"], a:0},
+      {q:"An internal team finding gaps before regulators do is closest to:", opts:["Assessment / internal review","Critical classification","Digital signing","Centralized governance"], a:0},
+      {q:"A formal compliance-driven review by outsiders is:", opts:["External audit","Asset assignment","Risk acceptance","Data in use"], a:0},
+      {q:"Which term is the exact sign-off, not the review itself?", opts:["Audit","Assessment","Attestation","Enumeration"], a:2}
+    ],
+    trapBank:[
+      {q:"Which statement is NOT correct?", opts:["Audits verify controls and compliance","Assessments identify weaknesses","Attestation is the formal sign-off","Assessment and attestation are the same thing"], a:3, exp:"Attestation is the sign-off. Assessment is the analysis. Security+ treats them as separate terms."},
+      {q:"Which answer is the trap?", opts:["External independent wording often means audit","Before-launch vulnerability identification often means assessment","Formal written confirmation often means attestation","Audit is mainly used to guess future risks before any controls exist"], a:3, exp:"That is more assessment language. Audit is verification-focused."},
+      {q:"Which statement is false?", opts:["Attestation adds accountability","Rules of engagement matter in pentesting","Audit and assessment are interchangeable exam terms","An external audit is usually independent"], a:2, exp:"Security+ is picky here. They are not interchangeable."},
+      {q:"Which one looks right but is wrong in exam context?", opts:["A pentest needs authorization and scope","Assessment can identify gaps","Audit checks whether controls work as intended","Attestation means the same as a maintenance window approval"], a:3, exp:"Attestation is sign-off on findings, not a change-approval term."}
     ]
   }
-};
+];
 
+const FINAL_CHALLENGE_BANK = [
+  {q:"A scenario says customer PII is emailed to a partner without encryption. Which combination is MOST relevant?", opts:["Classification + in transit + confidentiality control","Only asset disposal","Only governance board oversight","Only software licensing"], a:0, exp:"PII classification, data in transit, and encryption/DLP style confidentiality controls all collide in one scenario."},
+  {q:"Which answer is best if the exam asks for the current recommended symmetric algorithm?", opts:["DES","AES","RC4","IDEA"], a:1, exp:"AES is the expected modern symmetric answer."},
+  {q:"A vendor breach spreads signed malicious updates to customers. What concept is central?", opts:["Supply-chain risk and trust assumption","Data remanence","Air gap failure","Media destruction"], a:0, exp:"Signed malicious updates through a trusted vendor is classic supply-chain/trust-assumption territory."},
+  {q:"Who is the right body to evaluate individual change requests?", opts:["Board of directors","Change Advisory Board","Marketing team","External auditor"], a:1, exp:"CAB handles specific change-evaluation decisions. The board sets strategy."},
+  {q:"Formal written sign-off on the truth of findings is:", opts:["Assessment","Audit","Attestation","Mitigation"], a:2, exp:"Attestation is the formal sign-off."},
+  {q:"Which option is the trap?", opts:["Hashing protects integrity","Encryption protects confidentiality","Digital signatures support non-repudiation","Hashing is the best answer for confidentiality"], a:3, exp:"Hashing is not confidentiality. That is a classic trap."},
+  {q:"A company shuts down a risky service entirely rather than securing it. What treatment?", opts:["Transfer","Mitigate","Avoid","Accept"], a:2, exp:"Removing the activity is avoidance."},
+  {q:"Which statement is false?", opts:["Private can include salary records","Critical implies catastrophic harm","Public data usually needs maximum compartmentalization","Confidential data can cause significant harm"], a:2, exp:"Maximum compartmentalization would fit critical, not public."},
+  {q:"An independent outsider verifies compliance against required controls. What is this MOST likely?", opts:["External audit","Assessment only","Asset accounting","Due care"], a:0, exp:"Independent compliance verification is external-audit language."},
+  {q:"If all five chapters are complete, what score is needed to earn the Week 2 reward?", opts:["50%","70%","80%","100%"], a:2, exp:"Week 2 Final Challenge requires 80% or higher."}
+];
 
-/* =========================
-   NAVIGATION
-========================= */
+function shuffle(arr){
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+function sample(arr, n){
+  return shuffle(arr).slice(0, n);
+}
+const STORAGE_KEY = "week2_state_v1";
+const defaultState = { unlocked:[true,false,false,false,false], completed:[false,false,false,false,false], finalUnlocked:false, finalPassed:false };
+let state = loadState();
 
-function show(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return structuredClone(defaultState);
+    const parsed = JSON.parse(raw);
+    return {
+      unlocked: parsed.unlocked || [...defaultState.unlocked],
+      completed: parsed.completed || [...defaultState.completed],
+      finalUnlocked: !!parsed.finalUnlocked,
+      finalPassed: !!parsed.finalPassed
+    };
+  }catch(e){ return structuredClone(defaultState); }
+}
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+let currentChapter = 0;
+let speedSet = [], speedIndex = 0, speedCorrect = 0, speedWrong = 0, speedTimer = null, speedTimeLeft = 45;
+let trapSet = [], trapIndex = 0, trapCorrect = 0;
+let finalSet = [], finalIndex = 0, finalCorrect = 0;
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
-
-function goHome(){
-  show("home-screen");
+function showHome(){
+  showScreen("home-screen");
+  renderHome();
 }
-
-
-/* =========================
-   HOME LOAD
-========================= */
-
-function loadChapters(){
-  const container = document.getElementById("chapters");
-  container.innerHTML="";
-
-  Object.keys(chapters).forEach(i=>{
-    const ch = chapters[i];
-
-    container.innerHTML += `
-      <div class="chapter-card" onclick="startChapter(${i})">
-        <h3>Chapter ${i} — ${ch.name}</h3>
+function renderHome(){
+  const wrap = document.getElementById("chapters-list");
+  wrap.innerHTML = "";
+  CHAPTERS.forEach((ch, idx) => {
+    const unlocked = state.unlocked[idx];
+    const completed = state.completed[idx];
+    const card = document.createElement("div");
+    card.className = "card chapter-card" + (unlocked ? "" : " locked");
+    card.onclick = () => unlocked && startChapter(idx);
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+        <div>
+          <span class="badge ${completed ? "badge-done" : unlocked ? "badge-open" : "badge-lock"}">${ch.code}</span>
+          <h2 style="font-size:18px;margin:10px 0 4px">${ch.title}</h2>
+          <p style="font-size:13px;color:var(--text2);line-height:1.65">Video intro → Theory → Speed Round (10/45s) → Trap Detector (4) → Congratulations</p>
+        </div>
+        <span class="badge ${completed ? "badge-done" : unlocked ? "badge-open" : "badge-lock"}">${completed ? "DONE" : unlocked ? "OPEN" : "LOCKED"}</span>
       </div>
-    `;
+      <div class="pbar"><div class="pfill" style="width:${completed ? 100 : unlocked ? 18 : 0}%"></div></div>
+      <div class="stat-row"><span>${completed ? "Completed" : unlocked ? "Ready to start" : "Finish previous chapter first"}</span></div>`;
+    wrap.appendChild(card);
   });
+
+  const allDone = state.completed.every(Boolean);
+  state.finalUnlocked = allDone;
+  saveState();
+
+  document.getElementById("final-card").className = "card chapter-card" + (allDone ? "" : " locked");
+  document.getElementById("final-badge").className = "badge " + (allDone ? "badge-open" : "badge-lock");
+  document.getElementById("final-badge").textContent = allDone ? (state.finalPassed ? "PASSED" : "OPEN") : "LOCKED";
+  document.getElementById("final-side-badge").className = "badge " + (state.finalPassed ? "badge-done" : allDone ? "badge-open" : "badge-lock");
+  document.getElementById("final-side-badge").textContent = state.finalPassed ? "DONE" : "FINAL";
+  document.getElementById("final-pfill").style.width = state.finalPassed ? "100%" : allDone ? "30%" : "0%";
 }
-
-loadChapters();
-
-
-/* =========================
-   INTRO
-========================= */
-
-function startChapter(n){
-  curCh = n;
-  document.getElementById("intro-title").innerText = chapters[n].name;
-  document.getElementById("intro-video").src = chapters[n].video;
-  document.getElementById("intro-link").href = chapters[n].video.replace("embed","watch?v=");
-  show("intro-screen");
+function startChapter(idx){
+  currentChapter = idx;
+  const ch = CHAPTERS[idx];
+  document.getElementById("intro-title").textContent = `${ch.code} — ${ch.title}`;
+  document.getElementById("intro-video").src = `https://www.youtube.com/embed/${ch.video}?rel=0`;
+  showScreen("intro-screen");
 }
-
-
-/* =========================
-   THEORY
-========================= */
-
 function goTheory(){
-  curSec = 0;
-  renderTheory();
-  show("theory-screen");
+  document.getElementById("intro-video").src = "";
+  const ch = CHAPTERS[currentChapter];
+  document.getElementById("theory-title").textContent = `${ch.code} — ${ch.title}`;
+  document.getElementById("theory-sub").textContent = `chapter ${currentChapter+1} theory`;
+  document.getElementById("theory-pfill").style.width = `${((currentChapter+1)/CHAPTERS.length)*100}%`;
+  const content = document.getElementById("theory-content");
+  let html = `<div class="card"><div class="tip-box">This chapter uses only its own report content for Theory, Speed Round, and Trap Detector. The final challenge will mix all Week 2 reports together.</div>`;
+  ch.theory.forEach(sec => {
+    html += `<div class="theory-section"><div class="theory-title">${sec.title}</div><div class="theory-body">${sec.body}</div></div>`;
+  });
+  html += `<div class="table-wrap"><table><tr><th>Exam-style quick notes</th><th>Why it matters</th></tr>`;
+  ch.tricks.slice(0,6).forEach((t,i) => {
+    html += `<tr><td><strong>${t}</strong></td><td>${i < 3 ? "Core distinction the exam can test directly." : "High-probability trick or trap wording."}</td></tr>`;
+  });
+  html += `</table></div></div>`;
+  content.innerHTML = html;
+  showScreen("theory-screen");
 }
-
-function renderTheory(){
-  const ch = chapters[curCh];
-
-  document.getElementById("th-title").innerText = ch.name;
-  document.getElementById("th-count").innerText = (curSec+1)+"/"+ch.theory.length;
-  document.getElementById("th-content").innerText = ch.theory[curSec];
-
-  document.getElementById("th-bar").style.width =
-    ((curSec+1)/ch.theory.length)*100+"%";
-}
-
-function nextSec(){
-  const ch = chapters[curCh];
-  if(curSec < ch.theory.length-1){
-    curSec++;
-    renderTheory();
-  } else {
-    startSpeed();
-  }
-}
-
-function prevSec(){
-  if(curSec > 0){
-    curSec--;
-    renderTheory();
-  }
-}
-
-
-/* =========================
-   SPEED ROUND
-========================= */
-
-let srIndex=0,correct=0,wrong=0,time=45;
-
-function startSpeed(){
-  srIndex=0;correct=0;wrong=0;time=45;
-  show("speed-screen");
-  nextQuestion();
-  timer();
-}
-
-function nextQuestion(){
-  const q = chapters[curCh].speed[srIndex];
-  document.getElementById("keyword").innerText = q.q;
-
-  document.getElementById("options").innerHTML =
-    q.a.map((opt,i)=>`<div class="opt" onclick="answer(${i})">${opt}</div>`).join("");
-}
-
-function answer(i){
-  const q = chapters[curCh].speed[srIndex];
-
-  if(i===q.c){correct++;}else{wrong++;}
-
-  document.getElementById("correct").innerText = correct;
-  document.getElementById("wrong").innerText = wrong;
-
-  srIndex++;
-
-  if(srIndex < chapters[curCh].speed.length){
-    nextQuestion();
-  } else {
-    endSpeed();
-  }
-}
-
-function timer(){
-  const t = document.getElementById("timer");
-
-  const interval = setInterval(()=>{
-    time--;
-    t.innerText = time;
-
-    if(time<=0){
-      clearInterval(interval);
-      endSpeed();
+function startSpeedRound(){
+  const ch = CHAPTERS[currentChapter];
+  speedSet = sample(ch.speedBank, 10);
+  speedIndex = 0; speedCorrect = 0; speedWrong = 0; speedTimeLeft = 45;
+  clearInterval(speedTimer);
+  document.getElementById("speed-title").textContent = `${ch.code} — Speed Round`;
+  document.getElementById("speed-sub").textContent = "phase 1 · 10 questions · 45 seconds";
+  document.getElementById("speed-correct").textContent = "0";
+  document.getElementById("speed-wrong").textContent = "0";
+  renderSpeedQuestion();
+  showScreen("speed-screen");
+  speedTimer = setInterval(() => {
+    speedTimeLeft--;
+    const timerEl = document.getElementById("speed-timer");
+    timerEl.textContent = speedTimeLeft;
+    timerEl.className = "timer" + (speedTimeLeft <= 10 ? " danger" : speedTimeLeft <= 20 ? " warning" : "");
+    if(speedTimeLeft <= 0){
+      clearInterval(speedTimer);
+      endSpeedRound();
     }
-  },1000);
+  }, 1000);
 }
-
-function endSpeed(){
-  const score = Math.round((correct/(correct+wrong))*100);
-
-  document.getElementById("result-circle").innerText = score+"%";
-  document.getElementById("result-text").innerText = score>=80 ? "PASS" : "FAIL";
-
-  show("result-screen");
+function renderSpeedQuestion(){
+  if(speedIndex >= speedSet.length){ endSpeedRound(); return; }
+  const q = speedSet[speedIndex];
+  document.getElementById("speed-timer").textContent = speedTimeLeft;
+  document.getElementById("speed-counter").textContent = `question_${speedIndex+1}_of_${speedSet.length}`;
+  document.getElementById("speed-question").textContent = q.q;
+  document.getElementById("speed-options").innerHTML = q.opts.map((opt, i) => `<button class="opt" onclick="answerSpeed(${i})">${opt}</button>`).join("");
 }
-
-
-/* =========================
-   TRAP
-========================= */
-
-function startTrap(){
-  show("trap-screen");
-
-  document.getElementById("trap-question").innerText =
-    "Which one is NOT correct?";
-
-  document.getElementById("trap-options").innerHTML = `
-    <div class="opt">AES is symmetric</div>
-    <div class="opt">RSA is symmetric</div>
-    <div class="opt">Hashing is one-way</div>
-    <div class="opt">Data in RAM is In Use</div>
-  `;
+function answerSpeed(i){
+  const q = speedSet[speedIndex];
+  if(i === q.a) speedCorrect++; else speedWrong++;
+  document.getElementById("speed-correct").textContent = speedCorrect;
+  document.getElementById("speed-wrong").textContent = speedWrong;
+  speedIndex++;
+  renderSpeedQuestion();
 }
+function endSpeedRound(){
+  clearInterval(speedTimer);
+  const answered = speedCorrect + speedWrong;
+  const pct = answered ? Math.round((speedCorrect / answered) * 100) : 0;
+  const circle = document.getElementById("speed-circle");
+  circle.textContent = pct + "%";
+  circle.className = "result-circle " + (pct >= 70 ? "result-pass" : "result-fail");
+  document.getElementById("speed-result-title").textContent = pct >= 70 ? "Strong momentum" : "Speed check completed";
+  document.getElementById("speed-result-msg").textContent = `You answered ${answered}/10 before time expired. Correct: ${speedCorrect}. Wrong: ${speedWrong}. Now comes the real exam cruelty: the Trap Detector.`;
+  showScreen("speed-result-screen");
+}
+function startTrapDetector(){
+  const ch = CHAPTERS[currentChapter];
+  trapSet = sample(ch.trapBank, 4);
+  trapIndex = 0; trapCorrect = 0;
+  document.getElementById("trap-title").textContent = `${ch.code} — Trap Detector`;
+  document.getElementById("trap-sub").textContent = "phase 2 · 4 questions · no timer";
+  renderTrapQuestion();
+  showScreen("trap-screen");
+}
+function renderTrapQuestion(){
+  if(trapIndex >= trapSet.length){ finishChapter(); return; }
+  const q = trapSet[trapIndex];
+  document.getElementById("trap-counter").textContent = `trap_${trapIndex+1}_of_${trapSet.length}`;
+  document.getElementById("trap-question").textContent = q.q;
+  document.getElementById("trap-options").innerHTML = q.opts.map((opt, i) => `<button class="opt" onclick="answerTrap(${i})">${opt}</button>`).join("");
+  document.getElementById("trap-explain").style.display = "none";
+  document.getElementById("trap-next-btn").style.display = "none";
+}
+function answerTrap(i){
+  const q = trapSet[trapIndex];
+  const opts = [...document.querySelectorAll("#trap-options .opt")];
+  opts.forEach((btn, idx) => {
+    btn.disabled = true;
+    if(idx === q.a) btn.classList.add("correct");
+    else if(idx === i && i !== q.a) btn.classList.add("wrong");
+  });
+  const explain = document.getElementById("trap-explain");
+  if(i === q.a){ trapCorrect++; explain.className = "explain good"; explain.textContent = "Correct: " + q.exp; }
+  else { explain.className = "explain bad"; explain.textContent = "Incorrect: " + q.exp; }
+  explain.style.display = "block";
+  document.getElementById("trap-next-btn").style.display = "inline-flex";
+}
+function nextTrapQuestion(){ trapIndex++; renderTrapQuestion(); }
+function finishChapter(){
+  state.completed[currentChapter] = true;
+  if(currentChapter + 1 < CHAPTERS.length) state.unlocked[currentChapter + 1] = true;
+  if(state.completed.every(Boolean)) state.finalUnlocked = true;
+  saveState();
 
-
-/* =========================
-   NEXT CHAPTER
-========================= */
-
-function nextChapter(){
-  curCh++;
-
-  if(!chapters[curCh]){
-    alert("Final Challenge coming next...");
-    goHome();
-    return;
+  const nextIsFinal = currentChapter === CHAPTERS.length - 1;
+  document.getElementById("congrats-title").textContent = nextIsFinal ? "Chapter 5 completed!" : `${CHAPTERS[currentChapter].code} completed!`;
+  document.getElementById("congrats-msg").textContent = nextIsFinal
+    ? `You cleared the last chapter. Final Challenge is now unlocked.`
+    : `Trap Detector complete. The next chapter is now unlocked.`;
+  document.getElementById("congrats-next-btn").textContent = nextIsFinal ? "Go to Final Challenge →" : "Next Chapter →";
+  showScreen("congrats-screen");
+}
+function goNextFromCongrats(){
+  if(currentChapter === CHAPTERS.length - 1) startFinalChallenge();
+  else startChapter(currentChapter + 1);
+}
+function startFinalChallenge(){
+  if(!state.finalUnlocked) return;
+  finalSet = sample(FINAL_CHALLENGE_BANK, FINAL_CHALLENGE_BANK.length);
+  finalIndex = 0; finalCorrect = 0;
+  renderFinalQuestion();
+  showScreen("final-screen");
+}
+function renderFinalQuestion(){
+  if(finalIndex >= finalSet.length){ endFinalChallenge(); return; }
+  const q = finalSet[finalIndex];
+  document.getElementById("final-counter").textContent = `question_${finalIndex+1}_of_${finalSet.length}`;
+  document.getElementById("final-question").textContent = q.q;
+  document.getElementById("final-options").innerHTML = q.opts.map((opt, i) => `<button class="opt" onclick="answerFinal(${i})">${opt}</button>`).join("");
+  document.getElementById("final-explain").style.display = "none";
+  document.getElementById("final-next-btn").style.display = "none";
+}
+function answerFinal(i){
+  const q = finalSet[finalIndex];
+  const opts = [...document.querySelectorAll("#final-options .opt")];
+  opts.forEach((btn, idx) => {
+    btn.disabled = true;
+    if(idx === q.a) btn.classList.add("correct");
+    else if(idx === i && i !== q.a) btn.classList.add("wrong");
+  });
+  const explain = document.getElementById("final-explain");
+  if(i === q.a){ finalCorrect++; explain.className = "explain good"; explain.textContent = "Correct: " + q.exp; }
+  else { explain.className = "explain bad"; explain.textContent = "Incorrect: " + q.exp; }
+  explain.style.display = "block";
+  document.getElementById("final-next-btn").style.display = "inline-flex";
+}
+function nextFinalQuestion(){ finalIndex++; renderFinalQuestion(); }
+function generatePlatinumCode(){
+  return "SEC+-W3-2026-PLAT-" + (20 + finalCorrect);
+}
+function copyCode(code){
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.getElementById("copy-platinum-btn");
+    if(btn){ btn.textContent = "✅ Copied!"; setTimeout(() => btn.textContent = "📋 Copy Platinum Ticket", 2200); }
+  }).catch(() => { prompt("Copy your code:", code); });
+}
+function shareResult(code){
+  const text = `🥈 I completed Week 2 of the Security+ Study App!\nPlatinum Ticket: ${code}\nStudy app: https://ZT-911.github.io/security-plus-study-app`;
+  if(navigator.share){ navigator.share({title:"Week 2 Complete", text}); }
+  else { navigator.clipboard.writeText(text).then(() => alert("Result copied to clipboard.")); }
+}
+function endFinalChallenge(){
+  const pct = Math.round((finalCorrect / finalSet.length) * 100);
+  const pass = pct >= 80;
+  if(pass){ state.finalPassed = true; saveState(); }
+  const box = document.getElementById("final-result-card");
+  if(pass){
+    const code = generatePlatinumCode();
+    box.innerHTML = `
+      <div style="font-size:56px;margin-bottom:8px">🥈</div>
+      <div class="result-circle result-pass">${pct}%</div>
+      <h2 style="margin-bottom:8px">PLATINUM TICKET EARNED</h2>
+      <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:16px">You scored ${finalCorrect}/${finalSet.length} on the Week 2 Final Challenge.</p>
+      <div class="final-box">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--platinum);letter-spacing:3px;text-align:center">// WEEK 2 PLATINUM TICKET</div>
+        <div class="unlock-code">${code}</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;text-align:center">Share this code as proof that you completed Week 2.</p>
+        <div class="btn-row" style="justify-content:center;margin-top:14px">
+          <button class="btn btn-success" id="copy-platinum-btn" onclick="copyCode('${code}')">📋 Copy Platinum Ticket</button>
+          <button class="btn btn-primary" onclick="shareResult('${code}')">📤 Share Result</button>
+        </div>
+      </div>
+      <div class="btn-row" style="justify-content:center;margin-top:16px">
+        <button class="btn" onclick="showHome()">Back to Chapters</button>
+      </div>`;
+  } else {
+    box.innerHTML = `
+      <div style="font-size:52px;margin-bottom:8px">⚠️</div>
+      <div class="result-circle result-fail">${pct}%</div>
+      <h2 style="margin-bottom:8px">Almost there</h2>
+      <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:16px">You scored ${finalCorrect}/${finalSet.length}. You need at least 80% to earn the Platinum Ticket.</p>
+      <div class="btn-row" style="justify-content:center">
+        <button class="btn btn-warning" onclick="startFinalChallenge()">Retry Final Challenge →</button>
+        <button class="btn" onclick="showHome()">Back to Chapters</button>
+      </div>`;
   }
-
-  startChapter(curCh);
+  showScreen("final-result-screen");
 }
-
+showHome();
 </script>
-
-<div class="footer">
-  Built by Carlos Materano · 2026
-</div>
-
-</div>
-
 </body>
 </html>
