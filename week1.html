@@ -105,6 +105,9 @@ tr:last-child td{border-bottom:none}
 <!-- ══ HOME SCREEN ══════════════════════════════════════════════ -->
 <div id="home-screen" class="screen">
   <header class="site-header">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+      <button class="btn" onclick="window.location.href='index.html'">← Main Menu</button>
+    </div>
     <div class="tag">CompTIA Security+ SY0-701</div>
     <h1>Security+ Study App</h1>
     <p>Theory → Quiz → Exercises. Score 80%+ to unlock the next chapter.</p>
@@ -1086,7 +1089,7 @@ function goToUnlockScreen(code){
 }
 
 // ═══════════════════════════════════════════════════════════════
-// INIT — Open Week 1 on Home Screen
+// INIT — Start directly at Chapter 1
 // ═══════════════════════════════════════════════════════════════
 showHome();
 </script>
