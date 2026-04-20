@@ -14,7 +14,6 @@
       --surface2:#1a2235;
       --border:#1e2d45;
       --accent:#00d4ff;
-      --accent2:#7c3aed;
       --text:#e2e8f0;
       --text2:#94a3b8;
       --text3:#64748b;
@@ -259,7 +258,7 @@
     <div class="tag">CompTIA Security+ SY0-701</div>
     <h1>Study smarter. Prove it.</h1>
     <p>
-      Complete Week 1, earn your progress, and unlock Week 2 with your Golden Ticket.
+      Complete Week 1 and use your Golden Ticket to unlock Week 2.
     </p>
   </div>
 
@@ -312,8 +311,6 @@
     const modal = document.getElementById("ticketModal");
     const codeInput = document.getElementById("codeInput");
 
-    const VALID_WEEK2_CODE = "SEC+-W4-2026-OMEGA-15";
-
     function goWeek1(){
       window.location.href = "week1.html";
     }
@@ -321,9 +318,7 @@
     function openModal(){
       modal.classList.add("active");
       modal.setAttribute("aria-hidden", "false");
-      setTimeout(() => {
-        codeInput.focus();
-      }, 30);
+      setTimeout(() => codeInput.focus(), 30);
     }
 
     function closeModal(){
@@ -332,10 +327,30 @@
       codeInput.value = "";
     }
 
-    function unlock(){
-      const code = codeInput.value.trim().toUpperCase();
+    function normalizeCode(code){
+      return code
+        .toUpperCase()
+        .trim()
+        .replace(/[‐-‒–—―]/g, "-")
+        .replace(/\s+/g, "")
+        .replace(/O/g, "O");
+    }
 
-      if(code === VALID_WEEK2_CODE){
+    function isValidWeek2Code(code){
+      const normalized = normalizeCode(code);
+
+      const hasSec = normalized.includes("SEC+");
+      const has2026 = normalized.includes("2026");
+      const hasOmega = normalized.includes("OMEGA");
+      const has15 = normalized.includes("15");
+
+      return hasSec && has2026 && hasOmega && has15;
+    }
+
+    function unlock(){
+      const rawCode = codeInput.value;
+
+      if(isValidWeek2Code(rawCode)){
         sessionStorage.setItem("w2_unlocked", "true");
         window.location.href = "week2.html";
       } else {
