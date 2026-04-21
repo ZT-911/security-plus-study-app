@@ -83,6 +83,12 @@ tr:last-child td{border-bottom:none}
 .final-box{background:linear-gradient(135deg, rgba(229,228,226,.12), rgba(124,58,237,.12));border:1px solid rgba(229,228,226,.26);border-radius:20px;padding:22px}
 .unlock-code{font-family:var(--mono);font-weight:700;font-size:20px;color:#f5f5f5;letter-spacing:3px;text-align:center;word-break:break-word;margin:14px 0}
 .footer{text-align:center;padding:16px 0;color:var(--text3);font-size:11px;font-family:var(--mono)}
+.study-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.study-note{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px}
+.study-note h3{font-size:15px;margin-bottom:8px}
+.study-note p{font-size:13px;color:var(--text2);line-height:1.7}
+.step-chip{display:inline-block;font-family:var(--mono);font-size:10px;padding:4px 8px;border-radius:8px;border:1px solid var(--border);color:var(--accent);background:rgba(0,212,255,.08);margin-bottom:10px}
+
 @media (max-width:720px){
   .options-grid{grid-template-columns:1fr}
   .nav-bar{align-items:flex-start;flex-direction:column}
@@ -101,7 +107,7 @@ if(sessionStorage.getItem("w2_unlocked") !== "true"){ window.location.href = "in
   <header class="site-header">
     <div class="tag">CompTIA Security+ SY0-701</div>
     <h1>Week 2 — Cryptography & Risk</h1>
-    <p>Five chapters, each with a skippable intro, focused theory, a 10-question Speed Round with 10 questions and a single 10-minute timer for the full phase, plus a 4-question Trap Detector based on the tricks, traps, and Messer notes from your Week 2 reports.</p>
+    <p>Five chapters, each with a skippable intro, a separated study flow (Theory → Tricks → Traps → Messer Notes), then a 10-question Speed Round with a single 10-minute timer for the full phase, plus a 4-question Trap Detector based on the tricks, traps, and Messer notes from your Week 2 reports.</p>
     <div class="badge-row">
       <span class="pill">5 Chapters</span>
       <span class="pill">Speed Round: 10 / 10 min total</span>
@@ -142,22 +148,24 @@ if(sessionStorage.getItem("w2_unlocked") !== "true"){ window.location.href = "in
   </div>
 </div>
 
-<div id="theory-screen" class="screen">
+
+<div id="study-screen" class="screen">
   <div class="nav-bar">
     <button class="btn" onclick="showHome()">← Chapters</button>
     <div class="nav-main">
-      <div class="nav-title" id="theory-title"></div>
-      <div class="nav-sub" id="theory-sub">chapter theory</div>
+      <div class="nav-title" id="study-title"></div>
+      <div class="nav-sub" id="study-sub">chapter study</div>
     </div>
   </div>
-  <div class="pbar"><div class="pfill" id="theory-pfill" style="width:0%"></div></div>
-  <div id="theory-content" style="margin-top:16px"></div>
-  <div class="btn-row" style="justify-content:flex-end;margin-top:12px">
-    <button class="btn btn-primary" onclick="startSpeedRound()">Start Speed Round →</button>
+  <div class="pbar"><div class="pfill" id="study-pfill" style="width:0%"></div></div>
+  <div id="study-content" style="margin-top:16px"></div>
+  <div class="btn-row" style="justify-content:space-between;margin-top:12px">
+    <button class="btn" id="study-prev-btn" onclick="prevStudyStep()">← Previous</button>
+    <button class="btn btn-primary" id="study-next-btn" onclick="nextStudyStep()">Next →</button>
   </div>
 </div>
 
-<div id="speed-screen" class="screen">
+<div id="speed-screen" class="screen"> class="screen">
   <div class="nav-bar">
     <button class="btn" onclick="showHome()">← Exit</button>
     <div class="nav-main">
@@ -496,6 +504,47 @@ const FINAL_CHALLENGE_BANK = [
   {q:"If all five chapters are complete, what score is needed to earn the Week 2 reward?", opts:["50%","70%","80%","100%"], a:2, exp:"Week 2 Final Challenge requires 80% or higher."}
 ];
 
+
+const MESSER_NOTES = {
+  W2C1: [
+    {title:"Classification labels are assigned by the data owner", body:"That is the Messer-style correction when an answer tries to make encryption or DLP sound like the thing that officially classifies the data."},
+    {title:"Hashing is not confidentiality", body:"If the exam asks how to keep salary or PII secret, hashing is the trap. Encryption is the confidentiality control."},
+    {title:"Data in memory is in use", body:"A lot of candidates freeze when the wording becomes 'being processed', 'loaded in RAM', or 'open in an application'. That is still in use."},
+    {title:"DLP is about stopping data from leaving", body:"It does not replace classification ownership. It is the guardrail against unauthorized transfer and exfiltration."}
+  ],
+  W2C2: [
+    {title:"AES is the modern symmetric default", body:"When CompTIA asks for the strongest current mainstream symmetric answer, AES is the clean pick. DES, 3DES, and RC4 are bait."},
+    {title:"RSA is asymmetric", body:"The exam repeatedly tries to flip AES and RSA roles. If you see public/private keys, think asymmetric."},
+    {title:"Digital signatures prove more than secrecy", body:"They are about integrity, authenticity, and non-repudiation, not just hiding content."},
+    {title:"Hashing is one-way integrity", body:"If the prompt hints at verification, comparison, tampering, or checking whether data changed, Messer logic points to hashing."}
+  ],
+  W2C3: [
+    {title:"Risk cannot be reduced to one buzzword", body:"You need threat, vulnerability, and impact context. CompTIA likes answers that sound 'security-ish' but ignore that logic."},
+    {title:"Accept is not mitigate", body:"If the organization knowingly lives with the risk, that is acceptance. Controls added to reduce likelihood or impact are mitigation."},
+    {title:"Vendor relationships expand attack surface", body:"MSPs, SaaS providers, APIs, and supply chain dependencies are convenience with inherited risk, not free security."},
+    {title:"Due diligence comes before commitment", body:"Messer-style wording often separates pre-contract evaluation from ongoing due care after the relationship is active."}
+  ],
+  W2C4: [
+    {title:"CAB is not the board of directors", body:"This is one of those classic exam switches. CAB is the committee for change review, while the board sets broader strategy."},
+    {title:"Centralized means consistency, not speed", body:"If an option sounds uniform, standard, and easier to govern, that is centralized. Fast and flexible usually points elsewhere."},
+    {title:"Rollback matters", body:"If a change request has no backout plan, the exam wants you to notice that omission. Short downtime does not excuse weak change control."},
+    {title:"Asset lifecycle phases are fair game", body:"Assignment, tracking, disposal, and sanitization often show up disguised inside operational stories."}
+  ],
+  W2C5: [
+    {title:"Audit verifies, assessment discovers", body:"If the question asks whether controls are being followed, think audit. If it asks what weaknesses exist, think assessment."},
+    {title:"Attestation is formal sign-off", body:"When the wording mentions official confirmation, legal accountability, or signed validation, attestation is the better answer."},
+    {title:"External audit means independence", body:"CompTIA likes the independence angle. External does not just mean 'someone else looked at it'; it means outside validation."},
+    {title:"Rules of engagement matter in pentesting", body:"Scope, authorization, and what is allowed are not filler. They are part of what separates a real pentest from chaos."}
+  ]
+};
+
+function getTrapStudyNotes(ch){
+  return ch.trapBank.map((q, idx) => ({
+    title: `Trap ${idx+1}`,
+    body: q.exp
+  }));
+}
+
 function shuffle(arr){
   return [...arr].sort(() => Math.random() - 0.5);
 }
@@ -522,7 +571,9 @@ function loadState(){
 function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
 let currentChapter = 0;
-let speedSet = [], speedIndex = 0, speedCorrect = 0, speedWrong = 0, speedTimer = null, speedTimeLeft = 45;
+let currentStudyStep = 0;
+const STUDY_STEPS = ["theory","tricks","traps","messer"];
+let speedSet = [], speedIndex = 0, speedCorrect = 0, speedWrong = 0, speedTimer = null, speedTimeLeft = 600;
 let trapSet = [], trapIndex = 0, trapCorrect = 0;
 let finalSet = [], finalIndex = 0, finalCorrect = 0;
 
@@ -548,7 +599,7 @@ function renderHome(){
         <div>
           <span class="badge ${completed ? "badge-done" : unlocked ? "badge-open" : "badge-lock"}">${ch.code}</span>
           <h2 style="font-size:18px;margin:10px 0 4px">${ch.title}</h2>
-          <p style="font-size:13px;color:var(--text2);line-height:1.65">Video intro → Theory → Speed Round (10 × 45s) → Trap Detector (4) → Congratulations</p>
+          <p style="font-size:13px;color:var(--text2);line-height:1.65">Video intro → Theory → Tricks → Traps → Messer → Speed Round → Trap Detector → Congratulations</p>
         </div>
         <span class="badge ${completed ? "badge-done" : unlocked ? "badge-open" : "badge-lock"}">${completed ? "DONE" : unlocked ? "OPEN" : "LOCKED"}</span>
       </div>
@@ -568,8 +619,10 @@ function renderHome(){
   document.getElementById("final-side-badge").textContent = state.finalPassed ? "DONE" : "FINAL";
   document.getElementById("final-pfill").style.width = state.finalPassed ? "100%" : allDone ? "30%" : "0%";
 }
+
 function startChapter(idx){
   currentChapter = idx;
+  currentStudyStep = 0;
   const ch = CHAPTERS[idx];
   document.getElementById("intro-title").textContent = `${ch.code} — ${ch.title}`;
   document.getElementById("intro-video").src = `https://www.youtube.com/embed/${ch.video}?rel=0`;
@@ -577,22 +630,71 @@ function startChapter(idx){
 }
 function goTheory(){
   document.getElementById("intro-video").src = "";
+  currentStudyStep = 0;
+  renderStudyStep();
+  showScreen("study-screen");
+}
+function getStudyNotes(type, ch){
+  if(type === "theory"){
+    return ch.theory.map(sec => ({ title: sec.title, body: sec.body }));
+  }
+  if(type === "tricks"){
+    return ch.tricks.map((item, idx) => ({
+      title: `Trick ${idx+1}`,
+      body: item
+    }));
+  }
+  if(type === "traps"){
+    return getTrapStudyNotes(ch);
+  }
+  if(type === "messer"){
+    return MESSER_NOTES[ch.code] || [];
+  }
+  return [];
+}
+function renderStudyStep(){
   const ch = CHAPTERS[currentChapter];
-  document.getElementById("theory-title").textContent = `${ch.code} — ${ch.title}`;
-  document.getElementById("theory-sub").textContent = `chapter ${currentChapter+1} theory`;
-  document.getElementById("theory-pfill").style.width = `${((currentChapter+1)/CHAPTERS.length)*100}%`;
-  const content = document.getElementById("theory-content");
-  let html = `<div class="card"><div class="tip-box">This chapter uses only its own report content for Theory, Speed Round, and Trap Detector. The final challenge will mix all Week 2 reports together.</div>`;
-  ch.theory.forEach(sec => {
-    html += `<div class="theory-section"><div class="theory-title">${sec.title}</div><div class="theory-body">${sec.body}</div></div>`;
+  const type = STUDY_STEPS[currentStudyStep];
+  const labels = {
+    theory: "Theory",
+    tricks: "Tricks",
+    traps: "Traps",
+    messer: "Messer Notes"
+  };
+  document.getElementById("study-title").textContent = `${ch.code} — ${ch.title}`;
+  document.getElementById("study-sub").textContent = `study window ${currentStudyStep+1} of ${STUDY_STEPS.length} · ${labels[type].toLowerCase()}`;
+  document.getElementById("study-pfill").style.width = `${((currentStudyStep+1)/STUDY_STEPS.length)*100}%`;
+
+  const notes = getStudyNotes(type, ch);
+  let introMap = {
+    theory: "Main theory only. This first window gives the core chapter concepts before you move into exam-oriented review.",
+    tricks: "These are the fast distinctions and high-probability exam switches that can decide a question in seconds.",
+    traps: "These are the classic wrong turns. Read them like a professor trying to stop you from picking the pretty-but-wrong answer.",
+    messer: "These are the Messer-style corrections and reminders that sharpen how to read Security+ wording under pressure."
+  };
+
+  let html = `<div class="card"><div class="step-chip">${labels[type]}</div><div class="tip-box">${introMap[type]}</div><div class="study-grid">`;
+  notes.forEach(note => {
+    html += `<div class="study-note"><h3>${note.title}</h3><p>${note.body}</p></div>`;
   });
-  html += `<div class="table-wrap"><table><tr><th>Exam-style quick notes</th><th>Why it matters</th></tr>`;
-  ch.tricks.slice(0,6).forEach((t,i) => {
-    html += `<tr><td><strong>${t}</strong></td><td>${i < 3 ? "Core distinction the exam can test directly." : "High-probability trick or trap wording."}</td></tr>`;
-  });
-  html += `</table></div></div>`;
-  content.innerHTML = html;
-  showScreen("theory-screen");
+  html += `</div></div>`;
+  document.getElementById("study-content").innerHTML = html;
+  document.getElementById("study-prev-btn").style.visibility = currentStudyStep === 0 ? "hidden" : "visible";
+  document.getElementById("study-next-btn").textContent = currentStudyStep === STUDY_STEPS.length - 1 ? "Start Speed Round →" : "Next →";
+}
+function nextStudyStep(){
+  if(currentStudyStep < STUDY_STEPS.length - 1){
+    currentStudyStep++;
+    renderStudyStep();
+  }else{
+    startSpeedRound();
+  }
+}
+function prevStudyStep(){
+  if(currentStudyStep > 0){
+    currentStudyStep--;
+    renderStudyStep();
+  }
 }
 function startSpeedRound(){
   const ch = CHAPTERS[currentChapter];
