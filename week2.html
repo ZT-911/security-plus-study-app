@@ -3,186 +3,182 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Week 2 — Chapter 1</title>
-
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Security+ Training Pro — Week 2</title>
 
 <style>
-body{
-  background:#0a0e1a;
-  color:#e2e8f0;
-  font-family:'DM Sans',sans-serif;
+
+/* ===== BASE ===== */
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #0b0f1a;
+  color: #e6edf3;
 }
 
-.app{
-  max-width:800px;
-  margin:auto;
-  padding:20px;
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 40px 20px;
 }
 
-.screen{display:none;}
-.screen.active{display:block;}
+/* ===== HEADER ===== */
 
-.card{
-  background:#111827;
-  border:1px solid #1e2d45;
-  border-radius:12px;
-  padding:20px;
-  margin-top:15px;
+.header {
+  margin-bottom: 30px;
 }
 
-.btn{
-  padding:8px 14px;
-  border:1px solid #1e2d45;
-  background:transparent;
-  color:#94a3b8;
-  border-radius:8px;
-  cursor:pointer;
+.badge {
+  font-size: 12px;
+  color: #8fb7ff;
+  margin-bottom: 8px;
 }
 
-.btn:hover{
-  background:#1a2235;
+.title {
+  font-size: 34px;
+  font-weight: 700;
 }
 
-.title{
-  font-size:22px;
-  margin-bottom:10px;
+.subtitle {
+  color: #9aa4b2;
+  margin-top: 8px;
 }
 
-.section{
-  margin-bottom:15px;
+/* ===== CARDS ===== */
+
+.card {
+  background: #111827;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
-.section h3{
-  color:#00d4ff;
-  margin-bottom:5px;
+.card-title {
+  font-weight: 600;
+  margin-bottom: 10px;
 }
+
+/* ===== GRID ===== */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+/* ===== SPECIAL BLOCKS ===== */
+
+.highlight {
+  border-left: 4px solid #8fb7ff;
+}
+
+.trap {
+  border-left: 4px solid #ff6b6b;
+}
+
+/* ===== FOOTER ===== */
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+button {
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primary {
+  background: #8fb7ff;
+  color: #111;
+}
+
+.secondary {
+  background: #1f2937;
+  color: #fff;
+}
+
 </style>
 </head>
 
 <body>
 
-<script>
-if(sessionStorage.getItem("w2_unlocked") !== "true"){
-  window.location.href="index.html";
-}
-</script>
+<div class="container">
 
-<div class="app">
-
-<!-- HOME -->
-<div id="home" class="screen active">
-  <h1>Week 2 — Chapter 1</h1>
-
-  <div class="card">
-    <h2>Data Protection</h2>
-    <button class="btn" onclick="startIntro()">Start Chapter →</button>
-  </div>
-</div>
-
-<!-- INTRO -->
-<div id="intro" class="screen">
-  <h2 class="title">Data Protection — Intro</h2>
-
-  <iframe width="100%" height="315"
-    src="https://www.youtube.com/embed/yXnfM0NlqIM"
-    frameborder="0" allowfullscreen>
-  </iframe>
-
-  <br><br>
-
-  <button class="btn" onclick="goTheory()">Skip</button>
-  <button class="btn" onclick="goTheory()">Start Theory</button>
-</div>
-
-<!-- THEORY -->
-<div id="theory" class="screen">
-  <h2 class="title">Data Protection — Theory</h2>
-
-  <div class="card">
-
-    <div class="section">
-      <h3>Data Classification</h3>
-      <p>
-      Defines how sensitive data is and how it must be protected.
-      Levels include Public, Private, Confidential and Restricted.
-      The more sensitive the data, the stronger the controls required.
-      </p>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="badge">Week 2 · Chapter 1 · Theory 1/4</div>
+    <div class="title">Data Classification</div>
+    <div class="subtitle">
+      Understand how data sensitivity determines protection and handling requirements.
     </div>
-
-    <div class="section">
-      <h3>Data States</h3>
-      <p>
-      Data exists in three states: At Rest (stored), In Transit (moving),
-      and In Use (being processed in memory).
-      Data in Use is the hardest to protect.
-      </p>
-    </div>
-
-    <div class="section">
-      <h3>Data Loss Prevention (DLP)</h3>
-      <p>
-      DLP systems detect and prevent data exfiltration.
-      They monitor sensitive information and block unauthorized transfers.
-      </p>
-    </div>
-
-    <div class="section">
-      <h3>Encryption Basics</h3>
-      <p>
-      Symmetric encryption uses one key and is fast (AES).
-      Asymmetric encryption uses public/private keys (RSA).
-      Encryption protects confidentiality.
-      </p>
-    </div>
-
-    <div class="section">
-      <h3>Data Policies</h3>
-      <p>
-      Define how data is stored, accessed, retained and destroyed.
-      Includes retention policies and access control rules.
-      </p>
-    </div>
-
-    <div class="section">
-      <h3>Data Destruction</h3>
-      <p>
-      Methods include clearing (logical), purging (secure erase)
-      and physical destruction of media.
-      </p>
-    </div>
-
   </div>
 
-  <br>
+  <!-- CORE CONCEPT -->
+  <div class="card">
+    <div class="card-title">Core Concept</div>
+    <p>
+      Data classification defines how sensitive information is and determines the level of protection,
+      access control, storage, and handling required.
+    </p>
+  </div>
 
-  <!-- ESTE BOTÓN SERÁ EL PUENTE AL SIGUIENTE PASO -->
-  <button class="btn" onclick="nextStep()">Continue →</button>
+  <!-- LEVELS -->
+  <div class="card">
+    <div class="card-title">Common Classification Levels</div>
+
+    <div class="grid">
+      <div class="card">
+        <strong>Public</strong>
+        <p>No impact if disclosed</p>
+      </div>
+
+      <div class="card">
+        <strong>Private / Internal</strong>
+        <p>Internal use only</p>
+      </div>
+
+      <div class="card">
+        <strong>Confidential</strong>
+        <p>Sensitive data requiring protection</p>
+      </div>
+
+      <div class="card">
+        <strong>Restricted</strong>
+        <p>Severe impact if exposed</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY PRINCIPLE -->
+  <div class="card highlight">
+    <div class="card-title">Key Principle</div>
+    <p>
+      The more sensitive the data, the stronger the required controls and handling rules.
+    </p>
+  </div>
+
+  <!-- EXAM INSIGHT -->
+  <div class="card highlight">
+    <div class="card-title">Exam Insight</div>
+    <p>
+      Security+ questions often require matching the correct control or access level
+      to the appropriate data classification.
+    </p>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <button class="secondary">← Back</button>
+    <button class="primary">Next →</button>
+  </div>
 
 </div>
-
-</div>
-
-<script>
-
-function show(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
-
-function startIntro(){
-  show("intro");
-}
-
-function goTheory(){
-  show("theory");
-}
-
-function nextStep(){
-  alert("Next: Tricks screen will be added next step");
-}
-
-</script>
 
 </body>
 </html>
