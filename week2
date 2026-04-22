@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 2 · Security+ Study App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#040913;
+      --bg2:#071120;
+      --surface:#0d1728;
+      --surface2:#12213a;
+      --surface3:#182b49;
+      --border:#203555;
+      --border-soft:rgba(255,255,255,0.06);
+      --accent:#00e7ff;
+      --accent-soft:rgba(0,231,255,0.12);
+      --accent2:#66f2ff;
+      --purple:#7c3aed;
+      --success:#10b981;
+      --warning:#f59e0b;
+      --danger:#ef4444;
+      --text:#ebf3ff;
+      --text2:#b8c6dc;
+      --text3:#6e7f9d;
+      --mono:'Space Mono', monospace;
+      --sans:'DM Sans', sans-serif;
+      --shadow:0 20px 60px rgba(0,0,0,0.36);
+      --glow:0 0 0 1px rgba(0,231,255,0.08), 0 0 28px rgba(0,231,255,0.14);
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    html,body{
+      min-height:100%;
+    }
+
+    body{
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(circle at 14% 18%, rgba(0,231,255,0.08), transparent 24%),
+        radial-gradient(circle at 84% 78%, rgba(124,58,237,0.10), transparent 24%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+        linear-gradient(rgba(255,255,255,0.014) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.014) 1px, transparent 1px);
+      background-size:30px 30px;
+      mask-image:radial-gradient(circle at center, black 58%, transparent 100%);
+      pointer-events:none;
+      opacity:0.22;
+      z-index:0;
+    }
+
+    .app{
+      position:relative;
+      z-index:1;
+      max-width:1240px;
+      margin:0 auto;
+      padding:24px 22px 40px;
+    }
+
+    .screen{
+      display:none;
+      animation:fadeSlide 0.28s ease;
+    }
+
+    .screen.active{
+      display:block;
+    }
+
+    @keyframes fadeSlide{
+      from{
+        opacity:0;
+        transform:translateY(10px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      padding:14px 18px;
+      margin-bottom:20px;
+      border-radius:18px;
+      border:1px solid var(--border-soft);
+      background:rgba(8,14,28,0.72);
+      backdrop-filter:blur(14px);
+      box-shadow:var(--shadow);
+    }
+
+    .topbar-left{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      border:1px solid rgba(0,231,255,0.22);
+      color:var(--accent);
+      font-family:var(--mono);
+      font-size:11px;
+      letter-spacing:1px;
+    }
+
+    .meta{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .meta-title{
+      font-size:16px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    .meta-sub{
+      font-family:var(--mono);
+      font-size:11px;
+      color:var(--text3);
+      letter-spacing:0.8px;
+    }
+
+    .btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.03);
+      color:var(--text2);
+      padding:10px 16px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:13px;
+      font-family:var(--sans);
+      transition:0.2s ease;
+    }
+
+    .btn:hover{
+      background:var(--surface2);
+      color:var(--text);
+      transform:translateY(-1px);
+    }
+
+    .btn-primary{
+      background:rgba(0,231,255,0.09);
+      border-color:rgba(0,231,255,0.28);
+      color:var(--accent);
+    }
+
+    .btn-primary:hover{
+      background:rgba(0,231,255,0.14);
+      color:var(--accent);
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border-radius:28px;
+      border:1px solid rgba(0,231,255,0.14);
+      background:
+        linear-gradient(135deg, rgba(0,231,255,0.10), rgba(124,58,237,0.08)),
+        linear-gradient(180deg, rgba(13,23,40,0.97), rgba(8,14,28,0.97));
+      box-shadow:var(--shadow);
+      padding:34px 30px 30px;
+      margin-bottom:22px;
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      width:380px;
+      height:380px;
+      right:-130px;
+      top:-130px;
+      background:radial-gradient(circle, rgba(0,231,255,0.12), transparent 70%);
+      pointer-events:none;
+    }
+
+    .hero h1{
+      font-size:clamp(34px, 5vw, 56px);
+      line-height:1;
+      font-weight:800;
+      letter-spacing:-1px;
+      margin-bottom:12px;
+    }
+
+    .hero p{
+      max-width:760px;
+      color:var(--text2);
+      font-size:15px;
+      line-height:1.8;
+    }
+
+    .hero-kicker{
+      font-family:var(--mono);
+      font-size:11px;
+      letter-spacing:2px;
+      color:var(--accent);
+      margin-bottom:10px;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.3fr 0.7fr;
+      gap:18px;
+      align-items:end;
+    }
+
+    .hero-side{
+      display:grid;
+      gap:12px;
+    }
+
+    .stat{
+      border-radius:18px;
+      border:1px solid var(--border-soft);
+      background:rgba(255,255,255,0.03);
+      padding:14px 16px;
+    }
+
+    .stat-label{
+      font-family:var(--mono);
+      font-size:10px;
+      color:var(--text3);
+      letter-spacing:1px;
+      margin-bottom:6px;
+    }
+
+    .stat-value{
+      font-size:14px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    .cards-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+    }
+
+    .chapter-card{
+      position:relative;
+      overflow:hidden;
+      border-radius:22px;
+      border:1px solid var(--border-soft);
+      background:
+        linear-gradient(180deg, rgba(18,33,58,0.96), rgba(9,16,30,0.96));
+      padding:22px;
+      box-shadow:var(--shadow);
+      transition:0.2s ease;
+    }
+
+    .chapter-card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 24px 64px rgba(0,0,0,0.42);
+    }
+
+    .chapter-top{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      align-items:flex-start;
+      margin-bottom:12px;
+    }
+
+    .chapter-num{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(0,231,255,0.08);
+      border:1px solid rgba(0,231,255,0.22);
+      color:var(--accent);
+      font-family:var(--mono);
+      font-size:11px;
+      letter-spacing:1px;
+    }
+
+    .chapter-status{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(16,185,129,0.08);
+      border:1px solid rgba(16,185,129,0.22);
+      color:var(--success);
+      font-family:var(--mono);
+      font-size:11px;
+      letter-spacing:1px;
+    }
+
+    .chapter-title{
+      font-size:22px;
+      font-weight:800;
+      margin-bottom:8px;
+      letter-spacing:-0.4px;
+    }
+
+    .chapter-sub{
+      font-size:14px;
+      color:var(--text2);
+      line-height:1.8;
+      max-width:900px;
+      margin-bottom:14px;
+    }
+
+    .chapter-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    .tag{
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.05);
+      font-size:12px;
+      color:var(--text2);
+    }
+
+    .section-head{
+      margin-bottom:16px;
+    }
+
+    .section-kicker{
+      font-family:var(--mono);
+      font-size:11px;
+      letter-spacing:1px;
+      color:var(--accent);
+      margin-bottom:8px;
+    }
+
+    .section-title{
+      font-size:30px;
+      font-weight:800;
+      line-height:1.1;
+      letter-spacing:-0.5px;
+      margin-bottom:10px;
+    }
+
+    .section-subtitle{
+      max-width:760px;
+      font-size:15px;
+      color:var(--text2);
+      line-height:1.8;
+    }
+
+    .progress-dots-wrap{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      margin-bottom:20px;
+      flex-wrap:wrap;
+    }
+
+    .progress-left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .progress-label{
+      font-family:var(--mono);
+      font-size:11px;
+      color:var(--text3);
+      letter-spacing:1px;
+    }
+
+    .progress-dots{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .dot{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.18);
+      transition:0.22s ease;
+    }
+
+    .dot.active{
+      width:16px;
+      height:16px;
+      background:var(--accent);
+      box-shadow:0 0 0 1px rgba(0,231,255,0.16), 0 0 18px rgba(0,231,255,0.75);
+    }
+
+    .dot.done{
+      background:rgba(0,231,255,0.85);
+      box-shadow:0 0 10px rgba(0,231,255,0.35);
+    }
+
+    .card{
+      position:relative;
+      overflow:hidden;
+      border-radius:24px;
+      border:1px solid var(--border-soft);
+      background:
+        linear-gradient(180deg, rgba(18,33,58,0.96), rgba(9,16,30,0.96));
+      padding:22px;
+      box-shadow:var(--shadow);
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(255,255,255,0.018), transparent 24%);
+      pointer-events:none;
+    }
+
+    .card-title{
+      position:relative;
+      font-size:20px;
+      font-weight:800;
+      margin-bottom:12px;
+      color:var(--text);
+    }
+
+    .card-text{
+      position:relative;
+      font-size:15px;
+      color:var(--text2);
+      line-height:1.85;
+    }
+
+    .hero-card{
+      border:1px solid rgba(0,231,255,0.20);
+      background:
+        linear-gradient(135deg, rgba(0,231,255,0.10), rgba(9,16,30,0.90)),
+        linear-gradient(180deg, rgba(18,33,58,0.96), rgba(9,16,30,0.96));
+      box-shadow:var(--shadow), var(--glow);
+    }
+
+    .hero-card .card-title{
+      font-size:22px;
+    }
+
+    .hero-card .card-text{
+      color:#d8e9fb;
+      font-size:16px;
+    }
+
+    .accent-card{
+      border-left:4px solid var(--accent);
+    }
+
+    .warning-card{
+      border-left:4px solid var(--warning);
+    }
+
+    .danger-card{
+      border-left:4px solid var(--danger);
+    }
+
+    .layout-two{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:18px;
+    }
+
+    .layout-equal{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+
+    .mini-stack{
+      display:grid;
+      gap:12px;
+    }
+
+    .mini-box{
+      padding:16px;
+      border-radius:18px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.05);
+      transition:0.22s ease;
+    }
+
+    .mini-box:hover{
+      transform:translateY(-2px);
+      border-color:rgba(0,231,255,0.18);
+      box-shadow:0 0 18px rgba(0,231,255,0.08);
+    }
+
+    .mini-box h4{
+      font-size:14px;
+      font-weight:800;
+      margin-bottom:6px;
+      color:var(--text);
+    }
+
+    .mini-box p{
+      font-size:14px;
+      color:var(--text2);
+      line-height:1.75;
+    }
+
+    /* Data States */
+    .states-visual{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      align-items:center;
+      margin-top:6px;
+    }
+
+    .state-node{
+      position:relative;
+      min-height:220px;
+      border-radius:28px;
+      padding:22px 20px;
+      border:1px solid rgba(0,231,255,0.12);
+      background:
+        linear-gradient(180deg, rgba(0,231,255,0.08), rgba(255,255,255,0.02));
+      box-shadow:0 0 0 1px rgba(0,231,255,0.04), 0 0 20px rgba(0,231,255,0.05);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      transition:0.22s ease;
+    }
+
+    .state-node:hover{
+      transform:translateY(-3px);
+      box-shadow:0 0 0 1px rgba(0,231,255,0.08), 0 0 26px rgba(0,231,255,0.10);
+    }
+
+    .state-node.critical{
+      border-color:rgba(245,158,11,0.28);
+      background:
+        linear-gradient(180deg, rgba(245,158,11,0.10), rgba(255,255,255,0.02));
+      box-shadow:0 0 0 1px rgba(245,158,11,0.06), 0 0 24px rgba(245,158,11,0.10);
+    }
+
+    .node-badge{
+      display:inline-block;
+      padding:5px 10px;
+      border-radius:999px;
+      font-family:var(--mono);
+      font-size:10px;
+      letter-spacing:1px;
+      color:var(--accent);
+      background:rgba(0,231,255,0.08);
+      border:1px solid rgba(0,231,255,0.16);
+      width:max-content;
+    }
+
+    .state-node.critical .node-badge{
+      color:var(--warning);
+      background:rgba(245,158,11,0.10);
+      border-color:rgba(245,158,11,0.18);
+    }
+
+    .node-title{
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-0.4px;
+      margin:14px 0 8px;
+    }
+
+    .node-desc{
+      font-size:14px;
+      color:var(--text2);
+      line-height:1.75;
+    }
+
+    .node-foot{
+      font-size:12px;
+      color:var(--text3);
+      font-family:var(--mono);
+      margin-top:16px;
+    }
+
+    /* Classification */
+    .classification-stack{
+      display:grid;
+      gap:14px;
+      margin-top:4px;
+    }
+
+    .class-level{
+      display:grid;
+      grid-template-columns:180px 1fr;
+      gap:14px;
+      align-items:center;
+      border-radius:20px;
+      padding:16px 18px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.05);
+      transition:0.22s ease;
+    }
+
+    .class-level:hover{
+      transform:translateX(4px);
+      border-color:rgba(0,231,255,0.14);
+    }
+
+    .class-rank{
+      font-family:var(--mono);
+      font-size:13px;
+      letter-spacing:1px;
+      color:var(--accent);
+    }
+
+    .class-content h4{
+      font-size:16px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .class-content p{
+      font-size:14px;
+      color:var(--text2);
+      line-height:1.75;
+    }
+
+    /* Roles */
+    .roles-tree{
+      display:grid;
+      justify-items:center;
+      gap:18px;
+      margin-top:6px;
+    }
+
+    .role-node{
+      width:min(100%, 420px);
+      text-align:center;
+      border-radius:24px;
+      padding:20px;
+      border:1px solid rgba(0,231,255,0.12);
+      background:
+        linear-gradient(180deg, rgba(0,231,255,0.07), rgba(255,255,255,0.02));
+      box-shadow:0 0 18px rgba(0,231,255,0.06);
+      transition:0.22s ease;
+    }
+
+    .role-node:hover{
+      transform:translateY(-2px);
+      box-shadow:0 0 24px rgba(0,231,255,0.10);
+    }
+
+    .role-node h4{
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+
+    .role-node p{
+      font-size:14px;
+      color:var(--text2);
+      line-height:1.75;
+    }
+
+    .role-arrow{
+      font-family:var(--mono);
+      font-size:18px;
+      color:var(--accent);
+      opacity:0.8;
+    }
+
+    /* Protection flow */
+    .flow-line{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+      margin-top:8px;
+    }
+
+    .flow-box{
+      position:relative;
+      border-radius:24px;
+      padding:22px;
+      border:1px solid rgba(0,231,255,0.12);
+      background:
+        linear-gradient(180deg, rgba(0,231,255,0.07), rgba(255,255,255,0.02));
+      box-shadow:0 0 18px rgba(0,231,255,0.05);
+      transition:0.22s ease;
+    }
+
+    .flow-box:hover{
+      transform:translateY(-2px);
+      box-shadow:0 0 24px rgba(0,231,255,0.10);
+    }
+
+    .flow-box h4{
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .flow-box p{
+      font-size:14px;
+      color:var(--text2);
+      line-height:1.75;
+    }
+
+    .flow-box::after{
+      content:"→";
+      position:absolute;
+      right:-13px;
+      top:50%;
+      transform:translateY(-50%);
+      font-family:var(--mono);
+      font-size:22px;
+      color:var(--accent);
+      opacity:0.75;
+    }
+
+    .flow-box:last-child::after{
+      display:none;
+    }
+
+    .footer-nav{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      margin-top:22px;
+      flex-wrap:wrap;
+    }
+
+    @media (max-width: 1000px){
+      .hero-grid,
+      .layout-two,
+      .layout-equal,
+      .states-visual,
+      .flow-line{
+        grid-template-columns:1fr;
+      }
+
+      .class-level{
+        grid-template-columns:1fr;
+      }
+
+      .flow-box::after{
+        display:none;
+      }
+    }
+
+    @media (max-width: 760px){
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .hero{
+        padding:28px 22px 24px;
+      }
+
+      .app{
+        padding:16px 14px 28px;
+      }
+
+      .cards-grid{
+        gap:14px;
+      }
+
+      .chapter-top{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .section-title{
+        font-size:24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- HOME SCREEN -->
+    <section id="week2-home" class="screen active">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="chip">SEC+ · WEEK 2</div>
+          <div class="meta">
+            <div class="meta-title">Cryptography & Risk</div>
+            <div class="meta-sub">week_2_home // chapter_hub</div>
+          </div>
+        </div>
+        <button class="btn" type="button" onclick="window.location.href='index.html'">← Main Menu</button>
+      </div>
+
+      <div class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="hero-kicker">WEEK 2 STRUCTURED LEARNING</div>
+            <h1>Build Chapter 1 properly first.</h1>
+            <p>
+              This week focuses on data protection, cryptographic solutions, risk management, vendor risk,
+              governance, asset control, and assessments. For now, Chapter 1 is the working foundation.
+            </p>
+          </div>
+          <div class="hero-side">
+            <div class="stat">
+              <div class="stat-label">CURRENT STATUS</div>
+              <div class="stat-value">Chapter 1 Active</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">LEARNING MODE</div>
+              <div class="stat-value">Theory-first structure</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">NEXT TARGET</div>
+              <div class="stat-value">Tricks / Traps / Notes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cards-grid">
+        <div class="chapter-card">
+          <div class="chapter-top">
+            <div>
+              <span class="chapter-num">CHAPTER 01</span>
+            </div>
+            <span class="chapter-status">ACTIVE</span>
+          </div>
+
+          <div class="chapter-title">Data Protection</div>
+          <div class="chapter-sub">
+            Study the foundations of how data is classified, where it exists, who is responsible for it,
+            and how protection controls apply across the lifecycle.
+          </div>
+
+          <div class="chapter-tags">
+            <span class="tag">Data States</span>
+            <span class="tag">Classification</span>
+            <span class="tag">Roles</span>
+            <span class="tag">Lifecycle Protection</span>
+          </div>
+
+          <button class="btn btn-primary" type="button" onclick="openChapter1Theory()">Enter Chapter 1 Theory →</button>
+        </div>
+
+        <div class="chapter-card" style="opacity:0.55;">
+          <div class="chapter-top">
+            <div><span class="chapter-num">CHAPTER 02</span></div>
+            <span class="tag">LOCKED</span>
+          </div>
+          <div class="chapter-title">Cryptographic Solutions</div>
+          <div class="chapter-sub">Locked until Chapter 1 structure is complete.</div>
+        </div>
+
+        <div class="chapter-card" style="opacity:0.55;">
+          <div class="chapter-top">
+            <div><span class="chapter-num">CHAPTER 03</span></div>
+            <span class="tag">LOCKED</span>
+          </div>
+          <div class="chapter-title">Risk Management</div>
+          <div class="chapter-sub">Locked until Chapter 1 structure is complete.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THEORY SCREEN -->
+    <section id="chapter1-theory" class="screen">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="chip">CHAPTER 01 · THEORY</div>
+          <div class="meta">
+            <div class="meta-title">Data Protection</div>
+            <div class="meta-sub">internal_theory_flow // 4 screens fixed</div>
+          </div>
+        </div>
+        <button class="btn" type="button" onclick="goBackMain()">← Back to Week 2</button>
+      </div>
+
+      <div class="progress-dots-wrap">
+        <div class="progress-left">
+          <div class="progress-label">THEORY PROGRESS</div>
+          <div class="progress-dots" id="progress-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+        <div class="progress-label" id="progress-label-text">screen_1_of_4</div>
+      </div>
+
+      <!-- THEORY SCREEN 1 -->
+      <div class="theory-view active" data-index="0">
+        <div class="section-head">
+          <div class="section-kicker">THEORY SCREEN 1</div>
+          <div class="section-title">Data States</div>
+          <div class="section-subtitle">
+            Data exists in different operational states, and understanding those states is essential for choosing the right protection control.
+          </div>
+        </div>
+
+        <div class="card hero-card" style="margin-bottom:18px;">
+          <div class="card-title">Core Concept</div>
+          <div class="card-text">
+            Data exists in three main states: at rest, in transit, and in use.
+            These states are connected, but each one introduces different exposure and therefore different security controls.
+          </div>
+        </div>
+
+        <div class="states-visual">
+          <div class="state-node">
+            <span class="node-badge">STATE 01</span>
+            <div>
+              <div class="node-title">AT REST</div>
+              <div class="node-desc">
+                Data stored on disks, databases, file systems, or backups.
+              </div>
+            </div>
+            <div class="node-foot">disk encryption · storage controls</div>
+          </div>
+
+          <div class="state-node">
+            <span class="node-badge">STATE 02</span>
+            <div>
+              <div class="node-title">IN TRANSIT</div>
+              <div class="node-desc">
+                Data moving across networks between systems, users, or services.
+              </div>
+            </div>
+            <div class="node-foot">TLS · HTTPS · VPN</div>
+          </div>
+
+          <div class="state-node critical">
+            <span class="node-badge">STATE 03</span>
+            <div>
+              <div class="node-title">IN USE</div>
+              <div class="node-desc">
+                Data actively being processed in memory by the CPU or running applications.
+              </div>
+            </div>
+            <div class="node-foot">hardest to protect · memory exposure</div>
+          </div>
+        </div>
+
+        <div class="layout-equal" style="margin-top:18px;">
+          <div class="card accent-card">
+            <div class="card-title">Key Insight</div>
+            <div class="card-text">
+              Data in Use is the hardest state to protect because it must remain accessible while the system processes it.
+            </div>
+          </div>
+
+          <div class="card warning-card">
+            <div class="card-title">Exam Trap</div>
+            <div class="card-text">
+              Confusing In Transit with In Use is common. Network movement is transit. Active processing in RAM is use.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- THEORY SCREEN 2 -->
+      <div class="theory-view" data-index="1" style="display:none;">
+        <div class="section-head">
+          <div class="section-kicker">THEORY SCREEN 2</div>
+          <div class="section-title">Data Classification</div>
+          <div class="section-subtitle">
+            Classification determines sensitivity level and drives the strength of protection, handling rules, and access restrictions.
+          </div>
+        </div>
+
+        <div class="card hero-card" style="margin-bottom:18px;">
+          <div class="card-title">Core Concept</div>
+          <div class="card-text">
+            Data classification defines how sensitive information is and what level of protection it requires.
+            The more sensitive the data, the stronger the expected controls.
+          </div>
+        </div>
+
+        <div class="classification-stack">
+          <div class="class-level">
+            <div class="class-rank">LEVEL 01</div>
+            <div class="class-content">
+              <h4>Public</h4>
+              <p>Information with little or no impact if disclosed.</p>
+            </div>
+          </div>
+
+          <div class="class-level">
+            <div class="class-rank">LEVEL 02</div>
+            <div class="class-content">
+              <h4>Private / Internal</h4>
+              <p>Information intended for internal organizational use only.</p>
+            </div>
+          </div>
+
+          <div class="class-level">
+            <div class="class-rank">LEVEL 03</div>
+            <div class="class-content">
+              <h4>Confidential</h4>
+              <p>Sensitive data that requires strong protection and controlled access.</p>
+            </div>
+          </div>
+
+          <div class="class-level">
+            <div class="class-rank">LEVEL 04</div>
+            <div class="class-content">
+              <h4>Restricted / Highly Confidential</h4>
+              <p>Critical or regulated data with severe impact if exposed or mishandled.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="layout-equal" style="margin-top:18px;">
+          <div class="card accent-card">
+            <div class="card-title">Key Principle</div>
+            <div class="card-text">
+              Classification is what determines how data should be protected, handled, stored, and shared.
+            </div>
+          </div>
+
+          <div class="card warning-card">
+            <div class="card-title">Exam Trap</div>
+            <div class="card-text">
+              Classification is based on sensitivity and impact, not simply on where the data is stored.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- THEORY SCREEN 3 -->
+      <div class="theory-view" data-index="2" style="display:none;">
+        <div class="section-head">
+          <div class="section-kicker">THEORY SCREEN 3</div>
+          <div class="section-title">Data Roles</div>
+          <div class="section-subtitle">
+            Security+ often tests who decides policy, who implements controls, and who simply uses the data.
+          </div>
+        </div>
+
+        <div class="card hero-card" style="margin-bottom:18px;">
+          <div class="card-title">Core Concept</div>
+          <div class="card-text">
+            Data protection is not only about technology. It also depends on role responsibility.
+            The exam often expects you to distinguish decision-making from implementation.
+          </div>
+        </div>
+
+        <div class="roles-tree">
+          <div class="role-node">
+            <h4>OWNER</h4>
+            <p>Defines classification, policy, acceptable use, and required protection level.</p>
+          </div>
+
+          <div class="role-arrow">↓</div>
+
+          <div class="role-node">
+            <h4>CUSTODIAN</h4>
+            <p>Implements storage, backups, permissions, and technical or administrative controls.</p>
+          </div>
+
+          <div class="role-arrow">↓</div>
+
+          <div class="role-node">
+            <h4>USER</h4>
+            <p>Accesses and uses the data according to the rules already defined and enforced.</p>
+          </div>
+        </div>
+
+        <div class="layout-two" style="margin-top:18px;">
+          <div class="card">
+            <div class="card-title">Related Legal Roles</div>
+            <div class="card-text">
+              In some regulatory contexts, terms like controller and processor may also appear,
+              especially when discussing legal responsibility for personal data handling.
+            </div>
+          </div>
+
+          <div class="card warning-card">
+            <div class="card-title">Exam Trap</div>
+            <div class="card-text">
+              Owner decides. Custodian implements. Mixing those two is a classic wrong answer.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- THEORY SCREEN 4 -->
+      <div class="theory-view" data-index="3" style="display:none;">
+        <div class="section-head">
+          <div class="section-kicker">THEORY SCREEN 4</div>
+          <div class="section-title">Data Protection System</div>
+          <div class="section-subtitle">
+            Protection must work across the lifecycle, not as a single isolated control.
+          </div>
+        </div>
+
+        <div class="card hero-card" style="margin-bottom:18px;">
+          <div class="card-title">Core Concept</div>
+          <div class="card-text">
+            Data protection is a system. It involves storage, access, and sharing controls across the full lifecycle of the information.
+          </div>
+        </div>
+
+        <div class="flow-line">
+          <div class="flow-box">
+            <h4>STORE</h4>
+            <p>Retention rules define how long data must remain stored and protected.</p>
+          </div>
+
+          <div class="flow-box">
+            <h4>ACCESS</h4>
+            <p>Access control determines who can view, modify, or manage information.</p>
+          </div>
+
+          <div class="flow-box">
+            <h4>SHARE</h4>
+            <p>Handling and transmission policies determine how data can move safely.</p>
+          </div>
+        </div>
+
+        <div class="layout-equal" style="margin-top:18px;">
+          <div class="card">
+            <div class="card-title">Destruction Methods</div>
+            <div class="mini-stack">
+              <div class="mini-box">
+                <h4>Clearing</h4>
+                <p>Basic logical deletion. Data may still be recoverable.</p>
+              </div>
+              <div class="mini-box">
+                <h4>Purging</h4>
+                <p>Secure deletion. Data is not recoverable by standard means.</p>
+              </div>
+              <div class="mini-box">
+                <h4>Destruction</h4>
+                <p>Physical elimination such as shredding or incineration.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-stack">
+            <div class="card danger-card">
+              <div class="card-title">Common Risks</div>
+              <div class="card-text">
+                Data breaches, unauthorized access, misclassification, and human error remain the most common failure points.
+              </div>
+            </div>
+
+            <div class="card warning-card">
+              <div class="card-title">Exam Trap</div>
+              <div class="card-text">
+                Deleting a file does not mean the data is gone. Clearing is not the same as secure destruction.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-nav">
+        <button class="btn" id="prev-btn" type="button" onclick="prevTheory()">← Back</button>
+        <button class="btn btn-primary" id="next-btn" type="button" onclick="nextTheory()">Next →</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const screens = {
+      home: document.getElementById('week2-home'),
+      theory: document.getElementById('chapter1-theory')
+    };
+
+    const theoryViews = Array.from(document.querySelectorAll('.theory-view'));
+    const dots = Array.from(document.querySelectorAll('#progress-dots .dot'));
+    const progressLabelText = document.getElementById('progress-label-text');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    let currentTheoryIndex = 0;
+
+    function showScreen(name){
+      Object.values(screens).forEach(s => s.classList.remove('active'));
+      screens[name].classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openChapter1Theory(){
+      currentTheoryIndex = 0;
+      renderTheory();
+      showScreen('theory');
+    }
+
+    function goBackMain(){
+      showScreen('home');
+    }
+
+    function renderTheory(){
+      theoryViews.forEach((view, index) => {
+        const active = index === currentTheoryIndex;
+        view.style.display = active ? 'block' : 'none';
+        view.classList.toggle('active', active);
+      });
+
+      dots.forEach((dot, index) => {
+        dot.classList.remove('active', 'done');
+        if(index < currentTheoryIndex){
+          dot.classList.add('done');
+        } else if(index === currentTheoryIndex){
+          dot.classList.add('active');
+        }
+      });
+
+      progressLabelText.textContent = `screen_${currentTheoryIndex + 1}_of_${theoryViews.length}`;
+
+      prevBtn.textContent = currentTheoryIndex === 0 ? '← Back to Chapter 1' : '← Back';
+      nextBtn.textContent = currentTheoryIndex === theoryViews.length - 1 ? 'Finish Theory →' : 'Next →';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function nextTheory(){
+      if(currentTheoryIndex < theoryViews.length - 1){
+        currentTheoryIndex++;
+        renderTheory();
+      } else {
+        alert('Theory complete. Next step: Tricks.');
+      }
+    }
+
+    function prevTheory(){
+      if(currentTheoryIndex > 0){
+        currentTheoryIndex--;
+        renderTheory();
+      } else {
+        goBackMain();
+      }
+    }
+
+    renderTheory();
+  </script>
+</body>
+</html>
