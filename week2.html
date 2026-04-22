@@ -1,927 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Week 2 · Chapter 1 · Data Protection</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --bg:#060b16;
-      --bg2:#0b1222;
-      --surface:#0f1728;
-      --surface2:#14203a;
-      --surface3:#182848;
-      --border:#223252;
-      --border-soft:rgba(255,255,255,0.06);
-      --accent:#00d4ff;
-      --accent2:#7c3aed;
-      --success:#10b981;
-      --warning:#f59e0b;
-      --danger:#ef4444;
-      --text:#e8eef8;
-      --text2:#b4c1d8;
-      --text3:#73819b;
-      --mono:'Space Mono', monospace;
-      --sans:'DM Sans', sans-serif;
-      --shadow:0 20px 60px rgba(0,0,0,0.35);
-    }
-
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-    }
-
-    body{
-      min-height:100vh;
-      font-family:var(--sans);
-      color:var(--text);
-      background:
-        radial-gradient(circle at 15% 20%, rgba(0,212,255,0.08), transparent 24%),
-        radial-gradient(circle at 85% 80%, rgba(124,58,237,0.10), transparent 26%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-      overflow-x:hidden;
-    }
-
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background:
-        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-      background-size:32px 32px;
-      mask-image:radial-gradient(circle at center, black 55%, transparent 100%);
-      pointer-events:none;
-      opacity:0.22;
-      z-index:0;
-    }
-
-    .app{
-      position:relative;
-      z-index:1;
-      max-width:1220px;
-      margin:0 auto;
-      padding:26px 22px 40px;
-    }
-
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:16px;
-      padding:14px 18px;
-      border:1px solid var(--border-soft);
-      background:rgba(10,16,30,0.72);
-      backdrop-filter:blur(14px);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      margin-bottom:22px;
-    }
-
-    .topbar-left{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      flex-wrap:wrap;
-    }
-
-    .brand-chip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid rgba(0,212,255,0.22);
-      background:rgba(0,212,255,0.08);
-      color:var(--accent);
-      font-size:11px;
-      font-family:var(--mono);
-      letter-spacing:1px;
-    }
-
-    .meta{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-
-    .meta-title{
-      font-size:16px;
-      font-weight:700;
-      color:var(--text);
-    }
-
-    .meta-sub{
-      font-size:11px;
-      color:var(--text3);
-      font-family:var(--mono);
-      letter-spacing:0.8px;
-    }
-
-    .btn{
-      border:1px solid var(--border);
-      background:rgba(255,255,255,0.03);
-      color:var(--text2);
-      padding:10px 15px;
-      border-radius:12px;
-      cursor:pointer;
-      font-size:13px;
-      font-family:var(--sans);
-      transition:0.2s ease;
-      text-decoration:none;
-    }
-
-    .btn:hover{
-      background:var(--surface2);
-      color:var(--text);
-      transform:translateY(-1px);
-    }
-
-    .btn-primary{
-      background:rgba(0,212,255,0.08);
-      border-color:rgba(0,212,255,0.28);
-      color:var(--accent);
-    }
-
-    .btn-primary:hover{
-      background:rgba(0,212,255,0.14);
-      color:var(--accent);
-    }
-
-    .hero{
-      position:relative;
-      overflow:hidden;
-      border:1px solid rgba(0,212,255,0.14);
-      background:
-        linear-gradient(135deg, rgba(0,212,255,0.10), rgba(124,58,237,0.08)),
-        linear-gradient(180deg, rgba(15,23,40,0.95), rgba(10,16,30,0.95));
-      border-radius:28px;
-      padding:34px 30px 30px;
-      box-shadow:var(--shadow);
-      margin-bottom:22px;
-    }
-
-    .hero::after{
-      content:"";
-      position:absolute;
-      width:360px;
-      height:360px;
-      right:-120px;
-      top:-120px;
-      background:radial-gradient(circle, rgba(0,212,255,0.12), transparent 70%);
-      pointer-events:none;
-    }
-
-    .hero-grid{
-      display:grid;
-      grid-template-columns:1.3fr 0.7fr;
-      gap:18px;
-      align-items:end;
-    }
-
-    .hero-kicker{
-      font-family:var(--mono);
-      font-size:11px;
-      letter-spacing:2px;
-      color:var(--accent);
-      margin-bottom:10px;
-    }
-
-    .hero h1{
-      font-size:clamp(34px, 5vw, 56px);
-      line-height:1;
-      font-weight:800;
-      margin-bottom:14px;
-      letter-spacing:-1px;
-    }
-
-    .hero p{
-      max-width:760px;
-      color:var(--text2);
-      font-size:15px;
-      line-height:1.8;
-    }
-
-    .hero-side{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-
-    .micro-panel{
-      border:1px solid var(--border-soft);
-      background:rgba(255,255,255,0.03);
-      border-radius:18px;
-      padding:14px 16px;
-    }
-
-    .micro-label{
-      font-family:var(--mono);
-      font-size:10px;
-      letter-spacing:1px;
-      color:var(--text3);
-      margin-bottom:6px;
-    }
-
-    .micro-value{
-      font-size:14px;
-      font-weight:700;
-      color:var(--text);
-    }
-
-    .progress-wrap{
-      margin-bottom:22px;
-    }
-
-    .progress-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-      flex-wrap:wrap;
-    }
-
-    .progress-badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:7px 12px;
-      border-radius:999px;
-      border:1px solid rgba(0,212,255,0.22);
-      background:rgba(0,212,255,0.08);
-      color:var(--accent);
-      font-family:var(--mono);
-      font-size:11px;
-      letter-spacing:1px;
-    }
-
-    .progress-text{
-      font-family:var(--mono);
-      font-size:11px;
-      color:var(--text3);
-    }
-
-    .progress-bar{
-      width:100%;
-      height:8px;
-      background:#132036;
-      border-radius:999px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,0.04);
-    }
-
-    .progress-fill{
-      height:100%;
-      width:25%;
-      background:linear-gradient(90deg, var(--accent), #66e8ff);
-      border-radius:999px;
-      transition:width 0.3s ease;
-      box-shadow:0 0 18px rgba(0,212,255,0.25);
-    }
-
-    .screen{
-      display:none;
-    }
-
-    .screen.active{
-      display:block;
-    }
-
-    .section-head{
-      margin-bottom:16px;
-    }
-
-    .section-kicker{
-      font-family:var(--mono);
-      font-size:11px;
-      letter-spacing:1px;
-      color:var(--accent);
-      margin-bottom:8px;
-    }
-
-    .section-title{
-      font-size:30px;
-      font-weight:800;
-      line-height:1.1;
-      margin-bottom:10px;
-      letter-spacing:-0.5px;
-    }
-
-    .section-subtitle{
-      color:var(--text2);
-      font-size:15px;
-      line-height:1.7;
-      max-width:760px;
-    }
-
-    .grid{
-      display:grid;
-      gap:18px;
-    }
-
-    .grid.two{
-      grid-template-columns:1.15fr 0.85fr;
-    }
-
-    .grid.equal{
-      grid-template-columns:1fr 1fr;
-    }
-
-    .grid.three{
-      grid-template-columns:repeat(3,1fr);
-    }
-
-    .card{
-      position:relative;
-      overflow:hidden;
-      border-radius:24px;
-      border:1px solid var(--border-soft);
-      background:
-        linear-gradient(180deg, rgba(19,30,51,0.96), rgba(11,18,34,0.96));
-      padding:22px;
-      box-shadow:var(--shadow);
-    }
-
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent 25%);
-      pointer-events:none;
-    }
-
-    .card-title{
-      position:relative;
-      font-size:18px;
-      font-weight:800;
-      margin-bottom:12px;
-      color:var(--text);
-    }
-
-    .card-text{
-      position:relative;
-      font-size:15px;
-      line-height:1.8;
-      color:var(--text2);
-    }
-
-    .hero-card{
-      border:1px solid rgba(0,212,255,0.22);
-      background:
-        linear-gradient(135deg, rgba(0,212,255,0.10), rgba(10,16,30,0.90)),
-        linear-gradient(180deg, rgba(19,30,51,0.96), rgba(11,18,34,0.96));
-    }
-
-    .hero-card .card-title{
-      font-size:22px;
-    }
-
-    .hero-card .card-text{
-      color:#d7e6f7;
-      font-size:16px;
-    }
-
-    .accent-card{
-      border-left:4px solid var(--accent);
-    }
-
-    .warning-card{
-      border-left:4px solid var(--warning);
-    }
-
-    .danger-card{
-      border-left:4px solid var(--danger);
-    }
-
-    .mini-stack{
-      display:grid;
-      gap:12px;
-    }
-
-    .mini-box{
-      padding:16px;
-      border-radius:18px;
-      background:rgba(255,255,255,0.03);
-      border:1px solid rgba(255,255,255,0.05);
-    }
-
-    .mini-box h4{
-      font-size:14px;
-      font-weight:800;
-      margin-bottom:6px;
-      color:var(--text);
-    }
-
-    .mini-box p{
-      font-size:14px;
-      line-height:1.7;
-      color:var(--text2);
-    }
-
-    .level-grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:14px;
-    }
-
-    .level-card{
-      border-radius:18px;
-      padding:18px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.06);
-    }
-
-    .level-card h4{
-      font-size:15px;
-      font-weight:800;
-      margin-bottom:6px;
-      color:var(--text);
-    }
-
-    .level-card p{
-      font-size:14px;
-      color:var(--text2);
-      line-height:1.7;
-    }
-
-    .state-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:14px;
-    }
-
-    .state-card{
-      border-radius:20px;
-      padding:18px;
-      border:1px solid rgba(255,255,255,0.06);
-      background:linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015));
-    }
-
-    .state-card h4{
-      font-size:16px;
-      font-weight:800;
-      margin-bottom:8px;
-    }
-
-    .state-card p{
-      font-size:14px;
-      color:var(--text2);
-      line-height:1.7;
-    }
-
-    .method-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:14px;
-    }
-
-    .method-card{
-      border-radius:20px;
-      padding:18px;
-      border:1px solid rgba(255,255,255,0.05);
-      background:rgba(255,255,255,0.03);
-    }
-
-    .method-card h4{
-      font-size:15px;
-      font-weight:800;
-      margin-bottom:7px;
-    }
-
-    .method-card p{
-      font-size:14px;
-      color:var(--text2);
-      line-height:1.7;
-    }
-
-    .risk-list{
-      display:grid;
-      gap:10px;
-    }
-
-    .risk-item{
-      padding:13px 15px;
-      border-radius:14px;
-      background:rgba(255,255,255,0.03);
-      border:1px solid rgba(255,255,255,0.05);
-      font-size:14px;
-      color:var(--text2);
-    }
-
-    .footer-nav{
-      display:flex;
-      justify-content:space-between;
-      gap:14px;
-      margin-top:22px;
-      flex-wrap:wrap;
-    }
-
-    @media (max-width: 980px){
-      .hero-grid,
-      .grid.two,
-      .grid.equal,
-      .grid.three,
-      .state-grid,
-      .method-grid{
-        grid-template-columns:1fr;
-      }
-
-      .level-grid{
-        grid-template-columns:1fr;
-      }
-
-      .topbar{
-        flex-direction:column;
-        align-items:flex-start;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 2 - Data Protection</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #0b1a2a, #050d18);
+    color: #e6f1ff;
+}
+
+/* NAV */
+.nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+}
+
+.back-btn {
+    background: rgba(0,255,255,0.1);
+    border: 1px solid #00f7ff;
+    color: #00f7ff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.back-btn:hover {
+    background: #00f7ff;
+    color: #000;
+}
+
+/* MAIN GRID */
+.container {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 30px;
+}
+
+/* MAIN PANEL */
+.main-panel {
+    background: linear-gradient(145deg, #0f2a44, #081725);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 0 25px rgba(0,255,255,0.1);
+}
+
+.title {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    opacity: 0.7;
+    margin-bottom: 30px;
+}
+
+/* DATA FLOW VISUAL */
+.flow {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.node {
+    width: 30%;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    background: rgba(0,255,255,0.05);
+    border: 1px solid rgba(0,255,255,0.2);
+}
+
+.node h3 {
+    margin-bottom: 10px;
+    color: #00f7ff;
+}
+
+/* SIDE PANEL */
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* METRIC BLOCK */
+.metric {
+    background: linear-gradient(145deg, #081725, #0c2338);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(0,255,255,0.15);
+}
+
+.metric h4 {
+    color: #00f7ff;
+    margin-bottom: 10px;
+}
+
+/* DESTRUCTION GRID */
+.destruction {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.d-box {
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.d-box h3 {
+    color: #00f7ff;
+}
+
+/* EXAM WARNING */
+.warning {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255, 180, 0, 0.08);
+    border: 1px solid rgba(255, 180, 0, 0.3);
+    color: #ffc107;
+}
+
+/* NEXT BUTTON */
+.next {
+    margin-top: 40px;
+    text-align: right;
+}
+
+.next button {
+    padding: 12px 25px;
+    background: #00f7ff;
+    border: none;
+    border-radius: 10px;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+}
+</style>
 </head>
+
 <body>
-  <div class="app">
 
-    <div class="topbar">
-      <div class="topbar-left">
-        <div class="brand-chip">SEC+ · WEEK 2</div>
-        <div class="meta">
-          <div class="meta-title">Chapter 1 · Data Protection</div>
-          <div class="meta-sub">theory_module // premium_learning_flow</div>
+<!-- NAV -->
+<div class="nav">
+    <button class="back-btn" onclick="goBack()">← Back</button>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+    <!-- LEFT MAIN -->
+    <div class="main-panel">
+        <div class="title">DATA PROTECTION SYSTEM</div>
+        <div class="subtitle">Lifecycle-based control of information</div>
+
+        <!-- VISUAL FLOW -->
+        <div class="flow">
+            <div class="node">
+                <h3>STORE</h3>
+                <p>Retention policies define duration</p>
+            </div>
+
+            <div class="node">
+                <h3>ACCESS</h3>
+                <p>Controlled by identity & permissions</p>
+            </div>
+
+            <div class="node">
+                <h3>SHARE</h3>
+                <p>Secure transmission rules applied</p>
+            </div>
         </div>
-      </div>
 
-      <!-- BOTON BACK CORREGIDO -->
-      <button class="btn" type="button" onclick="goBackToWeek2()">← Back to Week 2</button>
+        <!-- DESTRUCTION -->
+        <div class="destruction">
+            <div class="d-box">
+                <h3>Clearing</h3>
+                <p>Basic deletion, recoverable</p>
+            </div>
+
+            <div class="d-box">
+                <h3>Purging</h3>
+                <p>Secure erase, not recoverable</p>
+            </div>
+
+            <div class="d-box">
+                <h3>Destruction</h3>
+                <p>Physical elimination</p>
+            </div>
+        </div>
+
+        <!-- WARNING -->
+        <div class="warning">
+            // Exam trap: Clearing ≠ secure deletion. Data may still be recovered.
+        </div>
+
+        <div class="next">
+            <button>Next →</button>
+        </div>
+
     </div>
 
-    <section class="hero">
-      <div class="hero-grid">
-        <div>
-          <div class="hero-kicker">WEEK 2 · CHAPTER 1 · THEORY</div>
-          <h1>Data Protection</h1>
-          <p>
-            Learn how organizations classify, protect, control, and securely dispose of data across its lifecycle.
-            This module is structured for exam understanding, not passive reading.
-          </p>
+    <!-- RIGHT SIDE -->
+    <div class="side-panel">
+
+        <div class="metric">
+            <h4>DATA RETENTION</h4>
+            <p>Defines how long data is stored before deletion.</p>
         </div>
 
-        <div class="hero-side">
-          <div class="micro-panel">
-            <div class="micro-label">CURRENT PHASE</div>
-            <div class="micro-value">Theory</div>
-          </div>
-          <div class="micro-panel">
-            <div class="micro-label">SCREENS</div>
-            <div class="micro-value">4 structured screens</div>
-          </div>
-          <div class="micro-panel">
-            <div class="micro-label">NEXT STEP</div>
-            <div class="micro-value">Tricks</div>
-          </div>
+        <div class="metric">
+            <h4>ACCESS CONTROL</h4>
+            <p>Determines who can access information.</p>
         </div>
-      </div>
-    </section>
 
-    <div class="progress-wrap">
-      <div class="progress-top">
-        <div class="progress-badge">THEORY FLOW ACTIVE</div>
-        <div class="progress-text" id="progressText">screen_1_of_4</div>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
+        <div class="metric">
+            <h4>DATA HANDLING</h4>
+            <p>Rules for using, sharing, and transmitting data.</p>
+        </div>
+
     </div>
 
-    <!-- SCREEN 1 -->
-    <section class="screen active" id="screen-1">
-      <div class="section-head">
-        <div class="section-kicker">THEORY SCREEN 1</div>
-        <h2 class="section-title">Data Classification</h2>
-        <p class="section-subtitle">
-          Data classification determines how sensitive information is and what level of protection and handling it requires.
-        </p>
-      </div>
+</div>
 
-      <div class="grid two">
-        <div class="card hero-card">
-          <div class="card-title">Core Concept</div>
-          <div class="card-text">
-            Data classification defines how sensitive information is and how it must be protected and handled.
-            Organizations classify data to determine the appropriate level of security controls, access restrictions,
-            storage requirements, and transmission rules.
-          </div>
-        </div>
+<script>
+function goBack() {
+    window.location.href = "week2.html"; // ✅ FIX REAL
+}
+</script>
 
-        <div class="card accent-card">
-          <div class="card-title">Key Principle</div>
-          <div class="card-text">
-            The more sensitive the data, the stronger the required controls and handling rules.
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:18px;">
-        <div class="card-title">Common Classification Levels</div>
-        <div class="level-grid">
-          <div class="level-card">
-            <h4>Public</h4>
-            <p>No impact if disclosed.</p>
-          </div>
-          <div class="level-card">
-            <h4>Private / Internal</h4>
-            <p>Intended for internal use only.</p>
-          </div>
-          <div class="level-card">
-            <h4>Confidential</h4>
-            <p>Sensitive data that requires protection.</p>
-          </div>
-          <div class="level-card">
-            <h4>Restricted / Highly Confidential</h4>
-            <p>Critical data with severe impact if exposed.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid equal" style="margin-top:18px;">
-        <div class="card accent-card">
-          <div class="card-title">Exam Insight</div>
-          <div class="card-text">
-            Security+ often tests whether you can match a control, access level, or handling requirement to the correct classification level.
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Why It Matters</div>
-          <div class="card-text">
-            Classification is the foundation for applying protection consistently. Without it, data handling becomes weak, expensive, or both.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCREEN 2 -->
-    <section class="screen" id="screen-2">
-      <div class="section-head">
-        <div class="section-kicker">THEORY SCREEN 2</div>
-        <h2 class="section-title">Data States</h2>
-        <p class="section-subtitle">
-          Data exists in different operational states, and each state requires its own protection strategy.
-        </p>
-      </div>
-
-      <div class="card hero-card">
-        <div class="card-title">Core Concept</div>
-        <div class="card-text">
-          Data exists in three main states: at rest, in transit, and in use. Identifying the state first often reveals which control is most appropriate.
-        </div>
-      </div>
-
-      <div class="state-grid" style="margin-top:18px;">
-        <div class="state-card">
-          <h4>Data at Rest</h4>
-          <p>Stored data such as disks, databases, backups, and archived files.</p>
-        </div>
-        <div class="state-card">
-          <h4>Data in Transit</h4>
-          <p>Data moving across networks between systems, services, or users.</p>
-        </div>
-        <div class="state-card">
-          <h4>Data in Use</h4>
-          <p>Data actively being processed in memory by the CPU or running applications.</p>
-        </div>
-      </div>
-
-      <div class="grid equal" style="margin-top:18px;">
-        <div class="card">
-          <div class="card-title">Security Controls by State</div>
-          <div class="mini-stack">
-            <div class="mini-box">
-              <h4>At Rest</h4>
-              <p>Disk encryption, file permissions, access control.</p>
-            </div>
-            <div class="mini-box">
-              <h4>In Transit</h4>
-              <p>TLS, HTTPS, VPN.</p>
-            </div>
-            <div class="mini-box">
-              <h4>In Use</h4>
-              <p>Process isolation, session control, memory protection.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="mini-stack">
-          <div class="card accent-card">
-            <div class="card-title">Key Insight</div>
-            <div class="card-text">
-              Data in Use is the hardest to protect because it must remain accessible in memory while it is being processed.
-            </div>
-          </div>
-
-          <div class="card warning-card">
-            <div class="card-title">Exam Trap</div>
-            <div class="card-text">
-              Confusing Data in Transit with Data in Use is extremely common. Network movement is transit. Active RAM processing is use.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCREEN 3 -->
-    <section class="screen" id="screen-3">
-      <div class="section-head">
-        <div class="section-kicker">THEORY SCREEN 3</div>
-        <h2 class="section-title">DLP + Encryption</h2>
-        <p class="section-subtitle">
-          These controls both protect data, but they solve different problems and should not be confused.
-        </p>
-      </div>
-
-      <div class="grid equal">
-        <div class="card">
-          <div class="card-title">Data Loss Prevention (DLP)</div>
-          <div class="card-text">
-            DLP systems are designed to detect and prevent data exfiltration. They monitor sensitive data and enforce policies related to movement and transfer.
-          </div>
-          <div class="mini-stack" style="margin-top:14px;">
-            <div class="mini-box">
-              <h4>Common Actions</h4>
-              <p>Blocking unauthorized transfers, preventing sensitive emails, monitoring user activity involving sensitive data.</p>
-            </div>
-            <div class="mini-box accent-card">
-              <h4>Important Concept</h4>
-              <p>DLP focuses on controlling and monitoring the movement of sensitive data.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Encryption Basics</div>
-          <div class="card-text">
-            Encryption protects the confidentiality of data by making it unreadable without the correct key.
-          </div>
-          <div class="mini-stack" style="margin-top:14px;">
-            <div class="mini-box">
-              <h4>Symmetric Encryption</h4>
-              <p>One shared key, fast, example: AES.</p>
-            </div>
-            <div class="mini-box">
-              <h4>Asymmetric Encryption</h4>
-              <p>Public and private key pair, slower, example: RSA.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid equal" style="margin-top:18px;">
-        <div class="card accent-card">
-          <div class="card-title">Key Difference</div>
-          <div class="card-text">
-            DLP helps detect and block the movement of sensitive data. Encryption protects the content from unauthorized reading.
-          </div>
-        </div>
-
-        <div class="card danger-card">
-          <div class="card-title">Exam Trap</div>
-          <div class="card-text">
-            Encryption protects confidentiality, not availability or full access control. It also does not automatically stop data exfiltration.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCREEN 4 -->
-    <section class="screen" id="screen-4">
-      <div class="section-head">
-        <div class="section-kicker">THEORY SCREEN 4</div>
-        <h2 class="section-title">Policies, Destruction & Risks</h2>
-        <p class="section-subtitle">
-          Data protection includes lifecycle policies, proper disposal, and understanding which controls reduce which risks.
-        </p>
-      </div>
-
-      <div class="grid equal">
-        <div class="card hero-card">
-          <div class="card-title">Data Policies</div>
-          <div class="card-text">
-            Policies define how data is managed throughout its lifecycle, including retention, access, handling, and transmission.
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Policy Focus Areas</div>
-          <div class="mini-stack">
-            <div class="mini-box">
-              <h4>Data Retention</h4>
-              <p>How long data must be stored.</p>
-            </div>
-            <div class="mini-box">
-              <h4>Access Control</h4>
-              <p>Who is allowed to access the data.</p>
-            </div>
-            <div class="mini-box">
-              <h4>Data Handling</h4>
-              <p>How data can be used, shared, and transmitted.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:18px;">
-        <div class="card-title">Data Destruction Methods</div>
-        <div class="method-grid">
-          <div class="method-card">
-            <h4>Clearing</h4>
-            <p>Basic logical deletion. Data may still be recoverable.</p>
-          </div>
-          <div class="method-card">
-            <h4>Purging</h4>
-            <p>Secure deletion. Data is not recoverable through standard means.</p>
-          </div>
-          <div class="method-card">
-            <h4>Destruction</h4>
-            <p>Physical damage such as shredding or incineration.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid equal" style="margin-top:18px;">
-        <div class="card danger-card">
-          <div class="card-title">Common Risks</div>
-          <div class="risk-list">
-            <div class="risk-item">Data breaches</div>
-            <div class="risk-item">Unauthorized access</div>
-            <div class="risk-item">Misclassification</div>
-            <div class="risk-item">Human error</div>
-          </div>
-        </div>
-
-        <div class="card accent-card">
-          <div class="card-title">Exam Focus</div>
-          <div class="card-text">
-            Deleting a file does not mean the data is gone. Security+ often tests whether you can identify which control mitigates which lifecycle risk.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="footer-nav">
-      <button class="btn" id="prevBtn" onclick="prevScreen()">← Previous</button>
-      <button class="btn btn-primary" id="nextBtn" onclick="nextScreen()">Next →</button>
-    </div>
-
-  </div>
-
-  <script>
-    const screens = document.querySelectorAll('.screen');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    let currentScreen = 0;
-
-    function goBackToWeek2() {
-      window.location.href = "week2.html";
-    }
-
-    function updateScreen() {
-      screens.forEach((screen, index) => {
-        screen.classList.toggle('active', index === currentScreen);
-      });
-
-      const percent = ((currentScreen + 1) / screens.length) * 100;
-      progressFill.style.width = percent + '%';
-      progressText.textContent = `screen_${currentScreen + 1}_of_${screens.length}`;
-
-      prevBtn.style.visibility = currentScreen === 0 ? 'hidden' : 'visible';
-      nextBtn.textContent = currentScreen === screens.length - 1 ? 'Continue →' : 'Next →';
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function nextScreen() {
-      if (currentScreen < screens.length - 1) {
-        currentScreen++;
-        updateScreen();
-      } else {
-        alert('Theory complete. Next step: Tricks.');
-      }
-    }
-
-    function prevScreen() {
-      if (currentScreen > 0) {
-        currentScreen--;
-        updateScreen();
-      }
-    }
-
-    updateScreen();
-  </script>
 </body>
 </html>
