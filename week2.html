@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Week 2 · Security+ Study App</title>
+  <title>SEC+ Week 2</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg:#040913;
-      --bg2:#071120;
+      --bg:#030814;
+      --bg2:#061120;
       --surface:#0d1728;
       --surface2:#12213a;
       --surface3:#182b49;
-      --border:#203555;
+      --border:#213657;
       --border-soft:rgba(255,255,255,0.06);
       --accent:#00e7ff;
       --accent-soft:rgba(0,231,255,0.12);
@@ -22,9 +22,9 @@
       --success:#10b981;
       --warning:#f59e0b;
       --danger:#ef4444;
-      --text:#ebf3ff;
-      --text2:#b8c6dc;
-      --text3:#6e7f9d;
+      --text:#ecf4ff;
+      --text2:#b7c6dc;
+      --text3:#71809b;
       --mono:'Space Mono', monospace;
       --sans:'DM Sans', sans-serif;
       --shadow:0 20px 60px rgba(0,0,0,0.36);
@@ -272,11 +272,22 @@
       padding:22px;
       box-shadow:var(--shadow);
       transition:0.2s ease;
+      cursor:pointer;
     }
 
     .chapter-card:hover{
       transform:translateY(-2px);
       box-shadow:0 24px 64px rgba(0,0,0,0.42);
+    }
+
+    .chapter-card.locked{
+      opacity:0.55;
+      cursor:not-allowed;
+    }
+
+    .chapter-card.locked:hover{
+      transform:none;
+      box-shadow:var(--shadow);
     }
 
     .chapter-top{
@@ -309,6 +320,12 @@
       font-family:var(--mono);
       font-size:11px;
       letter-spacing:1px;
+    }
+
+    .chapter-status.locked{
+      background:rgba(255,255,255,0.05);
+      border-color:rgba(255,255,255,0.08);
+      color:var(--text3);
     }
 
     .chapter-title{
@@ -401,7 +418,7 @@
       width:12px;
       height:12px;
       border-radius:50%;
-      background:rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.16);
       transition:0.22s ease;
     }
 
@@ -413,8 +430,17 @@
     }
 
     .dot.done{
-      background:rgba(0,231,255,0.85);
+      background:rgba(0,231,255,0.84);
       box-shadow:0 0 10px rgba(0,231,255,0.35);
+    }
+
+    .theory-view{
+      display:none;
+    }
+
+    .theory-view.active{
+      display:block;
+      animation:fadeSlide 0.24s ease;
     }
 
     .card{
@@ -524,7 +550,6 @@
       line-height:1.75;
     }
 
-    /* Data States */
     .states-visual{
       display:grid;
       grid-template-columns:repeat(3,1fr);
@@ -599,7 +624,6 @@
       margin-top:16px;
     }
 
-    /* Classification */
     .classification-stack{
       display:grid;
       gap:14px;
@@ -642,7 +666,6 @@
       line-height:1.75;
     }
 
-    /* Roles */
     .roles-tree{
       display:grid;
       justify-items:center;
@@ -686,7 +709,6 @@
       opacity:0.8;
     }
 
-    /* Protection flow */
     .flow-line{
       display:grid;
       grid-template-columns:repeat(3,1fr);
@@ -796,92 +818,76 @@
 <body>
   <div class="app">
 
-    <!-- HOME SCREEN -->
+    <!-- WEEK 2 MENU -->
     <section id="week2-home" class="screen active">
       <div class="topbar">
         <div class="topbar-left">
           <div class="chip">SEC+ · WEEK 2</div>
           <div class="meta">
             <div class="meta-title">Cryptography & Risk</div>
-            <div class="meta-sub">week_2_home // chapter_hub</div>
+            <div class="meta-sub">week_2_home // chapter_menu</div>
           </div>
         </div>
         <button class="btn" type="button" onclick="window.location.href='index.html'">← Main Menu</button>
       </div>
 
-      <div class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="hero-kicker">WEEK 2 STRUCTURED LEARNING</div>
-            <h1>Build Chapter 1 properly first.</h1>
-            <p>
-              This week focuses on data protection, cryptographic solutions, risk management, vendor risk,
-              governance, asset control, and assessments. For now, Chapter 1 is the working foundation.
-            </p>
-          </div>
-          <div class="hero-side">
-            <div class="stat">
-              <div class="stat-label">CURRENT STATUS</div>
-              <div class="stat-value">Chapter 1 Active</div>
-            </div>
-            <div class="stat">
-              <div class="stat-label">LEARNING MODE</div>
-              <div class="stat-value">Theory-first structure</div>
-            </div>
-            <div class="stat">
-              <div class="stat-label">NEXT TARGET</div>
-              <div class="stat-value">Tricks / Traps / Notes</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="cards-grid">
-        <div class="chapter-card">
+        <div class="chapter-card" onclick="openChapter1Theory()">
           <div class="chapter-top">
-            <div>
-              <span class="chapter-num">CHAPTER 01</span>
-            </div>
+            <div><span class="chapter-num">CHAPTER 01</span></div>
             <span class="chapter-status">ACTIVE</span>
           </div>
-
           <div class="chapter-title">Data Protection</div>
           <div class="chapter-sub">
-            Study the foundations of how data is classified, where it exists, who is responsible for it,
-            and how protection controls apply across the lifecycle.
+            Study how data is classified, where it exists, who is responsible for it, and how lifecycle protection works.
           </div>
-
           <div class="chapter-tags">
             <span class="tag">Data States</span>
             <span class="tag">Classification</span>
             <span class="tag">Roles</span>
-            <span class="tag">Lifecycle Protection</span>
+            <span class="tag">Lifecycle</span>
           </div>
-
-          <button class="btn btn-primary" type="button" onclick="openChapter1Theory()">Enter Chapter 1 Theory →</button>
         </div>
 
-        <div class="chapter-card" style="opacity:0.55;">
+        <div class="chapter-card locked" onclick="lockedChapter()">
           <div class="chapter-top">
             <div><span class="chapter-num">CHAPTER 02</span></div>
-            <span class="tag">LOCKED</span>
+            <span class="chapter-status locked">LOCKED</span>
           </div>
           <div class="chapter-title">Cryptographic Solutions</div>
-          <div class="chapter-sub">Locked until Chapter 1 structure is complete.</div>
+          <div class="chapter-sub">Ready for the next phase once Chapter 1 is complete.</div>
         </div>
 
-        <div class="chapter-card" style="opacity:0.55;">
+        <div class="chapter-card locked" onclick="lockedChapter()">
           <div class="chapter-top">
             <div><span class="chapter-num">CHAPTER 03</span></div>
-            <span class="tag">LOCKED</span>
+            <span class="chapter-status locked">LOCKED</span>
           </div>
           <div class="chapter-title">Risk Management</div>
-          <div class="chapter-sub">Locked until Chapter 1 structure is complete.</div>
+          <div class="chapter-sub">Structure prepared for future chapter integration.</div>
+        </div>
+
+        <div class="chapter-card locked" onclick="lockedChapter()">
+          <div class="chapter-top">
+            <div><span class="chapter-num">CHAPTER 04</span></div>
+            <span class="chapter-status locked">LOCKED</span>
+          </div>
+          <div class="chapter-title">Third-Party Vendor Risks</div>
+          <div class="chapter-sub">Structure prepared for future chapter integration.</div>
+        </div>
+
+        <div class="chapter-card locked" onclick="lockedChapter()">
+          <div class="chapter-top">
+            <div><span class="chapter-num">CHAPTER 05</span></div>
+            <span class="chapter-status locked">LOCKED</span>
+          </div>
+          <div class="chapter-title">Governance & Compliance</div>
+          <div class="chapter-sub">Structure prepared for future chapter integration.</div>
         </div>
       </div>
     </section>
 
-    <!-- THEORY SCREEN -->
+    <!-- CHAPTER 1 THEORY -->
     <section id="chapter1-theory" class="screen">
       <div class="topbar">
         <div class="topbar-left">
@@ -907,7 +913,7 @@
         <div class="progress-label" id="progress-label-text">screen_1_of_4</div>
       </div>
 
-      <!-- THEORY SCREEN 1 -->
+      <!-- SCREEN 1 -->
       <div class="theory-view active" data-index="0">
         <div class="section-head">
           <div class="section-kicker">THEORY SCREEN 1</div>
@@ -977,8 +983,8 @@
         </div>
       </div>
 
-      <!-- THEORY SCREEN 2 -->
-      <div class="theory-view" data-index="1" style="display:none;">
+      <!-- SCREEN 2 -->
+      <div class="theory-view" data-index="1">
         <div class="section-head">
           <div class="section-kicker">THEORY SCREEN 2</div>
           <div class="section-title">Data Classification</div>
@@ -1046,8 +1052,8 @@
         </div>
       </div>
 
-      <!-- THEORY SCREEN 3 -->
-      <div class="theory-view" data-index="2" style="display:none;">
+      <!-- SCREEN 3 -->
+      <div class="theory-view" data-index="2">
         <div class="section-head">
           <div class="section-kicker">THEORY SCREEN 3</div>
           <div class="section-title">Data Roles</div>
@@ -1103,8 +1109,8 @@
         </div>
       </div>
 
-      <!-- THEORY SCREEN 4 -->
-      <div class="theory-view" data-index="3" style="display:none;">
+      <!-- SCREEN 4 -->
+      <div class="theory-view" data-index="3">
         <div class="section-head">
           <div class="section-kicker">THEORY SCREEN 4</div>
           <div class="section-title">Data Protection System</div>
@@ -1211,11 +1217,13 @@
       showScreen('home');
     }
 
+    function lockedChapter(){
+      alert('This chapter is not active yet.');
+    }
+
     function renderTheory(){
       theoryViews.forEach((view, index) => {
-        const active = index === currentTheoryIndex;
-        view.style.display = active ? 'block' : 'none';
-        view.classList.toggle('active', active);
+        view.classList.toggle('active', index === currentTheoryIndex);
       });
 
       dots.forEach((dot, index) => {
@@ -1228,8 +1236,7 @@
       });
 
       progressLabelText.textContent = `screen_${currentTheoryIndex + 1}_of_${theoryViews.length}`;
-
-      prevBtn.textContent = currentTheoryIndex === 0 ? '← Back to Chapter 1' : '← Back';
+      prevBtn.textContent = currentTheoryIndex === 0 ? '← Back to Week 2' : '← Back';
       nextBtn.textContent = currentTheoryIndex === theoryViews.length - 1 ? 'Finish Theory →' : 'Next →';
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1240,7 +1247,7 @@
         currentTheoryIndex++;
         renderTheory();
       } else {
-        alert('Theory complete. Next step: Tricks.');
+        alert('Theory complete.');
       }
     }
 
