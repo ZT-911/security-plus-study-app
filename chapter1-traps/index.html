@@ -1,595 +1,2747 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tricks & Traps — Phase 1</title>
+<title>
+  Tricks & Traps — Phase 1
+</title>
+
 <style>
-:root{--bg:#030814;--bg2:#061120;--surface:#071824;--border:rgba(0,234,255,.22);--border-soft:rgba(255,255,255,.07);--accent:#00eaff;--accent2:#00ffc3;--green:#7dffbf;--warning:#fbbf24;--danger:#ff5c7a;--text:#e8fbff;--text2:#b7d2dc;--shadow:0 22px 70px rgba(0,0,0,.40)}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{min-height:100vh;font-family:Arial,sans-serif;background:radial-gradient(circle at 16% 12%,rgba(0,234,255,.10),transparent 28%),radial-gradient(circle at 84% 80%,rgba(0,255,195,.07),transparent 30%),linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text);overflow-x:hidden}
-body:before{content:"";position:fixed;inset:0;background:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:34px 34px;pointer-events:none;opacity:.18;z-index:0}
-.app{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:28px 22px 60px}
-.header{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:18px;padding:18px 0 20px;background:linear-gradient(180deg,rgba(3,8,20,.98),rgba(3,8,20,.72),transparent);backdrop-filter:blur(8px)}
-.title-wrap{display:flex;flex-direction:column;gap:5px}.kicker{color:var(--accent2);font-size:11px;letter-spacing:3px;font-weight:700}.title{color:var(--accent);font-size:clamp(24px,4vw,36px);font-weight:800;text-shadow:0 0 24px rgba(0,234,255,.30)}.subtitle{color:var(--text2);font-size:14px;line-height:1.6;max-width:760px}
-.btn{border:1px solid var(--accent);color:var(--text);background:rgba(0,234,255,.04);padding:10px 16px;border-radius:10px;cursor:pointer;font-size:14px;transition:.2s ease;white-space:nowrap}.btn:hover{background:rgba(0,234,255,.14);box-shadow:0 0 22px rgba(0,234,255,.25);transform:translateY(-1px)}
-.hero{border:1px solid var(--border);background:linear-gradient(135deg,rgba(0,234,255,.10),rgba(0,255,195,.04)),rgba(7,24,36,.76);border-radius:22px;padding:24px;margin-bottom:24px;box-shadow:var(--shadow)}
-.hero-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:18px}.hero-pill{border:1px solid var(--border-soft);border-radius:16px;background:rgba(255,255,255,.035);padding:16px}.hero-pill strong{color:var(--accent);display:block;margin-bottom:6px}.hero-pill span{color:var(--text2);font-size:13px;line-height:1.55}
-.section-label{margin:34px 0 16px;padding:12px 16px;border-radius:14px;border:1px solid rgba(0,234,255,.18);background:rgba(0,234,255,.055);color:var(--accent);font-weight:800;letter-spacing:1px}
-.block{margin-bottom:28px;padding:22px;border-radius:18px;background:linear-gradient(180deg,rgba(0,234,255,.055),rgba(0,0,0,.08)),rgba(7,24,36,.82);border:1px solid var(--border);box-shadow:0 0 28px rgba(0,234,255,.055)}
-.block h2{color:var(--accent);font-size:24px;margin-bottom:14px}.meta-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}.info{padding:14px;background:rgba(255,255,255,.035);border:1px solid var(--border-soft);border-radius:13px}.label{color:var(--accent2);font-size:13px;font-weight:800;margin-bottom:8px}.info p,.block>p{color:var(--text2);line-height:1.72;font-size:15px}
-.example{margin-top:14px;padding:14px 16px;background:rgba(0,10,18,.65);border-left:4px solid var(--accent);border-radius:10px;color:var(--text);line-height:1.7}.messer{margin-top:12px;padding:14px 16px;background:rgba(0,255,135,.08);border-left:4px solid var(--accent2);border-radius:10px;color:var(--green);line-height:1.7}.trap{border-color:rgba(255,92,122,.32)}.trap h2{color:#ff7d93}.weak{border-color:rgba(251,191,36,.32)}.weak h2{color:var(--warning)}
-.footer-next{display:flex;justify-content:center;padding:38px 0 10px}.footer-next .btn{background:var(--accent);color:#001217;font-weight:800;border:none;padding:14px 26px}.footer-next .btn:hover{box-shadow:0 0 28px rgba(0,234,255,.45)}
-@media(max-width:820px){.header{align-items:flex-start;flex-direction:column}.hero-grid,.meta-row{grid-template-columns:1fr}.app{padding:20px 16px 48px}.block{padding:18px}}
+:root{
+  --bg:#030814;
+  --bg2:#061120;
+  --surface:#071824;
+  --surface2:#092333;
+  --border:rgba(0,234,255,0.22);
+  --border-soft:rgba(255,255,255,0.07);
+  --accent:#00eaff;
+  --accent2:#00ffc3;
+  --green:#7dffbf;
+  --warning:#fbbf24;
+  --danger:#ff5c7a;
+  --text:#e8fbff;
+  --text2:#b7d2dc;
+  --text3:#73909a;
+  --shadow:0 22px 70px rgba(0,0,0,0.40);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  min-height:100vh;
+  font-family:Arial,sans-serif;
+  background:
+    radial-gradient(circle at 16% 12%,rgba(0,234,255,0.10),transparent 28%),
+    radial-gradient(circle at 84% 80%,rgba(0,255,195,0.07),transparent 30%),
+    linear-gradient(180deg,var(--bg),var(--bg2));
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
+  background-size:34px 34px;
+  pointer-events:none;
+  opacity:0.18;
+  z-index:0;
+}
+
+.app{
+  position:relative;
+  z-index:1;
+  max-width:1080px;
+  margin:0 auto;
+  padding:28px 22px 60px;
+}
+
+.header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  padding:18px 0 20px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(3,8,20,0.98),
+      rgba(3,8,20,0.72),
+      transparent
+    );
+  backdrop-filter:blur(8px);
+}
+
+.title-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.kicker{
+  color:var(--accent2);
+  font-size:11px;
+  letter-spacing:3px;
+  font-weight:700;
+}
+
+.title{
+  color:var(--accent);
+  font-size:clamp(24px,4vw,36px);
+  font-weight:800;
+  text-shadow:0 0 24px rgba(0,234,255,0.30);
+}
+
+.subtitle{
+  color:var(--text2);
+  font-size:14px;
+  line-height:1.6;
+  max-width:760px;
+}
+
+.btn{
+  border:1px solid var(--accent);
+  color:var(--text);
+  background:rgba(0,234,255,0.04);
+  padding:10px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+  transition:0.2s ease;
+  white-space:nowrap;
+}
+
+.btn:hover{
+  background:rgba(0,234,255,0.14);
+  box-shadow:0 0 22px rgba(0,234,255,0.25);
+  transform:translateY(-1px);
+}
+
+.hero{
+  border:1px solid var(--border);
+  background:
+    linear-gradient(135deg,rgba(0,234,255,0.10),rgba(0,255,195,0.04)),
+    rgba(7,24,36,0.76);
+  border-radius:22px;
+  padding:24px;
+  margin-bottom:24px;
+  box-shadow:var(--shadow);
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:14px;
+  margin-top:18px;
+}
+
+.hero-pill{
+  border:1px solid var(--border-soft);
+  border-radius:16px;
+  background:rgba(255,255,255,0.035);
+  padding:16px;
+}
+
+.hero-pill strong{
+  color:var(--accent);
+  display:block;
+  margin-bottom:6px;
+}
+
+.hero-pill span{
+  color:var(--text2);
+  font-size:13px;
+  line-height:1.55;
+}
+
+.section-label{
+  margin:34px 0 16px;
+  padding:12px 16px;
+  border-radius:14px;
+  border:1px solid rgba(0,234,255,0.18);
+  background:rgba(0,234,255,0.055);
+  color:var(--accent);
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.block{
+  margin-bottom:28px;
+  padding:22px;
+  border-radius:18px;
+  background:
+    linear-gradient(180deg,rgba(0,234,255,0.055),rgba(0,0,0,0.08)),
+    rgba(7,24,36,0.82);
+  border:1px solid var(--border);
+  box-shadow:0 0 28px rgba(0,234,255,0.055);
+}
+
+.block h2{
+  color:var(--accent);
+  font-size:24px;
+  margin-bottom:14px;
+}
+
+.meta-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:14px 0;
+}
+
+.info{
+  padding:14px;
+  background:rgba(255,255,255,0.035);
+  border:1px solid var(--border-soft);
+  border-radius:13px;
+}
+
+.label{
+  color:var(--accent2);
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.info p,
+.block > p{
+  color:var(--text2);
+  line-height:1.72;
+  font-size:15px;
+}
+
+.example{
+  margin-top:14px;
+  padding:14px 16px;
+  background:rgba(0,10,18,0.65);
+  border-left:4px solid var(--accent);
+  border-radius:10px;
+  color:var(--text);
+  line-height:1.7;
+}
+
+.messer{
+  margin-top:12px;
+  padding:14px 16px;
+  background:rgba(0,255,135,0.08);
+  border-left:4px solid var(--accent2);
+  border-radius:10px;
+  color:var(--green);
+  line-height:1.7;
+}
+
+.trap{
+  border-color:rgba(255,92,122,0.32);
+}
+
+.trap h2{
+  color:#ff7d93;
+}
+
+.weak{
+  border-color:rgba(251,191,36,0.32);
+}
+
+.weak h2{
+  color:var(--warning);
+}
+
+.keyword{
+  border-color:rgba(0,234,255,0.28);
+}
+
+.footer-next{
+  display:flex;
+  justify-content:center;
+  padding:38px 0 10px;
+}
+
+.footer-next .btn{
+  background:var(--accent);
+  color:#001217;
+  font-weight:800;
+  border:none;
+  padding:14px 26px;
+}
+
+.footer-next .btn:hover{
+  box-shadow:0 0 28px rgba(0,234,255,0.45);
+}
+
+@media(max-width:820px){
+  .header{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .hero-grid,
+  .meta-row{
+    grid-template-columns:1fr;
+  }
+
+  .app{
+    padding:20px 16px 48px;
+  }
+
+  .block{
+    padding:18px;
+  }
+}
 </style>
 </head>
+
 <body>
 <div class="app">
+
 <header class="header">
   <div class="title-wrap">
-    <div class="kicker">SEC+ WEEK 2 · CHAPTER 1</div>
-    <div class="title">Tricks & Traps — Phase 1</div>
-    <div class="subtitle">Guided learning for Data Protection traps, exam keywords, and weak points. Scroll slowly, learn the trigger, then move into Recognition Training.</div>
+    <div class="kicker">
+      SEC+ WEEK 2 · CHAPTER 1
+    </div>
+
+    <div class="title">
+      Tricks & Traps — Phase 1
+    </div>
+
+    <div class="subtitle">
+      Guided learning for Data Protection traps, exam keywords, and weak points.
+      Scroll slowly, learn the trigger, then move into Recognition Training.
+    </div>
   </div>
-  <button class="btn" onclick="goBack()">← Back</button>
+
+  <button class="btn" onclick="goBack()">
+    ← Back
+  </button>
 </header>
 
 <section class="hero">
-  <div class="kicker">HOW TO USE THIS PHASE</div>
-  <div class="subtitle">Each block teaches one exam pattern: what the exam is testing, how to recognize it, and what trap to avoid. No timer. No pressure.</div>
+  <div class="kicker">
+    HOW TO USE THIS PHASE
+  </div>
+
+  <div class="subtitle">
+    Each block teaches one exam pattern: what the exam is testing,
+    how to recognize it, and what trap to avoid. No timer. No pressure.
+  </div>
+
   <div class="hero-grid">
-    <div class="hero-pill"><strong>1. Read the trigger</strong><span>Look for the keyword that exposes the correct answer.</span></div>
-    <div class="hero-pill"><strong>2. Spot the trap</strong><span>Notice what wrong answer the exam wants you to pick.</span></div>
-    <div class="hero-pill"><strong>3. Lock the pattern</strong><span>Use the Messer Insight as the final mental shortcut.</span></div>
+    <div class="hero-pill">
+      <strong>
+        1. Read the trigger
+      </strong>
+      <span>
+        Look for the keyword that exposes the correct answer.
+      </span>
+    </div>
+
+    <div class="hero-pill">
+      <strong>
+        2. Spot the trap
+      </strong>
+      <span>
+        Notice what wrong answer the exam wants you to pick.
+      </span>
+    </div>
+
+    <div class="hero-pill">
+      <strong>
+        3. Lock the pattern
+      </strong>
+      <span>
+        Use the Messer Insight as the final mental shortcut.
+      </span>
+    </div>
   </div>
 </section>
 
-<div class="section-label">EXAM KEYWORDS CHEAT SHEET</div>
+<!-- ========================================================= -->
+<!-- EXAM KEYWORDS CHEAT SHEET -->
+<!-- ========================================================= -->
+
+<div class="section-label">
+  EXAM KEYWORDS CHEAT SHEET
+</div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Data at Rest -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Data at Rest</h2>
+  <h2>
+    Keyword: Data at Rest
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests whether you can identify stored data and match it with the right protection control.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Disk, database, backup, storage, archive, file server.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests whether you can identify stored data and match it with the right protection control.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Disk, database, backup, storage, archive, file server.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A company needs to protect customer records stored in a database. The best control is encryption at rest plus access control.</div>
-  <div class="messer"><strong>Messer Insight:</strong> At rest usually points to storage encryption, access permissions, and backup protection.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A company needs to protect customer records stored in a database. The best answer points to encryption at rest and access control.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    At rest usually points to storage encryption, access permissions, and backup protection.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Data in Transit -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Data in Transit</h2>
+  <h2>
+    Keyword: Data in Transit
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests whether you recognize data moving across a network or communication channel.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Network, web session, email transmission, API call, VPN, TLS, HTTPS.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests whether you recognize data moving across a network or communication channel.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Network, web session, email transmission, API call, VPN, TLS, HTTPS.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A browser sends payment data to a web server. The data is in transit, so TLS or HTTPS is the correct protection.</div>
-  <div class="messer"><strong>Messer Insight:</strong> In transit means protect the channel, not the disk.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A browser sends payment data to a web server. The data is in transit, so TLS or HTTPS is the protection.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    In transit means protect the channel, not the disk.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Data in Use -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Data in Use</h2>
+  <h2>
+    Keyword: Data in Use
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests the state that students often forget because it is not just stored or moving.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>RAM, CPU, processing, application memory, active calculation, runtime.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests the state that students often forget because it is not just stored or moving.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        RAM, CPU, processing, application memory, active calculation, runtime.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Sensitive data is being processed by an application in memory. This is data in use.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Data in use is the hardest state to protect because the system must actively access it.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Sensitive data is being processed by an application in memory. This is data in use.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Data in use is the hardest state to protect because the system must actively access it.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Data Owner -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Data Owner</h2>
+  <h2>
+    Keyword: Data Owner
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests who decides classification, policy, and sensitivity level.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Defines classification, approves access, owns risk, sets protection requirements.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests who decides classification, policy, and sensitivity level.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Defines classification, approves access, owns risk, sets protection requirements.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A business manager decides that financial records are confidential. That role is the Data Owner.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Owner decides. IT usually does not own the data.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A business manager decides that financial records are confidential. That role is the Data Owner.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Owner decides. IT usually does not own the data.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Data Custodian -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Data Custodian</h2>
+  <h2>
+    Keyword: Data Custodian
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests implementation responsibility, not decision authority.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Implements backups, manages storage, applies permissions, maintains controls.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests implementation responsibility, not decision authority.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Implements backups, manages storage, applies permissions, maintains controls.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> IT configures storage permissions and backup schedules based on owner requirements. IT is acting as custodian.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Custodian implements. Owner decides.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    IT configures storage permissions and backup schedules based on owner requirements. IT is acting as custodian.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Custodian implements. Owner decides.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Data Steward -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Data Steward</h2>
+  <h2>
+    Keyword: Data Steward
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests governance support and data quality responsibility.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Data quality, metadata, standards, proper usage, governance support.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests governance support and data quality responsibility.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Data quality, metadata, standards, proper usage, governance support.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A person ensures customer records follow naming standards and quality rules. That role is a data steward.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Steward supports governance and quality. Custodian manages technical storage and controls.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A person ensures customer records follow naming standards and quality rules. That role is a data steward.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Steward supports governance and quality. Custodian manages technical storage and controls.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Data Controller -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Data Controller</h2>
+  <h2>
+    Keyword: Data Controller
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests privacy and regulatory responsibility, especially around personal data.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Determines purpose and means of processing personal data.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests privacy and regulatory responsibility, especially around personal data.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Determines purpose and means of processing personal data.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A company decides why customer personal data is collected and how it will be used. It is the controller.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Controller decides why and how personal data is processed.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A company decides why customer personal data is collected and how it will be used. It is the controller.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Controller decides why and how personal data is processed.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Data Processor -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Data Processor</h2>
+  <h2>
+    Keyword: Data Processor
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests whether you know the difference between deciding and processing on behalf of another entity.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Processes data on behalf of controller, follows controller instructions.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests whether you know the difference between deciding and processing on behalf of another entity.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Processes data on behalf of controller, follows controller instructions.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A cloud payroll provider processes employee data for a company. The provider is the processor.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Processor acts for the controller. Processor does not decide the original business purpose.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A cloud payroll provider processes employee data for a company. The provider is the processor.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Processor acts for the controller. Processor does not decide the original business purpose.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: PII -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: PII</h2>
+  <h2>
+    Keyword: PII
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests whether you can identify personally identifiable information.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Name, address, ID number, email, phone number, location, personal identifier.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests whether you can identify personally identifiable information.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Name, address, ID number, email, phone number, location, personal identifier.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A spreadsheet with customer names and national ID numbers contains PII.</div>
-  <div class="messer"><strong>Messer Insight:</strong> PII identifies a person directly or indirectly.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A spreadsheet with customer names and national ID numbers contains PII.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    PII identifies a person directly or indirectly.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: PHI -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: PHI</h2>
+  <h2>
+    Keyword: PHI
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests whether you distinguish health data from general personal data.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Medical record, diagnosis, treatment, health insurance, patient data, HIPAA.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests whether you distinguish health data from general personal data.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Medical record, diagnosis, treatment, health insurance, patient data, HIPAA.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Patient diagnosis records stored by a hospital are PHI.</div>
-  <div class="messer"><strong>Messer Insight:</strong> PHI is a type of PII, but not all PII is PHI.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Patient diagnosis records stored by a hospital are PHI.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    PHI is a type of PII, but not all PII is PHI.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: PCI DSS -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: PCI DSS</h2>
+  <h2>
+    Keyword: PCI DSS
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests payment card protection and regulatory mapping.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Credit card, payment card, cardholder data, merchant processing.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests payment card protection and regulatory mapping.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Credit card, payment card, cardholder data, merchant processing.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A retailer storing customer card numbers must follow PCI DSS requirements.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Payment card data points to PCI DSS, not HIPAA.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A retailer storing customer card numbers must follow PCI DSS requirements.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Payment card data points to PCI DSS, not HIPAA.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: GDPR -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: GDPR</h2>
+  <h2>
+    Keyword: GDPR
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests privacy obligations for personal data connected to people in the EU.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>EU residents, personal data, privacy rights, controller, processor, cross-border data.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests privacy obligations for personal data connected to people in the EU.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        EU residents, personal data, privacy rights, controller, processor, cross-border data.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A US company processing data of EU residents may still fall under GDPR.</div>
-  <div class="messer"><strong>Messer Insight:</strong> GDPR is not limited to companies physically inside Europe.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A US company processing data of EU residents may still fall under GDPR.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    GDPR is not limited to companies physically inside Europe.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Data Sovereignty -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Data Sovereignty</h2>
+  <h2>
+    Keyword: Data Sovereignty
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests whether you know that laws depend on where the data is stored.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Country, region, jurisdiction, cloud region, legal location, data residency.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests whether you know that laws depend on where the data is stored.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Country, region, jurisdiction, cloud region, legal location, data residency.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Data stored in Germany may be subject to German and EU data protection laws.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Sovereignty follows data location, not just company headquarters.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Data stored in Germany may be subject to German and EU data protection laws.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Sovereignty follows data location, not just company headquarters.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: DLP -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: DLP</h2>
+  <h2>
+    Keyword: DLP
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests detection and prevention of sensitive data leaving approved channels.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Exfiltration, blocked email attachment, sensitive data leaving network, policy violation.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests detection and prevention of sensitive data leaving approved channels.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Exfiltration, blocked email attachment, sensitive data leaving network, policy violation.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> An outbound email with Social Security numbers is blocked by policy. That is DLP.</div>
-  <div class="messer"><strong>Messer Insight:</strong> DLP focuses on sensitive data movement, not general firewall traffic.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    An outbound email with Social Security numbers is blocked by policy. That is DLP.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    DLP focuses on sensitive data movement, not general firewall traffic.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Hashing -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Hashing</h2>
+  <h2>
+    Keyword: Hashing
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests whether you know integrity verification and one-way transformation.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>One-way, digest, checksum, integrity check, cannot reverse.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests whether you know integrity verification and one-way transformation.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        One-way, digest, checksum, integrity check, cannot reverse.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A downloaded file hash is compared to verify the file was not modified.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Hashing is not encryption because it is not designed to be reversed.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A downloaded file hash is compared to verify the file was not modified.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Hashing is not encryption because it is not designed to be reversed.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Encryption -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Encryption</h2>
+  <h2>
+    Keyword: Encryption
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests confidentiality through cryptographic transformation.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Confidentiality, ciphertext, key, decrypt, reversible with key.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests confidentiality through cryptographic transformation.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Confidentiality, ciphertext, key, decrypt, reversible with key.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A database column is encrypted so only authorized users with keys can read the original data.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Encryption protects confidentiality and is reversible with the correct key.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A database column is encrypted so only authorized users with keys can read the original data.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Encryption protects confidentiality and is reversible with the correct key.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Tokenization -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Tokenization</h2>
+  <h2>
+    Keyword: Tokenization
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests payment and sensitive data replacement without mathematical relationship.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Token, substitute value, no mathematical relationship, vault mapping.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests payment and sensitive data replacement without mathematical relationship.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Token, substitute value, no mathematical relationship, vault mapping.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A payment card number is replaced with a token that has no useful relationship to the original card number.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Tokenization replaces data. Encryption mathematically transforms data.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A payment card number is replaced with a token that has no useful relationship to the original card number.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Tokenization replaces data. Encryption mathematically transforms data.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Masking -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Masking</h2>
+  <h2>
+    Keyword: Masking
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests visual hiding of sensitive data.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Show only last four digits, hide part of value, display protection.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests visual hiding of sensitive data.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Show only last four digits, hide part of value, display protection.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A customer service screen displays a card as **** **** **** 1234.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Masking hides what the user sees, but the original data may still exist in the database.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A customer service screen displays a card as **** **** **** 1234.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Masking hides what the user sees, but the original data may still exist in the database.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Keyword: Obfuscation -->
+<!-- ========================================================= -->
 
 <div class="block keyword">
-  <h2>Keyword: Obfuscation</h2>
+  <h2>
+    Keyword: Obfuscation
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Tests the difference between making something harder to understand and truly securing it.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Hide logic, make code confusing, obscure format, not strong protection.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Tests the difference between making something harder to understand and truly securing it.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Hide logic, make code confusing, obscure format, not strong protection.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> JavaScript is made hard to read to slow down analysis. That is obfuscation, not encryption.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Obfuscation is weak compared with encryption or access control.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    JavaScript is made hard to read to slow down analysis. That is obfuscation, not encryption.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Obfuscation is weak compared with encryption or access control.
+  </div>
 </div>
 
-<div class="section-label">COMMON TRAPS ON THE EXAM</div>
+<!-- ========================================================= -->
+<!-- COMMON TRAPS ON THE EXAM -->
+<!-- ========================================================= -->
+
+<div class="section-label">
+  COMMON TRAPS ON THE EXAM
+</div>
+
+<!-- ========================================================= -->
+<!-- Trap: IT is the Data Owner -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: IT is the Data Owner</h2>
+  <h2>
+    Trap: IT is the Data Owner
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Because IT often manages systems, students assume IT owns the data.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>If the question asks who classifies or decides sensitivity, answer Data Owner.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Because IT often manages systems, students assume IT owns the data.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        If the question asks who classifies or decides sensitivity, answer Data Owner.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> IT stores HR data, but HR decides classification. HR is the owner; IT is custodian.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Ownership is business responsibility, not automatically technical responsibility.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    IT stores HR data, but HR decides classification. HR is the owner; IT is custodian.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Ownership is business responsibility, not automatically technical responsibility.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Owner = Custodian = Steward -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Owner = Custodian = Steward</h2>
+  <h2>
+    Trap: Owner = Custodian = Steward
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>All three sound responsible for data, but they do different jobs.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Decides = Owner. Implements = Custodian. Quality/governance support = Steward.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        All three sound responsible for data, but they do different jobs.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Decides = Owner. Implements = Custodian. Quality/governance support = Steward.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A data steward improves metadata quality but does not necessarily manage backups.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Separate decision authority, technical operation, and governance quality.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A data steward improves metadata quality but does not necessarily manage backups.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Separate decision authority, technical operation, and governance quality.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Controller = Owner -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Controller = Owner</h2>
+  <h2>
+    Trap: Controller = Owner
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Both terms involve responsibility, but controller is a privacy/legal processing role.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Purpose and means of processing personal data = Controller.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Both terms involve responsibility, but controller is a privacy/legal processing role.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Purpose and means of processing personal data = Controller.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A company deciding how customer personal data is processed is the controller, not simply data owner in the classic internal classification sense.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Controller and processor are privacy roles. Owner and custodian are data governance/security roles.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A company deciding how customer personal data is processed is the controller, not simply data owner in the classic internal classification sense.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Controller and processor are privacy roles. Owner and custodian are data governance/security roles.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Data Controller = Data Processor -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Data Controller = Data Processor</h2>
+  <h2>
+    Trap: Data Controller = Data Processor
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>The exam checks if you know who decides and who performs processing.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Decides purpose = Controller. Processes on behalf = Processor.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        The exam checks if you know who decides and who performs processing.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Decides purpose = Controller. Processes on behalf = Processor.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A SaaS provider processing customer records for another company is usually the processor.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Processor follows instructions. Controller defines purpose.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A SaaS provider processing customer records for another company is usually the processor.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Processor follows instructions. Controller defines purpose.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Steward = Custodian -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Steward = Custodian</h2>
+  <h2>
+    Trap: Steward = Custodian
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Both support data management, but one is governance-focused and the other is operational/technical.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Metadata or quality = Steward. Backups or permissions = Custodian.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Both support data management, but one is governance-focused and the other is operational/technical.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Metadata or quality = Steward. Backups or permissions = Custodian.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> The person improving data consistency is steward. The person managing storage controls is custodian.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Steward governs quality. Custodian operates controls.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    The person improving data consistency is steward. The person managing storage controls is custodian.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Steward governs quality. Custodian operates controls.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Privacy Officer Manages All Data -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Privacy Officer Manages All Data</h2>
+  <h2>
+    Trap: Privacy Officer Manages All Data
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Privacy roles sound broad, but they focus on privacy-regulated information.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>PII, PHI, privacy compliance, personal data handling.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Privacy roles sound broad, but they focus on privacy-regulated information.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        PII, PHI, privacy compliance, personal data handling.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A privacy officer focuses on PII/PHI compliance, not every technical file in the company.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Privacy officer is tied to privacy-sensitive data, not universal ownership of all data.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A privacy officer focuses on PII/PHI compliance, not every technical file in the company.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Privacy officer is tied to privacy-sensitive data, not universal ownership of all data.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: In Transit = In Use -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: In Transit = In Use</h2>
+  <h2>
+    Trap: In Transit = In Use
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Both are active states, but the location and risk are different.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Moving across network = Transit. Being processed in memory = Use.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Both are active states, but the location and risk are different.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Moving across network = Transit. Being processed in memory = Use.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Data traveling through HTTPS is in transit. Data loaded into RAM by an app is in use.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Channel protection does not equal memory protection.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Data traveling through HTTPS is in transit. Data loaded into RAM by an app is in use.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Channel protection does not equal memory protection.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: HTTPS Protects Everything -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: HTTPS Protects Everything</h2>
+  <h2>
+    Trap: HTTPS Protects Everything
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Students see encryption and assume full protection.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>HTTPS only protects data in transit.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Students see encryption and assume full protection.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        HTTPS only protects data in transit.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> HTTPS protects customer data while moving to the server, but not necessarily once stored in the database.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Match the protection to the data state.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    HTTPS protects customer data while moving to the server, but not necessarily once stored in the database.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Match the protection to the data state.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: FDE Protects an Active System -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: FDE Protects an Active System</h2>
+  <h2>
+    Trap: FDE Protects an Active System
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Full disk encryption sounds like it protects all situations. It does not.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>FDE protects data at rest, especially when powered off or disk is removed.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Full disk encryption sounds like it protects all situations. It does not.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        FDE protects data at rest, especially when powered off or disk is removed.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> If the device is already unlocked and running, FDE may not protect data currently accessible to the OS.</div>
-  <div class="messer"><strong>Messer Insight:</strong> FDE protects stored data, not every active runtime exposure.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    If the device is already unlocked and running, FDE may not protect data currently accessible to the OS.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    FDE protects stored data, not every active runtime exposure.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Hashing is Reversible -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Hashing is Reversible</h2>
+  <h2>
+    Trap: Hashing is Reversible
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Students confuse hashing with encryption.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Hash = one-way. Encryption = reversible with a key.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Students confuse hashing with encryption.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Hash = one-way. Encryption = reversible with a key.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A password hash is compared during login, not decrypted back to the password.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Hashing verifies integrity or matches values. It does not decrypt.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A password hash is compared during login, not decrypted back to the password.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Hashing verifies integrity or matches values. It does not decrypt.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Tokenization = Encryption -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Tokenization = Encryption</h2>
+  <h2>
+    Trap: Tokenization = Encryption
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Both protect sensitive values, but the mechanism is different.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Tokenization has no mathematical relationship to the original value.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Both protect sensitive values, but the mechanism is different.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Tokenization has no mathematical relationship to the original value.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Replacing a credit card number with a random token is tokenization, not encryption.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Encryption transforms. Tokenization replaces.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Replacing a credit card number with a random token is tokenization, not encryption.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Encryption transforms. Tokenization replaces.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Masking Destroys Data -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Masking Destroys Data</h2>
+  <h2>
+    Trap: Masking Destroys Data
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>The visible data is hidden, so students think the original is gone.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Masking hides display, but original data may remain in storage.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        The visible data is hidden, so students think the original is gone.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Masking hides display, but original data may remain in storage.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Showing only the last four digits of a card does not destroy the real card number in the database.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Masking protects presentation, not necessarily storage.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Showing only the last four digits of a card does not destroy the real card number in the database.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Masking protects presentation, not necessarily storage.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Obfuscation is Strong Protection -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Obfuscation is Strong Protection</h2>
+  <h2>
+    Trap: Obfuscation is Strong Protection
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Obfuscated data looks unreadable, so people overestimate it.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>If the answer says strong confidentiality, obfuscation is usually too weak.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Obfuscated data looks unreadable, so people overestimate it.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        If the answer says strong confidentiality, obfuscation is usually too weak.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Minified code slows down analysis but does not provide strong data protection.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Obfuscation is hiding, not robust cryptographic protection.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Minified code slows down analysis but does not provide strong data protection.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Obfuscation is hiding, not robust cryptographic protection.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Non-Human-Readable Means Secure -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Non-Human-Readable Means Secure</h2>
+  <h2>
+    Trap: Non-Human-Readable Means Secure
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>People confuse hard to read with properly protected.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Unreadable format alone is not enough. Ask whether encryption, hashing, or tokenization is actually used.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        People confuse hard to read with properly protected.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Unreadable format alone is not enough. Ask whether encryption, hashing, or tokenization is actually used.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Encoded or compressed data may be non-human-readable but not encrypted.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Security depends on the control used, not just whether text looks messy.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Encoded or compressed data may be non-human-readable but not encrypted.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Security depends on the control used, not just whether text looks messy.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Trade Secret = Intellectual Property -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Trade Secret = Intellectual Property</h2>
+  <h2>
+    Trap: Trade Secret = Intellectual Property
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Trade secrets are a type of valuable business information, but IP is the broader category.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Formula, proprietary process, secret method = Trade Secret.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Trade secrets are a type of valuable business information, but IP is the broader category.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Formula, proprietary process, secret method = Trade Secret.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A secret manufacturing formula is a trade secret. A patent or copyright is another form of intellectual property.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Trade secrets are protected by secrecy, not simply by registration.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A secret manufacturing formula is a trade secret. A patent or copyright is another form of intellectual property.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Trade secrets are protected by secrecy, not simply by registration.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Confidential Always Means the Same Thing -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Confidential Always Means the Same Thing</h2>
+  <h2>
+    Trap: Confidential Always Means the Same Thing
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Commercial and government classification labels can differ.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Always check context: commercial classification vs government classification.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Commercial and government classification labels can differ.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Always check context: commercial classification vs government classification.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Confidential may be a high business classification in a company but a different level in government schemes.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Classification labels must be interpreted in context.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Confidential may be a high business classification in a company but a different level in government schemes.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Classification labels must be interpreted in context.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Sensitive = Confidential -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Sensitive = Confidential</h2>
+  <h2>
+    Trap: Sensitive = Confidential
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>The words sound similar, so the exam uses them to bait you.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Sensitive may be lower than confidential depending on the classification hierarchy.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        The words sound similar, so the exam uses them to bait you.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Sensitive may be lower than confidential depending on the classification hierarchy.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Internal sensitive data may require care, but confidential data normally demands stronger controls.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Read the classification hierarchy in the scenario before choosing.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Internal sensitive data may require care, but confidential data normally demands stronger controls.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Read the classification hierarchy in the scenario before choosing.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: PHI = PII -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: PHI = PII</h2>
+  <h2>
+    Trap: PHI = PII
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Both identify people, but PHI specifically relates to health.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>All PHI is PII, but not all PII is PHI.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Both identify people, but PHI specifically relates to health.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        All PHI is PII, but not all PII is PHI.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> An email address is PII. A diagnosis linked to a patient is PHI.</div>
-  <div class="messer"><strong>Messer Insight:</strong> PHI is health-related PII.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    An email address is PII. A diagnosis linked to a patient is PHI.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    PHI is health-related PII.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: GDPR Only Applies in Europe -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: GDPR Only Applies in Europe</h2>
+  <h2>
+    Trap: GDPR Only Applies in Europe
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Students focus on geography of the company instead of data subject and processing context.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>EU residents or EU personal data can create GDPR obligations even outside Europe.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Students focus on geography of the company instead of data subject and processing context.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        EU residents or EU personal data can create GDPR obligations even outside Europe.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A company outside Europe that processes EU resident data may still need GDPR compliance.</div>
-  <div class="messer"><strong>Messer Insight:</strong> GDPR can follow the data subject, not just the business address.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A company outside Europe that processes EU resident data may still need GDPR compliance.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    GDPR can follow the data subject, not just the business address.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Cloud Guarantees Data Location -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Cloud Guarantees Data Location</h2>
+  <h2>
+    Trap: Cloud Guarantees Data Location
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Cloud sounds abstract, so people assume location stops mattering.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Cloud region, residency, sovereignty, replication location.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Cloud sounds abstract, so people assume location stops mattering.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Cloud region, residency, sovereignty, replication location.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> If data is replicated into another country, additional legal requirements may apply.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Cloud does not remove sovereignty concerns.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    If data is replicated into another country, additional legal requirements may apply.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Cloud does not remove sovereignty concerns.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Geofencing is Perfect Control -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Geofencing is Perfect Control</h2>
+  <h2>
+    Trap: Geofencing is Perfect Control
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Geofencing sounds decisive, but it is not a perfect guarantee of legal or technical protection.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Location restriction helps, but does not replace legal controls, contracts, and data residency verification.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Geofencing sounds decisive, but it is not a perfect guarantee of legal or technical protection.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Location restriction helps, but does not replace legal controls, contracts, and data residency verification.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Restricting access by region does not prove where all cloud backups are stored.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Geofencing can support control, but it is not absolute assurance.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Restricting access by region does not prove where all cloud backups are stored.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Geofencing can support control, but it is not absolute assurance.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: DLP = Firewall -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: DLP = Firewall</h2>
+  <h2>
+    Trap: DLP = Firewall
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Both can block traffic, but the decision logic is different.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>DLP looks for sensitive data and policy violations. Firewall filters network traffic.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Both can block traffic, but the decision logic is different.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        DLP looks for sensitive data and policy violations. Firewall filters network traffic.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Blocking an email because it contains SSNs is DLP, not a normal firewall decision.</div>
-  <div class="messer"><strong>Messer Insight:</strong> DLP follows the data. Firewall follows traffic rules.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Blocking an email because it contains SSNs is DLP, not a normal firewall decision.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    DLP follows the data. Firewall follows traffic rules.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: DLP Prevents Everything -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: DLP Prevents Everything</h2>
+  <h2>
+    Trap: DLP Prevents Everything
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>DLP sounds like a magic shield. Reality continues to exist.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>DLP cannot stop every leakage method, such as taking a photo of a screen.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        DLP sounds like a magic shield. Reality continues to exist.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        DLP cannot stop every leakage method, such as taking a photo of a screen.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> DLP may block an email attachment but cannot fully prevent someone photographing sensitive data.</div>
-  <div class="messer"><strong>Messer Insight:</strong> DLP reduces data loss risk; it does not eliminate all exfiltration paths.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    DLP may block an email attachment but cannot fully prevent someone photographing sensitive data.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    DLP reduces data loss risk; it does not eliminate all exfiltration paths.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Cloud DLP Requires Hardware -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Cloud DLP Requires Hardware</h2>
+  <h2>
+    Trap: Cloud DLP Requires Hardware
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Some people still imagine security as a box in a rack.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Cloud DLP can be service-based and policy-driven.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Some people still imagine security as a box in a rack.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Cloud DLP can be service-based and policy-driven.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A cloud email platform scans outbound attachments using DLP policy without a local appliance.</div>
-  <div class="messer"><strong>Messer Insight:</strong> DLP can be endpoint, network, or cloud based.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A cloud email platform scans outbound attachments using DLP policy without a local appliance.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    DLP can be endpoint, network, or cloud based.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Start DLP in Blocking Mode -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Start DLP in Blocking Mode</h2>
+  <h2>
+    Trap: Start DLP in Blocking Mode
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Blocking sounds secure, but without tuning it creates false positives and business disruption.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Correct order: discover, classify, define, deploy, test, tune, maintain.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Blocking sounds secure, but without tuning it creates false positives and business disruption.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Correct order: discover, classify, define, deploy, test, tune, maintain.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A company should test and tune DLP policies before enforcing hard blocking.</div>
-  <div class="messer"><strong>Messer Insight:</strong> DLP needs tuning before enforcement. Blocking first creates noise.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A company should test and tune DLP policies before enforcing hard blocking.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    DLP needs tuning before enforcement. Blocking first creates noise.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: DLP Does Not Need Tuning -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: DLP Does Not Need Tuning</h2>
+  <h2>
+    Trap: DLP Does Not Need Tuning
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Students think policies work perfectly once created.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>False positives, business exceptions, policy refinement, ongoing maintenance.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Students think policies work perfectly once created.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        False positives, business exceptions, policy refinement, ongoing maintenance.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> A DLP rule blocks legitimate financial reports, so the policy must be tuned.</div>
-  <div class="messer"><strong>Messer Insight:</strong> DLP is not set-and-forget. It requires continuous tuning.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A DLP rule blocks legitimate financial reports, so the policy must be tuned.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    DLP is not set-and-forget. It requires continuous tuning.
+  </div>
 </div>
+
+<!-- ========================================================= -->
+<!-- Trap: Clearing = Secure Deletion -->
+<!-- ========================================================= -->
 
 <div class="block trap">
-  <h2>Trap: Clearing = Secure Deletion</h2>
+  <h2>
+    Trap: Clearing = Secure Deletion
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Deleting something feels final, because file systems enjoy deception.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Clearing may be recoverable. Purging is secure erase. Destruction is physical elimination.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Deleting something feels final, because file systems enjoy deception.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Clearing may be recoverable. Purging is secure erase. Destruction is physical elimination.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Before selling laptops, simple deletion is not enough. Use purging or destruction.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Clearing is not the same as secure disposal.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Before selling laptops, simple deletion is not enough. Use purging or destruction.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Clearing is not the same as secure disposal.
+  </div>
 </div>
 
-<div class="section-label">WEAK POINTS — TO REINFORCE</div>
+<!-- ========================================================= -->
+<!-- WEAK POINTS — TO REINFORCE -->
+<!-- ========================================================= -->
+
+<div class="section-label">
+  WEAK POINTS — TO REINFORCE
+</div>
+
+<!-- ========================================================= -->
+<!-- Weak Point: Data in Use -->
+<!-- ========================================================= -->
 
 <div class="block weak">
-  <h2>Weak Point: Data in Use</h2>
+  <h2>
+    Weak Point: Data in Use
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Students often remember at rest and in transit but forget data actively being processed.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>RAM, CPU, runtime, active process.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Students often remember at rest and in transit but forget data actively being processed.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        RAM, CPU, runtime, active process.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> If the data is being processed by an application, classify it as data in use.</div>
-  <div class="messer"><strong>Messer Insight:</strong> In use is the most difficult state because the system must actually access the data.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    If the data is being processed by an application, classify it as data in use.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    In use is the most difficult state because the system must actually access the data.
+  </div>
 </div>
 
-<div class="block weak">
-  <h2>Weak Point: Role Separation</h2>
-  <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Owner, custodian, steward, controller, and processor are easy to mix up.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Ask: who decides, who implements, who processes, who maintains quality?</p></div>
-  </div>
-  <div class="example"><strong>Example:</strong> Decision = Owner/Controller. Implementation = Custodian/Processor depending on context.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Always separate authority from execution.</div>
-</div>
+<!-- ========================================================= -->
+<!-- Weak Point: Role Separation -->
+<!-- ========================================================= -->
 
 <div class="block weak">
-  <h2>Weak Point: Classification Context</h2>
+  <h2>
+    Weak Point: Role Separation
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Classification labels change meaning depending on commercial or government context.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Read the scenario hierarchy before choosing a level.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Owner, custodian, steward, controller, and processor are easy to mix up.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Ask: who decides, who implements, who processes, who maintains quality?
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Do not assume confidential always means the same severity in every classification system.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Context controls classification meaning.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Decision = Owner/Controller. Implementation = Custodian/Processor depending on context.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Always separate authority from execution.
+  </div>
 </div>
 
-<div class="block weak">
-  <h2>Weak Point: Data Types and Regulations</h2>
-  <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>PII, PHI, PCI DSS, HIPAA, and GDPR are common matching traps.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Health = HIPAA/PHI. Payment cards = PCI DSS. EU personal data = GDPR.</p></div>
-  </div>
-  <div class="example"><strong>Example:</strong> A medical diagnosis linked to a patient is PHI; a credit card number is PCI DSS scope.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Match the regulation to the data type.</div>
-</div>
+<!-- ========================================================= -->
+<!-- Weak Point: Classification Context -->
+<!-- ========================================================= -->
 
 <div class="block weak">
-  <h2>Weak Point: Data Sovereignty</h2>
+  <h2>
+    Weak Point: Classification Context
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Cloud makes location easy to overlook, which is exactly why the exam likes it.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Country, legal jurisdiction, cloud region, data residency.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Classification labels change meaning depending on commercial or government context.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Read the scenario hierarchy before choosing a level.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> If data is stored in a country, that country's laws may apply.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Cloud storage still has legal geography.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Do not assume confidential always means the same severity in every classification system.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Context controls classification meaning.
+  </div>
 </div>
 
-<div class="block weak">
-  <h2>Weak Point: Security Technique Differences</h2>
-  <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Hashing, encryption, tokenization, masking, and obfuscation are favorite exam confusion bait.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Reversible? Key? One-way? Replacement? Visual hiding?</p></div>
-  </div>
-  <div class="example"><strong>Example:</strong> Hashing = one-way. Encryption = reversible with key. Tokenization = replacement. Masking = display hiding.</div>
-  <div class="messer"><strong>Messer Insight:</strong> Identify the mechanism, not just the goal.</div>
-</div>
+<!-- ========================================================= -->
+<!-- Weak Point: Data Types and Regulations -->
+<!-- ========================================================= -->
 
 <div class="block weak">
-  <h2>Weak Point: DLP Deployment Order</h2>
+  <h2>
+    Weak Point: Data Types and Regulations
+  </h2>
+
   <div class="meta-row">
-    <div class="info"><div class="label">Why it appears</div><p>Many students want to block immediately, which makes the exam designers giggle somewhere.</p></div>
-    <div class="info"><div class="label">Trigger</div><p>Discover → Classify → Define → Deploy → Test → Tune → Maintain.</p></div>
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        PII, PHI, PCI DSS, HIPAA, and GDPR are common matching traps.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Health = HIPAA/PHI. Payment cards = PCI DSS. EU personal data = GDPR.
+      </p>
+    </div>
   </div>
-  <div class="example"><strong>Example:</strong> Do not begin with blocking mode. Start with discovery, policy definition, testing, and tuning.</div>
-  <div class="messer"><strong>Messer Insight:</strong> DLP must be tuned before it becomes a hard enforcement control.</div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    A medical diagnosis linked to a patient is PHI; a credit card number is PCI DSS scope.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Match the regulation to the data type.
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- Weak Point: Data Sovereignty -->
+<!-- ========================================================= -->
+
+<div class="block weak">
+  <h2>
+    Weak Point: Data Sovereignty
+  </h2>
+
+  <div class="meta-row">
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Cloud makes location easy to overlook, which is exactly why the exam likes it.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Country, legal jurisdiction, cloud region, data residency.
+      </p>
+    </div>
+  </div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    If data is stored in a country, that country's laws may apply.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Cloud storage still has legal geography.
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- Weak Point: Security Technique Differences -->
+<!-- ========================================================= -->
+
+<div class="block weak">
+  <h2>
+    Weak Point: Security Technique Differences
+  </h2>
+
+  <div class="meta-row">
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Hashing, encryption, tokenization, masking, and obfuscation are favorite exam confusion bait.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Reversible? Key? One-way? Replacement? Visual hiding?
+      </p>
+    </div>
+  </div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Hashing = one-way. Encryption = reversible with key. Tokenization = replacement. Masking = display hiding.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    Identify the mechanism, not just the goal.
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- Weak Point: DLP Deployment Order -->
+<!-- ========================================================= -->
+
+<div class="block weak">
+  <h2>
+    Weak Point: DLP Deployment Order
+  </h2>
+
+  <div class="meta-row">
+    <div class="info">
+      <div class="label">
+        Why it appears
+      </div>
+      <p>
+        Many students want to block immediately, which makes the exam designers giggle somewhere.
+      </p>
+    </div>
+
+    <div class="info">
+      <div class="label">
+        Trigger
+      </div>
+      <p>
+        Discover → Classify → Define → Deploy → Test → Tune → Maintain.
+      </p>
+    </div>
+  </div>
+
+  <div class="example">
+    <strong>
+      Example:
+    </strong>
+    Do not begin with blocking mode. Start with discovery, policy definition, testing, and tuning.
+  </div>
+
+  <div class="messer">
+    <strong>
+      Messer Insight:
+    </strong>
+    DLP must be tuned before it becomes a hard enforcement control.
+  </div>
 </div>
 
 <div class="footer-next">
-  <button class="btn" onclick="goNext()">Next → Recognition Training</button>
+  <button class="btn" onclick="goNext()">
+    Next → Recognition Training
+  </button>
 </div>
 
 </div>
+
 <script>
-function goBack(){ window.location.href = "../week2.html"; }
-function goNext(){ alert("Phase 2 coming next..."); }
+function goBack(){
+  window.location.href = "../week2.html";
+}
+
+function goNext(){
+  alert("Phase 2 coming next...");
+}
 </script>
+
 </body>
 </html>
