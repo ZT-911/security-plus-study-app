@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tricks & Traps — Phase 1</title>
+
+<style>
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #07121c, #02070d);
+    color:#d9faff;
+}
+
+/* HEADER */
+.header{
+    padding:20px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.title{
+    font-size:22px;
+    color:#00eaff;
+    text-shadow:0 0 10px #00eaff;
+}
+
+.back{
+    border:1px solid #00eaff;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.back:hover{
+    background:#00eaff;
+    color:#000;
+}
+
+/* CONTAINER */
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+/* BLOCK */
+.block{
+    margin-bottom:40px;
+    padding:20px;
+    border-radius:12px;
+    background:rgba(0, 234, 255, 0.05);
+    border:1px solid rgba(0,234,255,0.2);
+    box-shadow:0 0 15px rgba(0,234,255,0.1);
+}
+
+.block h2{
+    color:#00eaff;
+    margin-bottom:10px;
+}
+
+.label{
+    color:#00ffc3;
+    font-size:14px;
+    margin-top:10px;
+}
+
+.example{
+    margin-top:10px;
+    padding:12px;
+    background:#02141f;
+    border-left:3px solid #00eaff;
+    border-radius:6px;
+}
+
+.messer{
+    margin-top:10px;
+    padding:12px;
+    background:#0a1a12;
+    border-left:3px solid #00ff9c;
+    color:#9cffd9;
+    border-radius:6px;
+}
+
+/* NEXT BUTTON */
+.next{
+    text-align:center;
+    margin:40px 0;
+}
+
+.next button{
+    padding:12px 25px;
+    background:#00eaff;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.next button:hover{
+    box-shadow:0 0 20px #00eaff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="title">Tricks & Traps — Phase 1</div>
+    <div class="back" onclick="goBack()">← Back</div>
+</div>
+
+<div class="container">
+
+<!-- KEYWORDS -->
+<div class="block">
+<h2>Keyword: Data at Rest</h2>
+
+<div class="label">Why it appears</div>
+<p>Exam checks if you understand storage protection.</p>
+
+<div class="label">Trigger</div>
+<p>Disk, database, backup → encryption required.</p>
+
+<div class="example">
+<strong>Example:</strong> Which control protects stored data?
+</div>
+
+<div class="messer">
+Messer Insight: At rest = think encryption first, not firewall.
+</div>
+</div>
+
+<!-- TRAP -->
+<div class="block">
+<h2>Trap: Clearing vs Secure Deletion</h2>
+
+<div class="label">Why it appears</div>
+<p>Students confuse deletion types.</p>
+
+<div class="label">Trigger</div>
+<p>“Clearing” = recoverable → NOT secure.</p>
+
+<div class="example">
+<strong>Example:</strong> Company deletes files before selling laptop.
+Best answer is NOT clearing.
+</div>
+
+<div class="messer">
+Messer Insight: Clearing ≠ secure. Purging or destruction is required.
+</div>
+</div>
+
+<!-- WEAK POINT -->
+<div class="block">
+<h2>Weak Point: Data in Use</h2>
+
+<div class="label">Why it appears</div>
+<p>Less obvious than rest/transit.</p>
+
+<div class="label">Trigger</div>
+<p>RAM, processing → harder to protect.</p>
+
+<div class="example">
+<strong>Example:</strong> Data processed in memory → risk of exposure.
+</div>
+
+<div class="messer">
+Messer Insight: In use is the hardest state to secure.
+</div>
+</div>
+
+<!-- CLASSIFICATION -->
+<div class="block">
+<h2>Trap: Classification Levels</h2>
+
+<div class="label">Why it appears</div>
+<p>Exam mixes impact levels.</p>
+
+<div class="label">Trigger</div>
+<p>“Severe damage” → Restricted.</p>
+
+<div class="example">
+<strong>Example:</strong> Data leak causes major business damage → highest classification.
+</div>
+
+<div class="messer">
+Messer Insight: Always map impact → classification level.
+</div>
+</div>
+
+</div>
+
+<div class="next">
+    <button onclick="goNext()">Next → Recognition Training</button>
+</div>
+
+<script>
+function goBack(){
+    window.location.href = "../week2.html";
+}
+
+function goNext(){
+    alert("Phase 2 coming next...");
+}
+</script>
+
+</body>
+</html>
