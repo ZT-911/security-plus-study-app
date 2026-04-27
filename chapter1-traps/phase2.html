@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Data Protection — Recognition Training</title>
-
+<title>Phase 2 — Recognition Training</title>
 <style>
 :root{
   --bg:#030814;
   --bg2:#061120;
   --surface:#071824;
   --surface2:#092333;
-  --card:#0b1b2a;
   --border:rgba(0,234,255,0.22);
   --border-soft:rgba(255,255,255,0.08);
   --accent:#00eaff;
@@ -19,34 +17,26 @@
   --green:#7dffbf;
   --warning:#fbbf24;
   --danger:#ff5c7a;
-  --purple:#a855f7;
+  --pink:#ff4fd8;
+  --gold:#ffd36a;
+  --chrome:#d8f7ff;
   --text:#e8fbff;
   --text2:#b7d2dc;
-  --text3:#7894a0;
+  --text3:#73909a;
   --shadow:0 22px 70px rgba(0,0,0,0.42);
 }
-
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
 body{
   min-height:100vh;
   font-family:Arial,sans-serif;
-  color:var(--text);
   background:
     radial-gradient(circle at 16% 12%,rgba(0,234,255,0.10),transparent 28%),
-    radial-gradient(circle at 84% 80%,rgba(168,85,247,0.12),transparent 30%),
+    radial-gradient(circle at 84% 80%,rgba(0,255,195,0.07),transparent 30%),
     linear-gradient(180deg,var(--bg),var(--bg2));
+  color:var(--text);
   overflow-x:hidden;
 }
-
 body::before{
   content:"";
   position:fixed;
@@ -55,1294 +45,1391 @@ body::before{
     linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),
     linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
   background-size:34px 34px;
-  opacity:.18;
   pointer-events:none;
+  opacity:0.18;
   z-index:0;
 }
-
 .app{
   position:relative;
   z-index:1;
-  max-width:1100px;
+  max-width:1080px;
   margin:0 auto;
   padding:28px 22px 60px;
 }
-
-.screen{
-  display:none;
-  animation:fadeIn .28s ease;
-}
-
-.screen.active{
-  display:block;
-}
-
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
 .header{
   position:sticky;
   top:0;
-  z-index:20;
+  z-index:10;
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap:18px;
   padding:18px 0 20px;
-  background:linear-gradient(180deg,rgba(3,8,20,.98),rgba(3,8,20,.74),transparent);
+  background:linear-gradient(180deg,rgba(3,8,20,0.98),rgba(3,8,20,0.72),transparent);
   backdrop-filter:blur(8px);
 }
-
-.kicker{
-  color:var(--accent2);
-  font-size:11px;
-  letter-spacing:3px;
-  font-weight:800;
-}
-
+.title-wrap{display:flex;flex-direction:column;gap:5px}
+.kicker{color:var(--accent2);font-size:11px;letter-spacing:3px;font-weight:800;text-transform:uppercase}
 .title{
   color:var(--accent);
-  font-size:clamp(25px,4vw,38px);
+  font-size:clamp(24px,4vw,36px);
   font-weight:900;
-  text-shadow:0 0 24px rgba(0,234,255,.34);
-  margin:5px 0;
+  text-shadow:0 0 24px rgba(0,234,255,0.30);
 }
-
-.subtitle{
-  color:var(--text2);
-  font-size:14px;
-  line-height:1.65;
-  max-width:780px;
-}
-
+.subtitle{color:var(--text2);font-size:14px;line-height:1.65;max-width:780px}
 .btn{
   border:1px solid var(--accent);
   color:var(--text);
-  background:rgba(0,234,255,.04);
-  padding:10px 16px;
-  border-radius:11px;
+  background:rgba(0,234,255,0.04);
+  padding:11px 16px;
+  border-radius:12px;
   cursor:pointer;
   font-size:14px;
-  transition:.2s ease;
+  transition:0.2s ease;
   white-space:nowrap;
 }
-
-.btn:hover{
-  background:rgba(0,234,255,.14);
-  box-shadow:0 0 22px rgba(0,234,255,.25);
+.btn:hover:not(:disabled){
+  background:rgba(0,234,255,0.14);
+  box-shadow:0 0 24px rgba(0,234,255,0.27);
   transform:translateY(-1px);
 }
-
-.btn-primary{
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{
   background:var(--accent);
   color:#001217;
   font-weight:900;
   border:none;
 }
-
-.btn-primary:hover{
-  background:#6ff6ff;
-  box-shadow:0 0 30px rgba(0,234,255,.55);
+.btn.gold{
+  border:1px solid rgba(255,211,106,.65);
+  background:linear-gradient(135deg,rgba(255,211,106,.22),rgba(255,255,255,.04));
+  color:var(--gold);
 }
-
-.btn-danger{
-  border-color:var(--danger);
-  color:#ffd9df;
-}
-
-.btn-danger:hover{
-  background:rgba(255,92,122,.15);
-}
-
 .panel{
   border:1px solid var(--border);
-  background:
-    linear-gradient(135deg,rgba(0,234,255,.09),rgba(168,85,247,.05)),
-    rgba(7,24,36,.82);
-  border-radius:24px;
+  background:linear-gradient(180deg,rgba(0,234,255,0.055),rgba(0,0,0,0.08)),rgba(7,24,36,0.84);
+  border-radius:22px;
   padding:24px;
+  margin-bottom:24px;
   box-shadow:var(--shadow);
-  margin-bottom:22px;
 }
-
-.phase-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  border:1px solid rgba(0,234,255,.22);
-  color:var(--accent);
-  background:rgba(0,234,255,.08);
-  padding:7px 12px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:800;
-  letter-spacing:1px;
-  margin-bottom:12px;
-}
-
-.progress-wrap{
-  margin:16px 0 20px;
-}
-
-.progress-info{
-  display:flex;
-  justify-content:space-between;
-  color:var(--text3);
-  font-size:12px;
-  margin-bottom:7px;
-}
-
-.progress-bar{
-  height:8px;
-  background:rgba(255,255,255,.07);
-  border-radius:999px;
-  overflow:hidden;
-}
-
-.progress-fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  transition:.25s ease;
-}
-
-.question{
-  font-size:20px;
-  font-weight:800;
-  line-height:1.45;
-  margin:14px 0 18px;
-}
-
-.scenario{
-  border-left:4px solid var(--accent);
-  background:rgba(0,10,18,.62);
+.panel h2{color:var(--accent);font-size:26px;margin-bottom:10px}
+.panel h3{color:var(--text);font-size:20px;margin-bottom:12px;line-height:1.45}
+.panel p{color:var(--text2);line-height:1.72;font-size:15px;margin-bottom:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:16px}
+.pill,.visual-card,.mistake-card{
+  border:1px solid var(--border-soft);
+  border-radius:16px;
+  background:rgba(255,255,255,0.035);
   padding:16px;
-  border-radius:12px;
-  color:var(--text2);
-  line-height:1.72;
-  margin:14px 0;
 }
-
-.options{
-  display:grid;
-  gap:12px;
-  margin-top:16px;
-}
-
+.pill strong,.visual-card strong{color:var(--accent);display:block;margin-bottom:6px}
+.pill span,.visual-card span{color:var(--text2);font-size:13px;line-height:1.55}
+.progress-wrap{margin:16px 0 22px}
+.progress-top{display:flex;justify-content:space-between;color:var(--text2);font-size:13px;margin-bottom:8px}
+.progress-bar{height:9px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;border:1px solid var(--border-soft)}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 0 18px rgba(0,234,255,.45);transition:.25s ease}
+.option-list{display:grid;gap:12px;margin-top:18px}
 .option{
   width:100%;
   text-align:left;
-  border:1px solid var(--border-soft);
-  background:rgba(255,255,255,.035);
-  color:var(--text2);
-  padding:14px 16px;
-  border-radius:13px;
-  cursor:pointer;
-  font-size:15px;
-  line-height:1.55;
-  transition:.18s ease;
-}
-
-.option:hover{
-  border-color:var(--accent);
+  border:1px solid rgba(0,234,255,.18);
+  background:rgba(0,234,255,.045);
   color:var(--text);
-  background:rgba(0,234,255,.07);
+  border-radius:15px;
+  padding:15px 16px;
+  cursor:pointer;
+  transition:.18s ease;
+  line-height:1.55;
 }
-
-.option.correct{
-  border-color:rgba(125,255,191,.7);
-  color:var(--green);
-  background:rgba(0,255,135,.10);
-}
-
-.option.partial{
-  border-color:rgba(251,191,36,.75);
-  color:var(--warning);
-  background:rgba(251,191,36,.10);
-}
-
-.option.wrong{
-  border-color:rgba(255,92,122,.75);
-  color:#ffc5ce;
-  background:rgba(255,92,122,.10);
-}
-
+.option:hover:not(:disabled){border-color:rgba(0,234,255,.55);background:rgba(0,234,255,.105);transform:translateY(-1px)}
+.option.correct{border-color:rgba(125,255,191,.75);background:rgba(125,255,191,.10)}
+.option.partial{border-color:rgba(251,191,36,.75);background:rgba(251,191,36,.10)}
+.option.wrong{border-color:rgba(255,92,122,.75);background:rgba(255,92,122,.10)}
 .feedback{
-  margin-top:16px;
-  padding:15px 17px;
-  border-radius:13px;
+  margin-top:18px;
+  padding:16px;
+  border-radius:15px;
   border:1px solid var(--border-soft);
-  background:rgba(255,255,255,.04);
-  color:var(--text2);
-  line-height:1.72;
-  display:none;
+  background:rgba(0,10,18,0.65);
 }
-
-.feedback.show{
-  display:block;
-}
-
-.feedback strong{
-  color:var(--accent);
-}
-
+.feedback .ok{color:var(--green);font-weight:800}
+.feedback .warn{color:var(--warning);font-weight:800}
+.feedback .bad{color:var(--danger);font-weight:800}
 .messer{
   margin-top:12px;
-  padding:13px 15px;
-  border-left:4px solid var(--accent2);
-  background:rgba(0,255,135,.08);
-  color:var(--green);
-  border-radius:10px;
-  line-height:1.7;
-}
-
-.nav-row{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-top:22px;
-}
-
-.drag-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-  margin-top:18px;
-}
-
-.drag-list,
-.drop-list{
-  display:grid;
-  gap:12px;
-}
-
-.drag-item{
-  border:1px solid var(--border);
-  background:rgba(0,234,255,.06);
-  color:var(--text);
-  padding:13px;
-  border-radius:12px;
-  cursor:grab;
-  line-height:1.55;
-}
-
-.drag-item:active{
-  cursor:grabbing;
-  opacity:.7;
-}
-
-.drop-zone{
-  min-height:78px;
-  border:1.5px dashed rgba(0,234,255,.28);
-  background:rgba(255,255,255,.025);
-  border-radius:13px;
-  padding:13px;
-  color:var(--text2);
-  line-height:1.55;
-}
-
-.drop-zone.over{
-  background:rgba(0,234,255,.08);
-  border-color:var(--accent);
-}
-
-.drop-zone.matched{
-  border-style:solid;
-  border-color:var(--green);
-  background:rgba(0,255,135,.08);
-}
-
-.drop-zone.wrong{
-  border-style:solid;
-  border-color:var(--danger);
-  background:rgba(255,92,122,.08);
-}
-
-.hint-box{
-  display:none;
-  margin-top:14px;
   padding:14px 16px;
-  border-left:4px solid var(--warning);
-  color:#ffe7a3;
-  background:rgba(251,191,36,.08);
+  background:rgba(0,255,135,0.08);
+  border-left:4px solid var(--accent2);
   border-radius:10px;
+  color:var(--green);
   line-height:1.7;
 }
-
-.hint-box.show{
-  display:block;
-}
-
-.visual-board{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin:16px 0;
-}
-
-.visual-card{
+.actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px;flex-wrap:wrap}
+.drag-layout{display:grid;grid-template-columns:1fr 1.25fr;gap:18px;margin-top:18px}
+.drag-list{display:grid;gap:12px}
+.drag-item,.drop-item{
   border:1px solid var(--border-soft);
-  background:rgba(255,255,255,.035);
-  border-radius:14px;
+  border-radius:15px;
   padding:14px;
-  min-height:100px;
+  background:rgba(255,255,255,.035);
+  min-height:58px;
 }
-
-.visual-card h4{
-  color:var(--accent);
-  margin-bottom:8px;
-}
-
-.visual-card p{
-  color:var(--text2);
-  line-height:1.55;
-  font-size:13px;
-}
-
-.result-score{
-  font-size:58px;
-  font-weight:900;
-  color:var(--accent);
-  text-shadow:0 0 28px rgba(0,234,255,.38);
-  margin:16px 0;
-}
-
-.small-note{
-  color:var(--text3);
-  font-size:13px;
-  line-height:1.6;
-}
-
-.struggle-list{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:16px;
-}
-
-.struggle-chip{
-  border:1px solid rgba(255,92,122,.35);
-  color:#ffb3c0;
-  background:rgba(255,92,122,.08);
-  padding:8px 12px;
-  border-radius:999px;
-  font-size:13px;
-}
-
-.boss-screen{
+.drag-item{cursor:grab;color:var(--accent);font-weight:800;user-select:none;touch-action:none}
+.drag-item.selected{border-color:var(--accent);box-shadow:0 0 18px rgba(0,234,255,.22)}
+.drop-item{cursor:pointer;color:var(--text2)}
+.drop-item strong{color:var(--text);display:block;margin-bottom:4px}
+.drop-item.filled{border-color:rgba(0,234,255,.36)}
+.drop-item.over{border-color:var(--accent);box-shadow:0 0 20px rgba(0,234,255,.28);background:rgba(0,234,255,.08)}
+.drop-item.good{border-color:rgba(125,255,191,.8);background:rgba(125,255,191,.08)}
+.drop-item.bad{border-color:rgba(255,92,122,.8);background:rgba(255,92,122,.08)}
+.boss{
   background:
-    radial-gradient(circle at 50% 10%,rgba(255,215,120,.18),transparent 30%),
-    radial-gradient(circle at 10% 80%,rgba(168,85,247,.18),transparent 28%),
-    linear-gradient(180deg,#020202,#090b10 55%,#050505);
-  border:1px solid rgba(255,215,120,.28);
-  border-radius:28px;
-  padding:30px;
-  box-shadow:
-    0 0 0 1px rgba(255,215,120,.08),
-    0 30px 90px rgba(0,0,0,.68),
-    0 0 45px rgba(255,215,120,.12);
+    radial-gradient(circle at 24% 10%,rgba(255,211,106,.18),transparent 28%),
+    radial-gradient(circle at 88% 78%,rgba(255,79,216,.10),transparent 30%),
+    linear-gradient(180deg,#020204,#08070b 55%,#010103);
+  border:1px solid rgba(255,211,106,.42);
+  box-shadow:0 0 60px rgba(255,211,106,.16),0 22px 90px rgba(0,0,0,.65);
 }
-
 .boss-title{
-  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  font-size:clamp(42px,8vw,86px);
-  line-height:.95;
-  text-align:center;
-  letter-spacing:3px;
-  background:linear-gradient(90deg,#8d8d8d,#ffffff,#ffd36b,#7a5a1a,#f8f8f8);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-  text-shadow:0 0 26px rgba(255,215,120,.20);
-  margin:18px 0 8px;
-}
-
-.boss-sub{
-  text-align:center;
-  color:#ffe6a3;
-  font-size:15px;
+  font-family:Georgia,serif;
   letter-spacing:2px;
-  margin-bottom:20px;
+  font-size:clamp(28px,5vw,46px);
+  color:var(--gold);
+  text-shadow:0 0 18px rgba(255,211,106,.55),0 0 35px rgba(255,79,216,.18);
+  margin-bottom:12px;
 }
-
-.boss-card{
-  border:1px solid rgba(255,215,120,.30);
-  background:linear-gradient(180deg,rgba(255,215,120,.08),rgba(255,255,255,.025));
-  border-radius:18px;
-  padding:20px;
-  margin-top:18px;
-}
-
-.boss-card .question{
-  color:#fff4cc;
-}
-
-.boss-card .option{
-  border-color:rgba(255,215,120,.18);
-}
-
-.boss-card .option:hover{
-  border-color:#ffd36b;
-  background:rgba(255,215,120,.08);
-}
-
-@media(max-width:850px){
-  .header{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-
-  .drag-grid,
-  .visual-board{
-    grid-template-columns:1fr;
-  }
-
-  .app{
-    padding:20px 16px 46px;
-  }
+.boss .kicker{color:var(--gold)}
+.boss .option{border-color:rgba(255,211,106,.25);background:rgba(255,211,106,.055)}
+.boss .option:hover:not(:disabled){border-color:rgba(255,211,106,.65);box-shadow:0 0 22px rgba(255,211,106,.20)}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.stat{padding:16px;border:1px solid var(--border-soft);background:rgba(255,255,255,.035);border-radius:16px}
+.stat strong{display:block;color:var(--accent);font-size:24px;margin-bottom:5px}
+.stat span{color:var(--text2);font-size:13px}
+.hidden{display:none}
+@media(max-width:820px){
+  .header{align-items:flex-start;flex-direction:column}
+  .grid3,.grid2,.drag-layout,.stat-row{grid-template-columns:1fr}
+  .app{padding:20px 16px 48px}
+  .panel{padding:18px}
 }
 </style>
 </head>
-
 <body>
 <div class="app">
-
-<header class="header">
-  <div>
-    <div class="kicker">SEC+ WEEK 2 · CHAPTER 1</div>
-    <div class="title">Recognition Training</div>
-    <div class="subtitle">
-      Phase A → B → C → D → Adaptive Mini C / Boss Level.
-      Score appears only at the end. Passing score: 80%.
+  <header class="header">
+    <div class="title-wrap">
+      <div class="kicker">SEC+ WEEK 2 · CHAPTER 1</div>
+      <div class="title">Phase 2 — Recognition Training</div>
+      <div class="subtitle">Adaptive exam training for Data Protection, DLP, data states, roles, regulations, and Security+ trap recognition.</div>
     </div>
-  </div>
-  <button class="btn" onclick="goBack()">← Back</button>
-</header>
-
-<section id="intro-screen" class="screen active">
-  <div class="panel">
-    <div class="phase-pill">PHASE 2 · START</div>
-    <div class="question">Before you begin</div>
-    <div class="scenario">
-      If you complete all scoring phases without mistakes, you will unlock:
-      <br><br>
-      <strong>⚠️ THE BOSS LEVEL ⚠️</strong>
-      <br><br>
-      Only for those who truly understand the concepts.
-    </div>
-    <div class="nav-row">
-      <button class="btn" onclick="goBack()">← Phase 1</button>
-      <button class="btn btn-primary" onclick="startPhaseA()">Start Training →</button>
-    </div>
-  </div>
-</section>
-
-<section id="quiz-screen" class="screen">
-  <div class="panel">
-    <div class="phase-pill" id="phase-pill">PHASE A</div>
-
-    <div class="progress-wrap">
-      <div class="progress-info">
-        <span id="progress-label">question_1</span>
-        <span id="score-label">score hidden until end</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
-    </div>
-
-    <div id="quiz-content"></div>
-
-    <div class="feedback" id="feedback"></div>
-
-    <div class="nav-row">
-      <button class="btn" id="hint-btn" onclick="showHint()" style="display:none">Hint</button>
-      <button class="btn btn-primary" id="next-btn" onclick="nextStep()" style="display:none">Next →</button>
-    </div>
-  </div>
-</section>
-
-<section id="drag-screen" class="screen">
-  <div class="panel">
-    <div class="phase-pill">PHASE B · DRAG & DROP</div>
-
-    <div class="progress-wrap">
-      <div class="progress-info">
-        <span id="drag-progress-label">set_1_of_4</span>
-        <span>match concepts with Messer Insights</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="drag-progress-fill"></div>
-      </div>
-    </div>
-
-    <div class="question">Match each concept with the correct Messer Insight.</div>
-
-    <div class="drag-grid">
-      <div>
-        <div class="kicker">DRAG</div>
-        <div class="drag-list" id="drag-items"></div>
-      </div>
-
-      <div>
-        <div class="kicker">DROP</div>
-        <div class="drop-list" id="drop-zones"></div>
-      </div>
-    </div>
-
-    <div class="feedback" id="drag-feedback"></div>
-
-    <div class="nav-row">
-      <button class="btn btn-primary" onclick="checkDrag()">Check Answers →</button>
-      <button class="btn btn-primary" id="drag-next-btn" onclick="nextDrag()" style="display:none">Next →</button>
-    </div>
-  </div>
-</section>
-
-<section id="mini-screen" class="screen">
-  <div class="panel">
-    <div class="phase-pill" id="mini-pill">ADAPTIVE MINI C</div>
-    <div id="mini-content"></div>
-    <div class="feedback" id="mini-feedback"></div>
-    <div class="nav-row">
-      <button class="btn btn-primary" id="mini-next-btn" onclick="nextMini()" style="display:none">Next →</button>
-    </div>
-  </div>
-</section>
-
-<section id="boss-screen" class="screen">
-  <div class="boss-screen">
-    <div class="boss-title">THE BOSS LEVEL</div>
-    <div class="boss-sub">NO PARTIAL CREDIT · EXTREME PRECISION</div>
-    <div id="boss-content"></div>
-    <div class="feedback" id="boss-feedback"></div>
-    <div class="nav-row">
-      <button class="btn btn-primary" id="boss-next-btn" onclick="nextBoss()" style="display:none">Next →</button>
-    </div>
-  </div>
-</section>
-
-<section id="result-screen" class="screen">
-  <div class="panel" style="text-align:center">
-    <div class="phase-pill">FINAL RESULT</div>
-    <div class="question" id="result-title"></div>
-    <div class="result-score" id="result-score"></div>
-    <div class="scenario" id="result-message"></div>
-    <div class="nav-row" style="justify-content:center">
-      <button class="btn btn-danger" id="retry-btn" onclick="retryAll()" style="display:none">Retry Training →</button>
-      <button class="btn btn-primary" id="continue-btn" onclick="finishTraining()" style="display:none">Continue →</button>
-    </div>
-  </div>
-</section>
+    <button class="btn" onclick="goBack()">← Back</button>
+  </header>
+  <main id="app"></main>
+</div>
 
 <script>
+const PASSING_SCORE = 80;
+
+let score = 0;
+let totalQuestions = 0;
+let totalErrors = 0;
+let errorMap = {};
+let mistakeLog = [];
+
+let phase = "intro";
+let currentIndex = 0;
+let currentOptions = [];
+let selectedOption = null;
+let selectedConceptId = null;
+let dragAnswers = {};
+let checkedDrag = false;
+let miniQuestions = [];
+let miniIndex = 0;
+let bossIndex = 0;
+let bossScore = 0;
+
+const app = document.getElementById("app");
+
+function goBack(){
+  window.location.href = "../week2.html";
+}
+
+function shuffle(array){
+  const arr = [...array];
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function escapeHTML(str){
+  return String(str).replace(/[&<>"']/g, s => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[s]));
+}
+
+function addError(category){
+  totalErrors++;
+  errorMap[category] = (errorMap[category] || 0) + 1;
+}
+
+function logMistake(entry){
+  mistakeLog.push({
+    phase: entry.phase,
+    question: entry.question,
+    selected: entry.selected,
+    correct: entry.correct,
+    category: entry.category,
+    trap: entry.trap,
+    correctReason: entry.correctReason,
+    messer: entry.messer
+  });
+}
+
+function getCorrectOption(options){
+  return options.find(o => o.value === 1);
+}
+
+function getPartialOption(options){
+  return options.find(o => o.value === 0.5);
+}
+
+function renderProgress(label,total,index){
+  const pct = Math.round((index / total) * 100);
+  return `
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span>${label}</span>
+        <span>${index}/${total}</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:${pct}%"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderIntro(){
+  phase = "intro";
+  app.innerHTML = `
+    <section class="panel">
+      <div class="kicker">PHASE 2 UNLOCKED</div>
+      <h2>Recognition Training</h2>
+      <p>This phase trains the real Security+ skill: identifying the hidden keyword, rejecting the trap, and choosing the most precise answer.</p>
+      <div class="grid3">
+        <div class="pill"><strong>Phase A</strong><span>Scenario-based recognition with partial-credit traps.</span></div>
+        <div class="pill"><strong>Phase B</strong><span>Mixed drag-and-drop matching by concept, not keyword repetition.</span></div>
+        <div class="pill"><strong>Phase C</strong><span>Forced trap reasoning until the real confusion is understood.</span></div>
+      </div>
+      <div class="grid3">
+        <div class="pill"><strong>Phase D</strong><span>Realistic Security+ scenarios with visual clues and hidden traps.</span></div>
+        <div class="pill"><strong>Adaptive Mini C</strong><span>If you miss anything, your mistakes become reinforcement training.</span></div>
+        <div class="pill"><strong>Boss Level</strong><span>Unlocked only with a flawless scoring run.</span></div>
+      </div>
+      <div class="messer">
+        <strong>Unlock Rule:</strong> If you complete all scoring phases without mistakes, you unlock ⚠️ THE BOSS LEVEL ⚠️.
+      </div>
+      <div class="actions">
+        <button class="btn primary" onclick="startPhaseA()">Start Recognition Training</button>
+      </div>
+    </section>
+  `;
+}
+
+/* ===================== DATA ===================== */
+
 const phaseA = [
   {
-    q:"A business manager decides that financial records are confidential. That role is:",
+    q:"A business executive decides that payroll records must be labeled Confidential and protected with encryption at rest and in transit. That role/control/state/concept is:",
+    category:"role_confusion",
+    messer:"Data Owner = business executive who determines classification and protection requirements. Data Custodian = IT implementation.",
+    whyCorrect:"The key phrase is decides that payroll records must be labeled. Classification authority belongs to the Data Owner.",
+    partialWhy:"A Data Controller can decide why and how personal data is processed, but this scenario is about internal classification and protection requirements.",
     options:[
-      {t:"Data Owner, because the business side defines classification and protection requirements.",v:1},
-      {t:"Data Owner, because the owner manages all technical controls directly.",v:.5},
-      {t:"Data Custodian, because IT stores the data.",v:0},
-      {t:"Data Processor, because financial records are processed.",v:0}
+      {text:"Data Owner, because the business side defines the classification and required protection level.",value:1,category:"role_confusion"},
+      {text:"Data Controller, because payroll information includes personal data and processing decisions.",value:0.5,category:"privacy_role_confusion"},
+      {text:"Data Custodian, because encryption and storage controls are part of the scenario.",value:0,category:"role_confusion"},
+      {text:"Data Steward, because labeling and records quality are mentioned indirectly.",value:0,category:"role_confusion"}
     ],
-    correct:"Data Owner defines classification and policy.",
-    partial:"The role is Data Owner, but managing technical controls directly is the custodian side.",
-    trap:"Custodian implements. Processor processes on behalf. Neither defines classification here.",
-    insight:"Owner decides. Custodian implements.",
-    error:"role_confusion"
+    traps:"Custodian implements controls but does not decide classification. Steward focuses on data quality and metadata, not ultimate classification authority."
   },
   {
-    q:"A company protects customer records stored in a backup repository. The data state is:",
+    q:"An external payroll provider calculates employee payments only under the instructions of the HR department. That role/control/state/concept is:",
+    category:"privacy_role_confusion",
+    messer:"Controller decides why and how personal data is processed. Processor performs processing on behalf of the controller.",
+    whyCorrect:"The provider performs processing under another party's instructions, which is the Processor role.",
+    partialWhy:"A Data Custodian can manage storage or technical controls, but the keyword is processing on behalf of HR.",
     options:[
-      {t:"Data at Rest, because the records are stored in backup storage.",v:1},
-      {t:"Data at Rest, because all protected data is automatically at rest.",v:.5},
-      {t:"Data in Transit, because backups move across the network sometimes.",v:0},
-      {t:"Data in Use, because the business uses customer records.",v:0}
+      {text:"Data Processor, because it performs payroll processing under the controller's direction.",value:1,category:"privacy_role_confusion"},
+      {text:"Data Custodian, because it may operate systems where employee records are stored.",value:0.5,category:"role_confusion"},
+      {text:"Data Controller, because it handles personal employee information during payroll.",value:0,category:"privacy_role_confusion"},
+      {text:"Data Owner, because payroll records have business value and confidentiality needs.",value:0,category:"role_confusion"}
     ],
-    correct:"Stored backup data is Data at Rest.",
-    partial:"The answer is right, but the reason is too broad. Not all protected data is at rest.",
-    trap:"Network movement is transit. Processing in memory is use.",
-    insight:"At rest usually points to storage encryption, access permissions, and backup protection.",
-    error:"data_state_confusion"
+    traps:"Controller decides purpose and means. Owner classifies and owns accountability. The provider is executing instructions."
   },
   {
-    q:"A web browser sends payment data to a web server. The best protection is:",
+    q:"A stolen laptop is powered off, and the company wants to protect all files stored on the internal drive. That role/control/state/concept is:",
+    category:"data_state_confusion",
+    messer:"Full Disk Encryption protects data at rest, especially when a device is powered off or the drive is removed.",
+    whyCorrect:"The keywords are powered off and internal drive. This is stored data protected by FDE.",
+    partialWhy:"File-level encryption can protect selected files, but the scenario says all files on the internal drive.",
     options:[
-      {t:"TLS/HTTPS, because the data is moving across a network.",v:1},
-      {t:"Encryption, because encryption protects sensitive data in general.",v:.5},
-      {t:"Full disk encryption, because payment data must be stored safely.",v:0},
-      {t:"Masking, because users should not see full card numbers.",v:0}
+      {text:"Full Disk Encryption for data at rest on the device.",value:1,category:"data_state_confusion"},
+      {text:"File-level encryption for selected sensitive files on the device.",value:0.5,category:"control_mismatch"},
+      {text:"TLS for data moving between the laptop and a server.",value:0,category:"control_mismatch"},
+      {text:"Endpoint DLP for blocking copied files while the user is active.",value:0,category:"dlp_confusion"}
     ],
-    correct:"TLS/HTTPS protects data in transit.",
-    partial:"Encryption is generally related, but the precise control for transit is TLS/HTTPS.",
-    trap:"FDE protects data at rest. Masking hides display values.",
-    insight:"In transit means protect the channel, not the disk.",
-    error:"control_mismatch"
+    traps:"TLS protects transit. Endpoint DLP controls active movement, not powered-off stored drive protection."
   },
   {
-    q:"A hospital stores patient diagnosis records. The data type is:",
+    q:"A web application sends customer payment details from a browser to an API endpoint over the network. That role/control/state/concept is:",
+    category:"data_state_confusion",
+    messer:"Data in transit is actively moving over a network and is commonly protected with TLS, HTTPS, VPN, or IPSec.",
+    whyCorrect:"The hidden keyword is sends over the network. This is data in transit.",
+    partialWhy:"Data in use may also occur in the browser or API during processing, but the question focuses on network movement.",
     options:[
-      {t:"PHI, because the information is health-related and linked to a patient.",v:1},
-      {t:"PII, because it identifies a person.",v:.5},
-      {t:"PCI DSS data, because hospitals process payments.",v:0},
-      {t:"Trade secret, because medical records are confidential.",v:0}
+      {text:"Data in Transit, protected with TLS or HTTPS for the communication channel.",value:1,category:"data_state_confusion"},
+      {text:"Data in Use, because the browser and API may process the values.",value:0.5,category:"data_state_confusion"},
+      {text:"Data at Rest, because payment information may later be stored in a database.",value:0,category:"data_state_confusion"},
+      {text:"Storage DLP, because payment data can exist on servers.",value:0,category:"dlp_confusion"}
     ],
-    correct:"Patient diagnosis records are PHI.",
-    partial:"PHI is also PII, but PHI is the more precise answer.",
-    trap:"PCI DSS maps to payment cards. Trade secrets are proprietary business secrets.",
-    insight:"PHI is a type of PII, but not all PII is PHI.",
-    error:"data_type_confusion"
+    traps:"Storage DLP and data at rest are plausible later, but the question is about active movement across the network."
   },
   {
-    q:"A payment card number is replaced with a random value that has no mathematical relationship to the original. This is:",
+    q:"Attackers steal card data from a point-of-sale system's RAM even though disk encryption and TLS are already deployed. That role/control/state/concept is:",
+    category:"data_state_confusion",
+    messer:"Target-style PoS RAM scraping is a data in use attack. Data must be readable in memory while being processed.",
+    whyCorrect:"The keyword is RAM. Data being processed in memory is data in use.",
+    partialWhy:"Endpoint controls are relevant mitigation, but the question asks what state/concept the attack represents.",
     options:[
-      {t:"Tokenization, because the original value is replaced with a non-related token.",v:1},
-      {t:"Encryption, because sensitive data is protected.",v:.5},
-      {t:"Hashing, because the original cannot be read directly.",v:0},
-      {t:"Masking, because the value is hidden from users.",v:0}
+      {text:"Data in Use attack, because decrypted values were accessed from memory during processing.",value:1,category:"data_state_confusion"},
+      {text:"Endpoint security gap, because process monitoring could reduce this type of exposure.",value:0.5,category:"control_mismatch"},
+      {text:"Data in Transit failure, because TLS failed to encrypt the payment channel.",value:0,category:"data_state_confusion"},
+      {text:"Data at Rest failure, because disk encryption did not protect the stored database.",value:0,category:"data_state_confusion"}
     ],
-    correct:"Tokenization replaces data with a token.",
-    partial:"Encryption also protects data, but it mathematically transforms and can be reversed with a key.",
-    trap:"Hashing is one-way integrity/matching. Masking is display hiding.",
-    insight:"Encryption transforms. Tokenization replaces.",
-    error:"technique_confusion"
+    traps:"TLS and disk encryption can both be correctly deployed while RAM remains the exposed state."
   },
   {
-    q:"A cloud payroll provider processes employee data based on another company’s instructions. The provider is:",
+    q:"A payment system replaces a card number with a meaningless substitute stored in a vault mapping system. That role/control/state/concept is:",
+    category:"technique_confusion",
+    messer:"Tokenization replaces sensitive data with a value that has no mathematical relationship to the original. Encryption mathematically transforms data.",
+    whyCorrect:"The keywords are meaningless substitute and vault mapping. That is tokenization.",
+    partialWhy:"Encryption can protect payment data, but it uses cryptographic transformation and keys, not a vault mapping substitute.",
     options:[
-      {t:"Data Processor, because it processes data on behalf of the controller.",v:1},
-      {t:"Data Controller, because it handles personal data.",v:.5},
-      {t:"Data Owner, because it stores payroll information.",v:0},
-      {t:"Data Steward, because payroll data must be accurate.",v:0}
+      {text:"Tokenization, because the substitute has no mathematical relationship to the original value.",value:1,category:"technique_confusion"},
+      {text:"Encryption, because the card number is protected from direct exposure.",value:0.5,category:"technique_confusion"},
+      {text:"Hashing, because the original value is replaced by a derived output.",value:0,category:"technique_confusion"},
+      {text:"Masking, because the card number is hidden from normal users.",value:0,category:"technique_confusion"}
     ],
-    correct:"The provider is the Data Processor.",
-    partial:"It handles personal data, but it does not define the purpose and means.",
-    trap:"Owner decides classification. Steward supports data quality.",
-    insight:"Processor acts for the controller. Controller defines purpose.",
-    error:"privacy_role_confusion"
+    traps:"Hashing is one-way verification. Masking changes display. The vault mapping is the giveaway."
   },
   {
-    q:"An outbound email containing SSNs is blocked by policy. This control is:",
+    q:"A hospital record contains a patient's diagnosis, insurance number, and treatment details. That role/control/state/concept is:",
+    category:"regulation_confusion",
+    messer:"PHI is health-related PII. HIPAA points to PHI. All PHI is PII, but not all PII is PHI.",
+    whyCorrect:"Diagnosis and treatment details linked to a person are protected health information.",
+    partialWhy:"PII is valid because the data identifies a person, but PHI is more precise due to the health context.",
     options:[
-      {t:"DLP, because it detects and blocks sensitive data leaving an approved channel.",v:1},
-      {t:"Firewall, because it blocked outbound traffic.",v:.5},
-      {t:"FDE, because SSNs must be encrypted.",v:0},
-      {t:"Geofencing, because the email left the organization.",v:0}
+      {text:"PHI, because the data links a person to health status, treatment, and healthcare information.",value:1,category:"regulation_confusion"},
+      {text:"PII, because the record contains information that can identify a specific person.",value:0.5,category:"regulation_confusion"},
+      {text:"PCI DSS data, because insurance and payment processing may be involved.",value:0,category:"regulation_confusion"},
+      {text:"Trade secret, because hospital records are confidential to the organization.",value:0,category:"regulation_confusion"}
     ],
-    correct:"This is DLP.",
-    partial:"A firewall blocks traffic, but DLP blocks based on sensitive data content and policy.",
-    trap:"FDE protects stored data. Geofencing restricts based on location.",
-    insight:"DLP follows the data. Firewall follows traffic rules.",
-    error:"dlp_confusion"
+    traps:"PCI DSS is for cardholder data. Confidentiality does not make something a trade secret."
   },
   {
-    q:"A company stores EU resident personal data on servers outside Europe. Which concept matters most?",
+    q:"An outbound email is blocked because it contains hidden columns with thousands of employee SSNs. That role/control/state/concept is:",
+    category:"dlp_confusion",
+    messer:"DLP inspects content and can block sensitive data leaving approved channels. A firewall controls connections, not sensitive content.",
+    whyCorrect:"The keywords are blocked email and hidden columns with SSNs. This is content-aware DLP.",
+    partialWhy:"Email security may scan outbound messages, but the exam concept here is sensitive data loss prevention.",
     options:[
-      {t:"GDPR/Data sovereignty, because EU personal data and storage location can create legal obligations.",v:1},
-      {t:"Data sovereignty only, because only server location matters.",v:.5},
-      {t:"PCI DSS, because personal data includes payment information.",v:0},
-      {t:"Obfuscation, because the data must be hard to read.",v:0}
+      {text:"Network or email DLP, because sensitive content is detected before leaving the organization.",value:1,category:"dlp_confusion"},
+      {text:"Email security filtering, because the message is being inspected before delivery.",value:0.5,category:"control_mismatch"},
+      {text:"Firewall rule enforcement, because outbound traffic was blocked.",value:0,category:"dlp_confusion"},
+      {text:"Storage DLP, because the spreadsheet contains stored employee information.",value:0,category:"dlp_confusion"}
     ],
-    correct:"GDPR and sovereignty concerns both matter.",
-    partial:"Server location matters, but EU personal data can also trigger GDPR obligations.",
-    trap:"PCI DSS is payment card scope. Obfuscation is not a regulatory answer.",
-    insight:"GDPR can follow the data subject, not just the business address.",
-    error:"regulation_confusion"
+    traps:"A firewall may block traffic, but DLP blocks based on sensitive content. Storage DLP scans stored repositories, not outbound email flow."
   }
 ];
 
-const phaseB = [
+const dragSets = [
   [
-    ["Data at Rest","At rest usually points to storage encryption, access permissions, and backup protection."],
-    ["PHI","PHI is health-related PII."],
-    ["DLP","DLP follows the data. Firewall follows traffic rules."],
-    ["Data Steward","Steward supports governance and quality."]
+    {id:"steward",concept:"Data Steward",definition:"Maintains quality, labeling consistency, and metadata accuracy across records.",messer:"Steward = quality and metadata. Custodian = technical storage and controls."},
+    {id:"phi",concept:"PHI",definition:"Health-related personal information connected to care, diagnosis, treatment, or insurance.",messer:"Health context makes it PHI, which is also a form of PII."},
+    {id:"rest",concept:"Data at Rest",definition:"Stored information located on drives, databases, backups, archives, or file servers.",messer:"Stored data requires storage-focused protection such as encryption and access controls."},
+    {id:"networkdlp",concept:"Network DLP",definition:"Inspects outbound traffic to stop sensitive content from leaving approved channels.",messer:"Network DLP works at the perimeter and focuses on data movement out of the organization."}
   ],
   [
-    ["Tokenization","Encryption transforms. Tokenization replaces."],
-    ["Hashing","Hashing verifies integrity or matches values. It does not decrypt."],
-    ["Data Controller","Controller decides why and how personal data is processed."],
-    ["Data in Use","In use is the most difficult state because the system must actually access the data."]
+    {id:"token",concept:"Tokenization",definition:"Replaces a sensitive value with a substitute that only a separate vault can map back.",messer:"The substitute has no mathematical relationship to the original."},
+    {id:"hash",concept:"Hashing",definition:"Creates a one-way digest used for verification, integrity checks, or password comparison.",messer:"One-way means there is no decryption back to the original input."},
+    {id:"custodian",concept:"Data Custodian",definition:"Implements storage security, backups, permissions, and technical protection controls.",messer:"Custodian does the technical work. Owner decides classification and requirements."},
+    {id:"geo",concept:"Geofencing",definition:"Uses a virtual location boundary to restrict access based on where a device appears to be.",messer:"Useful support control, but not perfect assurance because location signals can be spoofed."}
   ],
   [
-    ["GDPR","GDPR can follow the data subject, not just the business address."],
-    ["FDE","FDE protects stored data, not every active runtime exposure."],
-    ["Masking","Masking protects presentation, not necessarily storage."],
-    ["Data Custodian","Custodian implements. Owner decides."]
+    {id:"endpointdlp",concept:"Endpoint DLP",definition:"Controls local actions such as copying files to USB, printing, or sending data from a device.",messer:"Endpoint DLP focuses on device-level data in use and local transfer attempts."},
+    {id:"controller",concept:"Data Controller",definition:"Determines the purpose and means for handling personal information under privacy rules.",messer:"Controller decides why and how processing happens and remains accountable."},
+    {id:"masking",concept:"Masking",definition:"Hides part of a visible value while the original may still exist behind the display.",messer:"Presentation hiding is not the same as destroying or encrypting the source."},
+    {id:"sovereignty",concept:"Data Sovereignty",definition:"Makes stored information subject to the laws of the country where it physically resides.",messer:"Legal jurisdiction follows the data location, not just headquarters."}
   ],
   [
-    ["Data Sovereignty","Cloud storage still has legal geography."],
-    ["Obfuscation","Obfuscation is hiding, not robust cryptographic protection."],
-    ["PCI DSS","Payment card data points to PCI DSS, not HIPAA."],
-    ["Processor","Processor acts for the controller."]
+    {id:"storagedlp",concept:"Storage DLP",definition:"Scans repositories, servers, and databases to find sensitive files kept in unsafe locations.",messer:"Storage DLP maps to data at rest."},
+    {id:"processor",concept:"Data Processor",definition:"Performs handling tasks for another party and follows that party's instructions.",messer:"Processor acts on behalf of the controller."},
+    {id:"segmentation",concept:"Segmentation",definition:"Separates systems into controlled zones to reduce lateral movement after compromise.",messer:"Segmentation reduces blast radius."},
+    {id:"obfuscation",concept:"Obfuscation",definition:"Makes information or logic harder to understand without being a strong primary defense.",messer:"It can supplement controls, but CompTIA treats it as weaker than real protection."}
   ]
 ];
 
 const phaseC = [
   {
-    q:"Why do people think FDE protects all situations?",
+    q:"Why do people think Full Disk Encryption protects a running, unlocked system?",
+    correct:"Because the word full sounds like complete protection, even though the drive is already accessible after authentication.",
+    truth:"FDE protects stored data when the device is powered off or the drive is removed. Once unlocked, additional endpoint and access controls matter.",
+    messer:"FDE protects data at rest, not every active runtime exposure.",
     options:[
-      "Because FDE sounds like complete disk protection, so people assume it also protects active systems.",
-      "Because FDE protects network sessions and APIs.",
-      "Because FDE is the same as TLS.",
-      "Because FDE removes the need for access control."
-    ],
-    correct:0,
-    feedback:"People think this because FDE sounds like it protects everything. In reality, FDE protects data at rest, especially when the device is powered off or the disk is removed.",
-    insight:"FDE protects stored data, not every active runtime exposure.",
-    error:"data_state_confusion"
+      {text:"Because the word full sounds like complete protection, even though the drive is accessible after authentication.",value:1},
+      {text:"Because FDE is designed primarily to inspect outbound data transfers from active applications.",value:0},
+      {text:"Because FDE converts RAM contents into irreversible one-way digests during processing.",value:0},
+      {text:"Because FDE automatically prevents all users from opening files after login.",value:0}
+    ]
   },
   {
-    q:"Why do people think HTTPS protects all data?",
+    q:"Why do people think hashing can recover original data?",
+    correct:"Because hashing transforms data into another value, so students confuse it with reversible encryption.",
+    truth:"Hashing is one-way. It is used for verification, integrity, and password comparison, not recovery.",
+    messer:"Hashing verifies or compares values. It does not decrypt.",
     options:[
-      "Because HTTPS sounds like full protection for any data situation.",
-      "Because HTTPS encrypts hard drives.",
-      "Because HTTPS replaces DLP.",
-      "Because HTTPS is used only for databases."
-    ],
-    correct:0,
-    feedback:"HTTPS feels universal because people see encryption. In reality, HTTPS protects data in transit, not data at rest or in use.",
-    insight:"Always match the control to the data state.",
-    error:"control_mismatch"
+      {text:"Because hashing transforms data into another value, so students confuse it with reversible encryption.",value:1},
+      {text:"Because hashes store the original plaintext inside a protected vault for later lookup.",value:0},
+      {text:"Because hashing is mainly a TLS method used to protect network sessions.",value:0},
+      {text:"Because all cryptographic outputs are designed to be reversed with the same key.",value:0}
+    ]
   },
   {
     q:"Why do people think tokenization is the same as encryption?",
+    correct:"Because both protect sensitive values, but only encryption is mathematically derived from the original.",
+    truth:"Tokenization replaces data with a substitute stored through a vault mapping. Encryption transforms data using algorithms and keys.",
+    messer:"Tokenization replaces. Encryption transforms.",
     options:[
-      "Because both protect sensitive data, so they feel similar in purpose.",
-      "Because tokenization always uses the same key structure as encryption.",
-      "Because encryption cannot be reversed.",
-      "Because tokenization only works for data in transit."
-    ],
-    correct:0,
-    feedback:"Both protect sensitive data, but the mechanism is different. Encryption transforms data mathematically. Tokenization replaces data.",
-    insight:"Encryption transforms. Tokenization replaces.",
-    error:"technique_confusion"
+      {text:"Because both protect sensitive values, but only encryption is mathematically derived from the original.",value:1},
+      {text:"Because tokens are created by decrypting ciphertext into a shorter visible format.",value:0},
+      {text:"Because token vaults work by hashing every card number into a password digest.",value:0},
+      {text:"Because masking and vault mapping are always required before any encryption can work.",value:0}
+    ]
   },
   {
-    q:"Why do people think IT is the data owner?",
+    q:"Why do people think IT is the Data Owner?",
+    correct:"Because IT manages the systems, so students mistake technical custody for business accountability.",
+    truth:"The Data Owner is usually a business executive. IT is typically the Data Custodian that implements controls.",
+    messer:"Owner decides. Custodian implements.",
     options:[
-      "Because IT manages systems and storage, so technical control looks like ownership.",
-      "Because IT creates all business data.",
-      "Because data owners only exist in cloud environments.",
-      "Because custodians define classification levels."
-    ],
-    correct:0,
-    feedback:"IT often manages the systems, but ownership is about decision-making and classification authority.",
-    insight:"Owner decides. Custodian implements.",
-    error:"role_confusion"
+      {text:"Because IT manages the systems, so students mistake technical custody for business accountability.",value:1},
+      {text:"Because IT always defines the legal purpose for collecting employee personal data.",value:0},
+      {text:"Because metadata quality belongs exclusively to system administrators.",value:0},
+      {text:"Because encryption keys automatically transfer classification authority to the help desk.",value:0}
+    ]
   },
   {
-    q:"Why do people think GDPR only applies in Europe?",
+    q:"Why do people think DLP prevents all data leakage?",
+    correct:"Because blocking digital transfers feels absolute, even though non-digital disclosure paths still exist.",
+    truth:"DLP reduces digital data loss risk. It cannot stop someone photographing, speaking, or writing down information.",
+    messer:"DLP prevents unauthorized digital movement; it does not eliminate every disclosure method.",
     options:[
-      "Because GDPR is a European law, so people assume only company location matters.",
-      "Because GDPR applies only to European servers.",
-      "Because GDPR applies only to banks.",
-      "Because GDPR replaces PCI DSS."
-    ],
-    correct:0,
-    feedback:"People associate GDPR with Europe as a place. In reality, GDPR can apply to EU resident data even when the company is elsewhere.",
-    insight:"GDPR can follow the data subject, not just the business address.",
-    error:"regulation_confusion"
+      {text:"Because blocking digital transfers feels absolute, even though non-digital disclosure paths still exist.",value:1},
+      {text:"Because DLP replaces encryption, firewalls, access control, and endpoint monitoring.",value:0},
+      {text:"Because DLP permanently destroys sensitive data after every alert.",value:0},
+      {text:"Because DLP is only used for physical security and paper document disposal.",value:0}
+    ]
   },
   {
-    q:"Why do people think DLP is the same as a firewall?",
+    q:"Why do people think GDPR applies only to companies physically located in Europe?",
+    correct:"Because they focus on company headquarters instead of the personal data and the data subject context.",
+    truth:"GDPR can apply to organizations outside Europe when they process personal data connected to people in the EU context.",
+    messer:"GDPR is not limited to a business address inside Europe.",
     options:[
-      "Because both may block something leaving the network, but DLP blocks based on sensitive data policy.",
-      "Because DLP only filters IP addresses.",
-      "Because firewalls scan PHI inside documents by default.",
-      "Because DLP is always a hardware appliance."
-    ],
-    correct:0,
-    feedback:"Both can block outbound activity, but DLP focuses on sensitive data and policy violations, not just traffic rules.",
-    insight:"DLP follows the data. Firewall follows traffic rules.",
+      {text:"Because they focus on company headquarters instead of the personal data and the data subject context.",value:1},
+      {text:"Because GDPR is a payment-card security standard for merchants in the EU only.",value:0},
+      {text:"Because GDPR applies only when data is hashed rather than encrypted.",value:0},
+      {text:"Because privacy officers remove all cross-border processing obligations.",value:0}
+    ]
   }
 ];
+
 const phaseD = [
   {
-    scenario:"A company uses FDE on employee laptops and assumes all sensitive data is protected, even while users are actively working and applications are running.",
-    visuals:[
-      ["Laptop","FDE enabled"],
-      ["User session","Active work"],
-      ["Memory","Processing data"]
+    q:"A company stores EU customer profiles in a cloud backup region outside Europe. Access uses HTTPS, and disks are encrypted with FDE. What is the most precise interpretation?",
+    category:"regulation_confusion",
+    visual:[
+      ["Cloud Backup","Customer profiles stored outside Europe"],
+      ["Disk","FDE protects stored media"],
+      ["Browser","HTTPS protects movement"],
+      ["Jurisdiction","Storage location still matters"]
     ],
-    q:"Which statement BEST describes the issue?",
+    hint:"Sovereignty follows where data physically sits. HTTPS and FDE do not remove legal residency concerns.",
+    messer:"Data sovereignty is a complex mesh of technology and legalities. Cloud storage still has geography.",
+    whyCorrect:"The hidden keyword is cloud backup region outside Europe. Encryption controls do not erase GDPR or sovereignty obligations.",
+    partialWhy:"FDE and HTTPS are good controls, but this answer misses the legal issue created by physical storage location.",
+    traps:"HTTPS protects transit only. FDE protects stored media but does not solve data residency requirements.",
     options:[
-      {t:"FDE protects data at rest, but not data in use during active sessions.",v:1},
-      {t:"FDE protects data, but stronger encryption should be used.",v:.5},
-      {t:"FDE protects network communication only.",v:0},
-      {t:"FDE replaces the need for access control.",v:0}
-    ],
-    insight:"FDE protects stored data, not every active runtime exposure.",
-    error:"data_state_confusion"
+      {text:"The company still has privacy and sovereignty obligations because physical storage location can affect applicable law.",value:1,category:"regulation_confusion"},
+      {text:"The company has strong technical controls because HTTPS protects movement and FDE protects stored media.",value:0.5,category:"control_mismatch"},
+      {text:"HTTPS ensures full compliance because the data is encrypted while users access the cloud service.",value:0,category:"control_mismatch"},
+      {text:"Cloud storage removes sovereignty concerns because the provider controls infrastructure location.",value:0,category:"regulation_confusion"}
+    ]
   },
   {
-    scenario:"A web application sends customer payment data over HTTPS, and the company assumes the stored database is also protected automatically.",
-    visuals:[
-      ["Browser","HTTPS session"],
-      ["Server","Web application"],
-      ["Database","Stored records"]
+    q:"A finance portal uses TLS for browser sessions. After login, exported reports are saved unencrypted on a file server. Which answer best matches the protection gap?",
+    category:"data_state_confusion",
+    visual:[
+      ["Browser","TLS session active"],
+      ["API","Report generated"],
+      ["File Server","Export saved after session"],
+      ["Control Gap","Stored report lacks protection"]
     ],
-    q:"What is the BEST interpretation?",
+    hint:"TLS protects movement. A saved report becomes stored data.",
+    messer:"Match the protection to the data state. In transit controls do not automatically protect storage.",
+    whyCorrect:"The exported report is now stored on a file server, so the gap is data at rest protection.",
+    partialWhy:"TLS was relevant during the browser session, but the question asks about the saved report after export.",
+    traps:"Processing in the portal and transmission may occur, but the exposed gap is the unencrypted stored file.",
     options:[
-      {t:"HTTPS protects data in transit, but stored data still needs protection.",v:1},
-      {t:"HTTPS protects data, but only partially.",v:.5},
-      {t:"HTTPS encrypts the database automatically.",v:0},
-      {t:"HTTPS replaces encryption at rest.",v:0}
-    ],
-    insight:"In transit means protect the channel, not the disk.",
-    error:"control_mismatch"
+      {text:"Data at Rest protection is missing because the exported reports are stored unencrypted on the file server.",value:1,category:"data_state_confusion"},
+      {text:"Data in Transit protection is already present because TLS protects the browser session.",value:0.5,category:"data_state_confusion"},
+      {text:"Data in Use protection is the primary issue because the portal generated reports in application memory.",value:0,category:"data_state_confusion"},
+      {text:"Network DLP is sufficient because reports moved through a protected TLS channel.",value:0,category:"dlp_confusion"}
+    ]
   },
   {
-    scenario:"A company replaces credit card numbers with random tokens and calls this encryption.",
-    visuals:[
-      ["Payment data","Original"],
-      ["Token","Random value"],
-      ["System","Processing"]
+    q:"An employee tries to send a spreadsheet with hidden SSN columns to a personal email account. The system blocks the message after inspecting the attachment content. Which answer is best?",
+    category:"dlp_confusion",
+    visual:[
+      ["Email","Outbound personal account"],
+      ["Attachment","Hidden sensitive columns"],
+      ["Policy Engine","Content inspection"],
+      ["Action","Block and alert"]
     ],
-    q:"Which option is MOST accurate?",
+    hint:"The decision is based on sensitive content, not just connection rules.",
+    messer:"DLP follows the data. Firewalls follow traffic rules.",
+    whyCorrect:"The system inspected attachment content and blocked sensitive data movement, which is DLP.",
+    partialWhy:"Email security is related, but the precise Security+ concept is DLP content inspection and policy enforcement.",
+    traps:"A firewall does not normally inspect spreadsheet columns for SSNs. Storage DLP would scan repositories, not primarily outbound email.",
     options:[
-      {t:"This is tokenization, because the original value is replaced without a mathematical relationship.",v:1},
-      {t:"This is encryption, because the data is protected.",v:.5},
-      {t:"This is hashing, because the value cannot be read directly.",v:0},
-      {t:"This is masking, because users cannot see the real number.",v:0}
-    ],
-    insight:"Encryption transforms. Tokenization replaces.",
-    error:"technique_confusion"
+      {text:"Email or Network DLP, because the attachment content triggered a sensitive-data policy block.",value:1,category:"dlp_confusion"},
+      {text:"Email security control, because the message was inspected before leaving the organization.",value:0.5,category:"control_mismatch"},
+      {text:"Firewall filtering, because the outbound connection to a personal account was blocked.",value:0,category:"dlp_confusion"},
+      {text:"Storage DLP, because the spreadsheet was a stored file before the user attached it.",value:0,category:"dlp_confusion"}
+    ]
   }
 ];
+
+const miniBank = {
+  data_state_confusion:{
+    q:"Why do people confuse data in transit with data in use?",
+    correct:"Because both feel active, but movement across a network is different from processing in memory.",
+    truth:"Transit is movement through a channel. Use is active processing in RAM, CPU, or application memory.",
+    messer:"Channel protection does not equal memory protection.",
+    options:[
+      {text:"Because both feel active, but movement across a network is different from processing in memory.",value:1},
+      {text:"Because TLS encrypts RAM after the browser session begins.",value:0},
+      {text:"Because stored backups are always considered active processing.",value:0},
+      {text:"Because FDE protects all three data states at the same time.",value:0}
+    ]
+  },
+  role_confusion:{
+    q:"Why do people confuse the Data Owner with the Data Custodian?",
+    correct:"Because the custodian manages technical systems, but the owner has business accountability and classification authority.",
+    truth:"Owner decides what the data is and how sensitive it is. Custodian implements how it is protected.",
+    messer:"Owner decides. Custodian implements.",
+    options:[
+      {text:"Because the custodian manages technical systems, but the owner has business accountability and classification authority.",value:1},
+      {text:"Because custodians legally decide why personal data is processed under GDPR.",value:0},
+      {text:"Because owners mainly configure backups, permissions, and storage platforms.",value:0},
+      {text:"Because stewards and owners are always the same technical administrator.",value:0}
+    ]
+  },
+  privacy_role_confusion:{
+    q:"Why do people confuse Data Controller and Data Processor?",
+    correct:"Because both handle personal data, but only one decides purpose and means while the other follows instructions.",
+    truth:"Controller decides why and how processing happens. Processor performs tasks on behalf of the controller.",
+    messer:"Processor follows instructions. Controller defines purpose.",
+    options:[
+      {text:"Because both handle personal data, but only one decides purpose and means while the other follows instructions.",value:1},
+      {text:"Because processors are always the senior executives who classify internal records.",value:0},
+      {text:"Because controllers only manage encrypted disks and file permissions.",value:0},
+      {text:"Because privacy roles apply only to non-human-readable data.",value:0}
+    ]
+  },
+  technique_confusion:{
+    q:"Why do people confuse tokenization, masking, hashing, and encryption?",
+    correct:"Because all can protect or transform data, but each uses a different mechanism and exam trigger.",
+    truth:"Encryption is reversible with a key. Hashing is one-way. Tokenization uses a vault mapping. Masking hides display.",
+    messer:"Identify the mechanism, not just the goal.",
+    options:[
+      {text:"Because all can protect or transform data, but each uses a different mechanism and exam trigger.",value:1},
+      {text:"Because all four use the same reversible key process.",value:0},
+      {text:"Because masking is the strongest primary cryptographic defense.",value:0},
+      {text:"Because hashing stores the original value inside a hidden vault.",value:0}
+    ]
+  },
+  regulation_confusion:{
+    q:"Why do people choose the wrong regulation for PII, PHI, and cardholder data?",
+    correct:"Because they react to the word sensitive instead of matching the data type to the regulatory trigger.",
+    truth:"Health data points to PHI/HIPAA. Payment cards point to PCI DSS. EU personal data points to GDPR.",
+    messer:"Match the regulation to the data type.",
+    options:[
+      {text:"Because they react to the word sensitive instead of matching the data type to the regulatory trigger.",value:1},
+      {text:"Because all personal data is automatically PCI DSS scope.",value:0},
+      {text:"Because PHI is never considered personally identifiable information.",value:0},
+      {text:"Because GDPR applies only to encrypted databases.",value:0}
+    ]
+  },
+  dlp_confusion:{
+    q:"Why do people confuse DLP with a firewall?",
+    correct:"Because both may block traffic, but DLP blocks based on sensitive content and policy context.",
+    truth:"A firewall controls network connections. DLP monitors and controls sensitive data movement.",
+    messer:"DLP follows the data. Firewall follows traffic rules.",
+    options:[
+      {text:"Because both may block traffic, but DLP blocks based on sensitive content and policy context.",value:1},
+      {text:"Because firewalls inspect hidden spreadsheet columns for SSN patterns by default.",value:0},
+      {text:"Because DLP replaces every network filtering function in an enterprise.",value:0},
+      {text:"Because DLP only works when there is no sensitive content involved.",value:0}
+    ]
+  },
+  control_mismatch:{
+    q:"Why do people choose the wrong protection control in data protection scenarios?",
+    correct:"Because they identify a valid security tool but fail to match it to the exact data state or risk.",
+    truth:"The exam expects the control that fits the scenario keyword: stored, moving, processing, copied, or leaving.",
+    messer:"Match the protection to the data state and the threat path.",
+    options:[
+      {text:"Because they identify a valid security tool but fail to match it to the exact data state or risk.",value:1},
+      {text:"Because any encryption-related answer is always the most complete option.",value:0},
+      {text:"Because DLP is always better than encryption for stored databases.",value:0},
+      {text:"Because cloud controls remove the need to know where data resides.",value:0}
+    ]
+  },
+  relationship_confusion:{
+    q:"Why do people fail matching questions on data roles and controls?",
+    correct:"Because they match familiar words instead of matching responsibility, mechanism, and context.",
+    truth:"Concept mapping depends on what the role or control actually does, not whether the same word appears in the definition.",
+    messer:"Think function first: decides, implements, processes, stores, moves, scans, blocks.",
+    options:[
+      {text:"Because they match familiar words instead of matching responsibility, mechanism, and context.",value:1},
+      {text:"Because matching questions always use alphabetical order.",value:0},
+      {text:"Because every DLP type protects the same data state.",value:0},
+      {text:"Because all data roles have identical accountability.",value:0}
+    ]
+  }
+};
 
 const bossQuestions = [
   {
-    q:"A company stores EU personal data in a cloud backup outside Europe, uses HTTPS for access, and applies FDE to disks. Which statement is MOST accurate?",
-    options:[
-      "The company still has GDPR obligations and must consider data sovereignty despite using HTTPS and FDE.",
-      "HTTPS ensures full compliance because data is encrypted in transit.",
-      "FDE removes all legal concerns about storage location.",
-      "Cloud storage removes the need for GDPR compliance."
+    q:"A company stores EU personal data in a cloud account outside Europe, uses HTTPS for access, and applies FDE to cloud disks. What is the strongest answer?",
+    visual:[
+      ["Cloud Region","Outside Europe"],
+      ["HTTPS","Transit control"],
+      ["FDE","Storage media control"],
+      ["Law","Location still matters"]
     ],
-    correct:0,
-    insight:"Regulations follow the data and its location, not just the controls applied."
+    messer:"Data sovereignty follows physical storage location. Technical controls do not erase legal obligations.",
+    explanation:"The precise hidden keyword is stored outside Europe. HTTPS and FDE are valid controls, but they do not remove GDPR and data residency considerations.",
+    options:[
+      {text:"The company still has GDPR and sovereignty concerns because encryption does not remove data location obligations.",value:1},
+      {text:"The company is fully compliant because HTTPS protects access and FDE protects the disks.",value:0},
+      {text:"The company only needs Network DLP because the main risk is email exfiltration.",value:0},
+      {text:"The company has no issue because cloud storage shifts all legal responsibility to the provider.",value:0}
+    ]
   },
   {
-    q:"An organization applies hashing to passwords and claims the data can be recovered if needed. What is the BEST interpretation?",
-    options:[
-      "Hashing is one-way and cannot be reversed, so recovery is not possible.",
-      "Hashing works like encryption and can be reversed with a key.",
-      "Hashing protects data in transit only.",
-      "Hashing replaces tokenization."
+    q:"A retail PoS environment uses encrypted databases and TLS, but malware captures card numbers directly from process memory during checkout. What is the correct conclusion?",
+    visual:[
+      ["Database","Encrypted"],
+      ["TLS","Enabled"],
+      ["RAM","Plaintext during processing"],
+      ["Malware","Scrapes active values"]
     ],
-    correct:0,
-    insight:"Hashing verifies integrity or matches values. It does not decrypt."
+    messer:"Data in use must be readable by the CPU. Endpoint controls and memory protections compensate for this limitation.",
+    explanation:"The keyword is process memory during checkout. The attack targets data in use, not storage or network transport.",
+    options:[
+      {text:"This is a data in use exposure because the values were captured while being processed in memory.",value:1},
+      {text:"This is a data at rest failure because encrypted databases cannot support checkout processing.",value:0},
+      {text:"This is a TLS failure because transit encryption should protect card numbers inside RAM.",value:0},
+      {text:"This is a data sovereignty issue because payment data crossed a legal jurisdiction.",value:0}
+    ]
   },
   {
-    q:"A company relies on DLP and assumes no data leakage is possible. What is the MOST precise answer?",
-    options:[
-      "DLP reduces risk but cannot prevent all forms of data exfiltration.",
-      "DLP completely blocks all sensitive data leakage.",
-      "DLP replaces encryption controls.",
-      "DLP only works for internal traffic."
+    q:"An employee sends a spreadsheet to a personal account. The visible worksheet looks harmless, but hidden columns contain SSNs. The message is blocked before leaving. What is the best answer?",
+    visual:[
+      ["Spreadsheet","Hidden columns"],
+      ["SSNs","Sensitive content"],
+      ["Outbound Email","Personal account"],
+      ["Policy","Block before exit"]
     ],
-    correct:0,
-    insight:"DLP reduces data loss risk; it does not eliminate all exfiltration paths."
+    messer:"Content inspection can detect sensitive strings even when the visible document appears harmless.",
+    explanation:"The block is based on sensitive content inside the attachment. That is DLP, not ordinary connection filtering.",
+    options:[
+      {text:"DLP detected sensitive content in the attachment and blocked the attempted data exfiltration.",value:1},
+      {text:"A firewall detected the personal email domain and classified the spreadsheet content.",value:0},
+      {text:"FDE protected the hidden columns because the spreadsheet was previously stored on disk.",value:0},
+      {text:"Masking removed the SSNs from the document before the email was transmitted.",value:0}
+    ]
   }
 ];
 
-let currentPhase="A";
-let index=0;
-let dragIndex=0;
-let miniIndex=0;
-let bossIndex=0;
-
-let score=0;
-let totalQuestions=0;
-let totalErrors=0;
-
-let errorMap={};
-
-function goBack(){
-  window.location.href="../week2.html";
-}
-
-function showScreen(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
+/* ===================== GENERIC MCQ ===================== */
 
 function startPhaseA(){
-  currentPhase="A";
-  index=0;
-  renderQuestion();
-  showScreen("quiz-screen");
+  phase = "A";
+  currentIndex = 0;
+  selectedOption = null;
+  renderQuestion(phaseA[currentIndex],"Phase A — MCQ Recognition",phaseA.length,currentIndex,selectOption,nextStep);
 }
 
-function updateProgress(total){
-  const pct=(index/total)*100;
-  document.getElementById("progress-fill").style.width=pct+"%";
-}
-
-function renderQuestion(){
-  const container=document.getElementById("quiz-content");
-  const fb=document.getElementById("feedback");
-  fb.classList.remove("show");
-  document.getElementById("next-btn").style.display="none";
-  document.getElementById("hint-btn").style.display="none";
-
-  let data;
-  if(currentPhase==="A"){
-    data=phaseA[index];
-    document.getElementById("phase-pill").innerText="PHASE A";
-    document.getElementById("progress-label").innerText=`question_${index+1}_of_${phaseA.length}`;
-    updateProgress(phaseA.length);
-  }
-  else if(currentPhase==="C"){
-    data=phaseC[index];
-    document.getElementById("phase-pill").innerText="PHASE C";
-    document.getElementById("progress-label").innerText=`question_${index+1}_of_${phaseC.length}`;
-    updateProgress(phaseC.length);
-  }
-  else if(currentPhase==="D"){
-    data=phaseD[index];
-    document.getElementById("phase-pill").innerText="PHASE D";
-    document.getElementById("progress-label").innerText=`scenario_${index+1}_of_${phaseD.length}`;
-    updateProgress(phaseD.length);
-    document.getElementById("hint-btn").style.display="inline-block";
-  }
-
-  let html="";
-  if(currentPhase==="D"){
-    html+=`<div class="scenario">${data.scenario}</div>`;
-    html+=`<div class="visual-board">`;
-    data.visuals.forEach(v=>{
-      html+=`<div class="visual-card"><h4>${v[0]}</h4><p>${v[1]}</p></div>`;
-    });
-    html+=`</div>`;
-  }
-
-  html+=`<div class="question">${data.q}</div><div class="options">`;
-
-  if(currentPhase==="C"){
-    data.options.forEach((o,i)=>{
-      html+=`<button class="option" onclick="selectTrap(${i})">${o}</button>`;
-    });
-  }else{
-    data.options.forEach((o,i)=>{
-      html+=`<button class="option" onclick="selectOption(${i})">${o.t}</button>`;
-    });
-  }
-
-  html+=`</div>`;
-  container.innerHTML=html;
-}
-
-function selectOption(i){
-  const data=currentPhase==="A"?phaseA[index]:phaseD[index];
-  const opts=document.querySelectorAll(".option");
-  opts.forEach(o=>o.disabled=true);
-
-  let fb=document.getElementById("feedback");
-  fb.classList.add("show");
-
-  if(data.options[i].v===1){
-    opts[i].classList.add("correct");
-    score+=1;
-  }
-  else if(data.options[i].v===.5){
-    opts[i].classList.add("partial");
-    score+=.5;
-    totalErrors++;
-    errorMap[data.error]=(errorMap[data.error]||0)+1;
-  }
-  else{
-    opts[i].classList.add("wrong");
-    totalErrors++;
-    errorMap[data.error]=(errorMap[data.error]||0)+1;
-  }
-
-  fb.innerHTML=`
-    <strong>Explanation:</strong><br>
-    ${data.correct||""}<br><br>
-    ${data.partial||""}<br><br>
-    ${data.trap||""}
-    <div class="messer"><strong>Messer Insight:</strong><br>${data.insight}</div>
+function renderQuestion(q,label,total,index,selectFn,nextFn,extraClass=""){
+  selectedOption = null;
+  currentOptions = shuffle(q.options);
+  const visual = q.visual ? `
+    <div class="grid2">
+      ${q.visual.map(v => `
+        <div class="visual-card">
+          <strong>${escapeHTML(v[0])}</strong>
+          <span>${escapeHTML(v[1])}</span>
+        </div>
+      `).join("")}
+    </div>
+  ` : "";
+  app.innerHTML = `
+    <section class="panel ${extraClass}">
+      ${renderProgress(label,total,index)}
+      <div class="kicker">${label}</div>
+      <h3>${escapeHTML(q.q)}</h3>
+      ${visual}
+      ${q.hint ? `<button class="btn" onclick="showHint()">Show Hint</button><div id="hintBox" class="messer hidden"><strong>Messer Insight:</strong> ${escapeHTML(q.hint)}</div>` : ""}
+      <div class="option-list">
+        ${currentOptions.map((o,i)=>`<button class="option" id="opt${i}" onclick="${selectFn.name}(${i})">${escapeHTML(o.text)}</button>`).join("")}
+      </div>
+      <div id="feedback"></div>
+      <div class="actions">
+        <span></span>
+        <button id="nextBtn" class="btn primary" onclick="${nextFn.name}()" disabled>Continue</button>
+      </div>
+    </section>
   `;
-
-  document.getElementById("next-btn").style.display="inline-block";
-}
-
-function selectTrap(i){
-  const data=phaseC[index];
-  if(i!==data.correct){
-    alert("Try again — this answer does not explain the real confusion.");
-    return;
-  }
-
-  let fb=document.getElementById("feedback");
-  fb.classList.add("show");
-  fb.innerHTML=`
-    ${data.feedback}
-    <div class="messer"><strong>Messer Insight:</strong><br>${data.insight}</div>
-  `;
-  document.getElementById("next-btn").style.display="inline-block";
 }
 
 function showHint(){
-  const data=phaseD[index];
-  let fb=document.getElementById("feedback");
-  fb.classList.add("show");
-  fb.innerHTML=`<div class="messer"><strong>Hint:</strong><br>${data.insight}</div>`;
+  const box = document.getElementById("hintBox");
+  if(box) box.classList.remove("hidden");
+}
+
+function selectOption(index){
+  if(selectedOption !== null) return;
+  selectedOption = currentOptions[index];
+  const q = phase === "A" ? phaseA[currentIndex] : phaseD[currentIndex];
+  const correct = getCorrectOption(q.options);
+  const partial = getPartialOption(q.options);
+  totalQuestions++;
+
+  if(selectedOption.value === 1){
+    score += 1;
+  } else {
+    if(selectedOption.value === 0.5) score += 0.5;
+    addError(selectedOption.category || q.category);
+    logMistake({
+      phase: phase,
+      question: q.q,
+      selected: selectedOption.text,
+      correct: correct.text,
+      category: selectedOption.category || q.category,
+      trap: selectedOption.value === 0.5 ? q.partialWhy : q.traps,
+      correctReason: q.whyCorrect,
+      messer: q.messer
+    });
+  }
+
+  currentOptions.forEach((o,i)=>{
+    const btn = document.getElementById("opt"+i);
+    btn.disabled = true;
+    if(o.value === 1) btn.classList.add("correct");
+    else if(i === index && o.value === 0.5) btn.classList.add("partial");
+    else if(i === index) btn.classList.add("wrong");
+  });
+
+  const status = selectedOption.value === 1 ? `<span class="ok">Correct.</span>` :
+                 selectedOption.value === 0.5 ? `<span class="warn">Partial.</span>` :
+                 `<span class="bad">Trap selected.</span>`;
+
+  document.getElementById("feedback").innerHTML = `
+    <div class="feedback">
+      <p>${status}</p>
+      <p><strong>Correct answer:</strong> ${escapeHTML(correct.text)}</p>
+      <p><strong>Why correct:</strong> ${escapeHTML(q.whyCorrect)}</p>
+      <p><strong>Why partial is incomplete:</strong> ${escapeHTML(partial ? q.partialWhy : "No partial credit in this question.")}</p>
+      <p><strong>Why traps are wrong:</strong> ${escapeHTML(q.traps || "The traps are technically possible but do not match the precise keyword in this scenario.")}</p>
+      <div class="messer"><strong>Messer Insight:</strong> ${escapeHTML(q.messer)}</div>
+    </div>
+  `;
+  document.getElementById("nextBtn").disabled = false;
 }
 
 function nextStep(){
-  index++;
-
-  if(currentPhase==="A" && index<phaseA.length){
-    renderQuestion();
-  }
-  else if(currentPhase==="A"){
-    currentPhase="B";
-    startDrag();
-  }
-  else if(currentPhase==="C" && index<phaseC.length){
-    renderQuestion();
-  }
-  else if(currentPhase==="C"){
-    currentPhase="D";
-    index=0;
-    renderQuestion();
-  }
-  else if(currentPhase==="D" && index<phaseD.length){
-    renderQuestion();
-  }
-  else if(currentPhase==="D"){
-    prepareMini();
-  }
-}
-
-function startDrag(){
-  showScreen("drag-screen");
-  dragIndex=0;
-  renderDrag();
-}
-
-function renderDrag(){
-  const set=phaseB[dragIndex];
-  document.getElementById("drag-progress-label").innerText=`set_${dragIndex+1}_of_${phaseB.length}`;
-  document.getElementById("drag-progress-fill").style.width=(dragIndex/phaseB.length)*100+"%";
-
-  const drag=document.getElementById("drag-items");
-  const drop=document.getElementById("drop-zones");
-
-  drag.innerHTML="";
-  drop.innerHTML="";
-
-  set.forEach((pair,i)=>{
-    drag.innerHTML+=`<div class="drag-item" draggable="true" ondragstart="dragStart(event)" id="drag${i}">${pair[0]}</div>`;
-  });
-
-  set.forEach((pair,i)=>{
-    drop.innerHTML+=`<div class="drop-zone" ondrop="dropItem(event)" ondragover="allowDrop(event)" data-match="${pair[0]}">${pair[1]}</div>`;
-  });
-}
-
-function dragStart(e){
-  e.dataTransfer.setData("text",e.target.innerText);
-}
-
-function allowDrop(e){
-  e.preventDefault();
-  e.target.classList.add("over");
-}
-
-function dropItem(e){
-  e.preventDefault();
-  const val=e.dataTransfer.getData("text");
-  e.target.classList.remove("over");
-  if(val===e.target.dataset.match){
-    e.target.innerHTML=`${val} ✔`;
-    e.target.classList.add("matched");
-  }else{
-    e.target.classList.add("wrong");
-    totalErrors++;
-    errorMap["relationship"]=(errorMap["relationship"]||0)+1;
-  }
-}
-
-function checkDrag(){
-  document.getElementById("drag-next-btn").style.display="inline-block";
-}
-
-function nextDrag(){
-  dragIndex++;
-  if(dragIndex<phaseB.length){
-    renderDrag();
-  }else{
-    currentPhase="C";
-    index=0;
-    showScreen("quiz-screen");
-    renderQuestion();
-  }
-}
-
-function prepareMini(){
-  showScreen("mini-screen");
-
-  if(totalErrors===0){
-    document.getElementById("mini-pill").innerText="PERFECT RUN";
-    document.getElementById("mini-content").innerHTML=`
-      <div class="question">Congratulations.</div>
-      <div class="scenario">
-        You completed all phases without mistakes.<br><br>
-        Now we test your real level.
-      </div>
-      <div style="text-align:center;margin-top:20px">
-        <button class="btn btn-primary" onclick="startBoss()">Enter Boss Level →</button>
-      </div>
-    `;
-  }else{
-    document.getElementById("mini-pill").innerText="YOU STRUGGLED WITH";
-
-    const top=Object.keys(errorMap).sort((a,b)=>errorMap[b]-errorMap[a]).slice(0,2);
-
-    let chips="";
-    top.forEach(e=>{
-      chips+=`<div class="struggle-chip">${e.replaceAll("_"," ")}</div>`;
-    });
-
-    document.getElementById("mini-content").innerHTML=`
-      <div class="question">You struggled with:</div>
-      <div class="struggle-list">${chips}</div>
-      <div class="scenario">Let's fix that.</div>
-      <div style="text-align:center;margin-top:20px">
-        <button class="btn btn-primary" onclick="startMini()">Start Adaptive →</button>
-      </div>
-    `;
-  }
-}
-
-function startMini(){
-  miniIndex=0;
-  renderMini();
-}
-
-function renderMini(){
-  const data=phaseC[miniIndex];
-  document.getElementById("mini-content").innerHTML=`
-    <div class="question">${data.q}</div>
-    <div class="options">
-      ${data.options.map((o,i)=>`<button class="option" onclick="selectMini(${i})">${o}</button>`).join("")}
-    </div>
-  `;
-  document.getElementById("mini-feedback").classList.remove("show");
-}
-
-function selectMini(i){
-  const data=phaseC[miniIndex];
-  if(i!==data.correct){
-    alert("Try again — this answer does not explain the real confusion.");
+  if(phase === "A"){
+    currentIndex++;
+    if(currentIndex < phaseA.length){
+      renderQuestion(phaseA[currentIndex],"Phase A — MCQ Recognition",phaseA.length,currentIndex,selectOption,nextStep);
+    } else {
+      startPhaseB();
+    }
     return;
   }
-  const fb=document.getElementById("mini-feedback");
-  fb.classList.add("show");
-  fb.innerHTML=`
-    ${data.feedback}
-    <div class="messer"><strong>Messer Insight:</strong><br>${data.insight}</div>
-  `;
-  document.getElementById("mini-next-btn").style.display="inline-block";
-}
 
-function nextMini(){
-  miniIndex++;
-  if(miniIndex<3){
-    renderMini();
-  }else{
-    showResult();
-  }
-}
-
-function startBoss(){
-  showScreen("boss-screen");
-  bossIndex=0;
-  renderBoss();
-}
-
-function renderBoss(){
-  const data=bossQuestions[bossIndex];
-  document.getElementById("boss-content").innerHTML=`
-    <div class="boss-card">
-      <div class="question">${data.q}</div>
-      <div class="options">
-        ${data.options.map((o,i)=>`<button class="option" onclick="selectBoss(${i})">${o}</button>`).join("")}
-      </div>
-    </div>
-  `;
-  document.getElementById("boss-feedback").classList.remove("show");
-}
-
-function selectBoss(i){
-  const data=bossQuestions[bossIndex];
-  const opts=document.querySelectorAll("#boss-content .option");
-  opts.forEach(o=>o.disabled=true);
-
-  if(i===data.correct){
-    opts[i].classList.add("correct");
-  }else{
-    opts[i].classList.add("wrong");
-  }
-
-  const fb=document.getElementById("boss-feedback");
-  fb.classList.add("show");
-  fb.innerHTML=`
-    <div class="messer"><strong>Messer Insight:</strong><br>${data.insight}</div>
-  `;
-  document.getElementById("boss-next-btn").style.display="inline-block";
-}
-
-function nextBoss(){
-  bossIndex++;
-  if(bossIndex<bossQuestions.length){
-    renderBoss();
-  }else{
-    showResult(true);
-  }
-}
-
-function showResult(boss=false){
-  showScreen("result-screen");
-
-  const total=phaseA.length+phaseD.length;
-  const percent=Math.round((score/total)*100);
-
-  document.getElementById("result-score").innerText=percent+"%";
-
-  if(boss){
-    document.getElementById("result-title").innerText="Boss Level Completed";
-    document.getElementById("result-message").innerText="You reached the highest level.";
-    document.getElementById("continue-btn").style.display="inline-block";
-  }else{
-    if(percent>=80){
-      document.getElementById("result-title").innerText="Congratulations";
-      document.getElementById("result-message").innerText="You passed this chapter.";
-      document.getElementById("continue-btn").style.display="inline-block";
-    }else{
-      document.getElementById("result-title").innerText="Not enough score";
-      document.getElementById("result-message").innerText="You need at least 80% to pass.";
-      document.getElementById("retry-btn").style.display="inline-block";
+  if(phase === "D"){
+    currentIndex++;
+    if(currentIndex < phaseD.length){
+      renderQuestion(phaseD[currentIndex],"Phase D — Real Scenarios",phaseD.length,currentIndex,selectOption,nextStep);
+    } else {
+      prepareMini();
     }
   }
 }
 
-function retryAll(){
-  location.reload();
+/* ===================== PHASE B ===================== */
+
+let dragSetIndex = 0;
+let currentDragItems = [];
+let currentDropItems = [];
+
+function startPhaseB(){
+  phase = "B";
+  dragSetIndex = 0;
+  renderDragSet();
 }
 
-function finishTraining(){
-  window.location.href="../week2.html";
+function renderDragSet(){
+  checkedDrag = false;
+  selectedConceptId = null;
+  dragAnswers = {};
+  const set = dragSets[dragSetIndex];
+  currentDragItems = shuffle(set);
+  currentDropItems = shuffle(set);
+
+  app.innerHTML = `
+    <section class="panel">
+      ${renderProgress("Phase B — Drag & Drop",dragSets.length,dragSetIndex)}
+      <div class="kicker">Phase B — Drag & Drop</div>
+      <h3>Match each concept to the correct definition.</h3>
+      <p>Definitions do not repeat the concept word. Match by meaning, not by keyword laziness. Humanity may yet recover.</p>
+      <div class="drag-layout">
+        <div class="drag-list">
+          ${currentDragItems.map(item=>`
+            <div class="drag-item" id="concept-${item.id}" draggable="true" onclick="selectConcept('${item.id}')" ondragstart="dragStart(event,'${item.id}')" ondragend="dragEnd(event)">${escapeHTML(item.concept)}</div>
+          `).join("")}
+        </div>
+        <div class="drag-list">
+          ${currentDropItems.map((item,i)=>`
+            <div class="drop-item" id="drop-${i}" onclick="placeConcept(${i})" ondragover="dragOver(event)" ondragenter="dragEnter(event,${i})" ondragleave="dragLeave(event,${i})" ondrop="dropConcept(event,${i})">
+              <strong>Definition ${i+1}</strong>
+              <span>${escapeHTML(item.definition)}</span>
+              <div id="placed-${i}" style="margin-top:8px;color:var(--accent)"></div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+      <div id="dragFeedback"></div>
+      <div class="actions">
+        <button class="btn" onclick="clearDrag()">Clear Matches</button>
+        <button id="checkDragBtn" class="btn primary" onclick="checkDrag()">Check Matches</button>
+        <button id="dragNextBtn" class="btn primary" onclick="nextDrag()" disabled>Continue</button>
+      </div>
+    </section>
+  `;
 }
+
+function selectConcept(id){
+  if(checkedDrag) return;
+  selectedConceptId = id;
+  document.querySelectorAll(".drag-item").forEach(el=>el.classList.remove("selected"));
+  document.getElementById("concept-"+id).classList.add("selected");
+}
+
+function dragStart(event,id){
+  if(checkedDrag) return;
+  selectedConceptId = id;
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", id);
+  document.querySelectorAll(".drag-item").forEach(el=>el.classList.remove("selected"));
+  const concept = document.getElementById("concept-"+id);
+  if(concept) concept.classList.add("selected");
+}
+
+function dragEnd(){
+  document.querySelectorAll(".drop-item").forEach(el=>el.classList.remove("over"));
+}
+
+function dragOver(event){
+  if(checkedDrag) return;
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+}
+
+function dragEnter(event,dropIndex){
+  if(checkedDrag) return;
+  event.preventDefault();
+  const drop = document.getElementById("drop-"+dropIndex);
+  if(drop) drop.classList.add("over");
+}
+
+function dragLeave(event,dropIndex){
+  const drop = document.getElementById("drop-"+dropIndex);
+  if(drop && !drop.contains(event.relatedTarget)) drop.classList.remove("over");
+}
+
+function dropConcept(event,dropIndex){
+  if(checkedDrag) return;
+  event.preventDefault();
+  const id = event.dataTransfer.getData("text/plain") || selectedConceptId;
+  if(!id) return;
+  selectedConceptId = id;
+  const drop = document.getElementById("drop-"+dropIndex);
+  if(drop) drop.classList.remove("over");
+  placeConcept(dropIndex);
+}
+
+function placeConcept(dropIndex){
+  if(checkedDrag || !selectedConceptId) return;
+
+  Object.keys(dragAnswers).forEach(key=>{
+    if(dragAnswers[key] === selectedConceptId && Number(key) !== dropIndex){
+      delete dragAnswers[key];
+      const previous = document.getElementById("placed-"+key);
+      const previousDrop = document.getElementById("drop-"+key);
+      if(previous) previous.innerHTML = "";
+      if(previousDrop) previousDrop.classList.remove("filled");
+    }
+  });
+
+  dragAnswers[dropIndex] = selectedConceptId;
+  const item = currentDragItems.find(x=>x.id === selectedConceptId);
+  document.getElementById("placed-"+dropIndex).innerHTML = "Selected: " + escapeHTML(item.concept);
+  document.getElementById("drop-"+dropIndex).classList.add("filled");
+  selectedConceptId = null;
+  document.querySelectorAll(".drag-item").forEach(el=>el.classList.remove("selected"));
+}
+
+function clearDrag(){
+  if(checkedDrag) return;
+  dragAnswers = {};
+  document.querySelectorAll(".drop-item").forEach(el=>el.classList.remove("filled"));
+  currentDropItems.forEach((_,i)=>document.getElementById("placed-"+i).innerHTML = "");
+}
+
+function checkDrag(){
+  if(checkedDrag) return;
+  checkedDrag = true;
+  let wrongs = [];
+  currentDropItems.forEach((target,i)=>{
+    const selectedId = dragAnswers[i];
+    const drop = document.getElementById("drop-"+i);
+    if(selectedId === target.id){
+      drop.classList.add("good");
+    } else {
+      drop.classList.add("bad");
+      const selectedConcept = selectedId ? currentDragItems.find(x=>x.id === selectedId) : null;
+      wrongs.push({target,selectedConcept});
+      addError("relationship_confusion");
+      logMistake({
+        phase:"B",
+        question:"Match the concept to: " + target.definition,
+        selected:selectedConcept ? selectedConcept.concept : "No match selected",
+        correct:target.concept,
+        category:"relationship_confusion",
+        trap:"The selected match does not describe the same responsibility, mechanism, or data context.",
+        correctReason:"The correct concept is " + target.concept + " because: " + target.definition,
+        messer:target.messer
+      });
+    }
+  });
+
+  const feedback = wrongs.length === 0
+    ? `<p><span class="ok">Perfect match set.</span></p>`
+    : `<p><span class="bad">${wrongs.length} match issue(s) detected.</span></p>`;
+
+  document.getElementById("dragFeedback").innerHTML = `
+    <div class="feedback">
+      ${feedback}
+      ${currentDropItems.map(item=>`
+        <p><strong>${escapeHTML(item.concept)}:</strong> ${escapeHTML(item.definition)}</p>
+      `).join("")}
+      <div class="messer"><strong>Messer Insight:</strong> Matching depends on function and context, not repeated words.</div>
+    </div>
+  `;
+
+  document.getElementById("checkDragBtn").disabled = true;
+  document.getElementById("dragNextBtn").disabled = false;
+}
+
+function nextDrag(){
+  dragSetIndex++;
+  if(dragSetIndex < dragSets.length){
+    renderDragSet();
+  } else {
+    startPhaseC();
+  }
+}
+
+/* ===================== PHASE C ===================== */
+
+let trapIndex = 0;
+let currentTrapOptions = [];
+let trapAnswered = false;
+
+function startPhaseC(){
+  phase = "C";
+  trapIndex = 0;
+  renderTrap();
+}
+
+function renderTrap(){
+  trapAnswered = false;
+  const q = phaseC[trapIndex];
+  currentTrapOptions = shuffle(q.options);
+  app.innerHTML = `
+    <section class="panel">
+      ${renderProgress("Phase C — Trap Reasoning",phaseC.length,trapIndex)}
+      <div class="kicker">Phase C — Why People Fall For The Trap</div>
+      <h3>${escapeHTML(q.q)}</h3>
+      <div class="option-list">
+        ${currentTrapOptions.map((o,i)=>`<button class="option" id="trapOpt${i}" onclick="selectTrap(${i})">${escapeHTML(o.text)}</button>`).join("")}
+      </div>
+      <div id="trapFeedback"></div>
+      <div class="actions">
+        <span></span>
+        <button id="trapNextBtn" class="btn primary" onclick="nextTrap()" disabled>Continue</button>
+      </div>
+    </section>
+  `;
+}
+
+function selectTrap(index){
+  const opt = currentTrapOptions[index];
+  const q = phaseC[trapIndex];
+
+  if(opt.value !== 1){
+    document.getElementById("trapFeedback").innerHTML = `
+      <div class="feedback">
+        <p><span class="bad">Try again — this answer does not explain the real confusion.</span></p>
+      </div>
+    `;
+    return;
+  }
+
+  trapAnswered = true;
+  currentTrapOptions.forEach((o,i)=>{
+    const btn = document.getElementById("trapOpt"+i);
+    btn.disabled = true;
+    if(o.value === 1) btn.classList.add("correct");
+  });
+
+  document.getElementById("trapFeedback").innerHTML = `
+    <div class="feedback">
+      <p><span class="ok">Correct reasoning.</span></p>
+      <p><strong>Why people think this:</strong> ${escapeHTML(q.correct)}</p>
+      <p><strong>What is actually true:</strong> ${escapeHTML(q.truth)}</p>
+      <div class="messer"><strong>Messer Insight:</strong> ${escapeHTML(q.messer)}</div>
+    </div>
+  `;
+  document.getElementById("trapNextBtn").disabled = false;
+}
+
+function nextTrap(){
+  if(!trapAnswered) return;
+  trapIndex++;
+  if(trapIndex < phaseC.length){
+    renderTrap();
+  } else {
+    startPhaseD();
+  }
+}
+
+/* ===================== PHASE D ===================== */
+
+function startPhaseD(){
+  phase = "D";
+  currentIndex = 0;
+  renderQuestion(phaseD[currentIndex],"Phase D — Real Scenarios",phaseD.length,currentIndex,selectOption,nextStep);
+}
+
+/* ===================== DECISION ENGINE ===================== */
+
+function prepareMini(){
+  if(totalErrors === 0){
+    showBossWelcome();
+  } else {
+    showMiniIntro();
+  }
+}
+
+/* ===================== ADAPTIVE MINI C ===================== */
+
+function getTopCategories(){
+  const entries = Object.entries(errorMap).sort((a,b)=>b[1]-a[1]);
+  const cats = entries.map(e=>e[0]);
+  const fallback = ["data_state_confusion","role_confusion","technique_confusion"];
+  const merged = [...cats,...fallback].filter((v,i,a)=>a.indexOf(v)===i);
+  return merged.slice(0,3);
+}
+
+function showMiniIntro(){
+  const cats = getTopCategories();
+  app.innerHTML = `
+    <section class="panel">
+      <div class="kicker">Adaptive Mini C</div>
+      <h2>You need to reinforce these points.</h2>
+      <p>These are the exact areas where you struggled. Review them before continuing.</p>
+      <div class="grid3">
+        ${cats.map(c=>`<div class="pill"><strong>${escapeHTML(c.replaceAll("_"," "))}</strong><span>${errorMap[c] || 0} issue(s) detected.</span></div>`).join("")}
+      </div>
+      <div style="margin-top:18px">
+        ${mistakeLog.map((m,i)=>`
+          <div class="mistake-card">
+            <div class="kicker">Mistake ${i+1} · Phase ${escapeHTML(m.phase)}</div>
+            <p><strong>Question:</strong> ${escapeHTML(m.question)}</p>
+            <p style="color:var(--danger)"><strong>Your answer:</strong> ${escapeHTML(m.selected)}</p>
+            <p style="color:var(--green)"><strong>Correct answer:</strong> ${escapeHTML(m.correct)}</p>
+            <p><strong>Error category:</strong> ${escapeHTML(m.category)}</p>
+            <p><strong>Why this was a trap:</strong> ${escapeHTML(m.trap)}</p>
+            <p><strong>Why correct is best:</strong> ${escapeHTML(m.correctReason)}</p>
+            <div class="messer"><strong>Messer Insight:</strong> ${escapeHTML(m.messer)}</div>
+          </div>
+        `).join("")}
+      </div>
+      <div class="actions">
+        <span></span>
+        <button class="btn primary" onclick="startMini()">Start Reinforcement Training</button>
+      </div>
+    </section>
+  `;
+}
+
+function startMini(){
+  phase = "mini";
+  miniQuestions = getTopCategories().map(cat => miniBank[cat]).filter(Boolean);
+  while(miniQuestions.length < 3){
+    miniQuestions.push(miniBank.control_mismatch);
+  }
+  miniQuestions = miniQuestions.slice(0,3);
+  miniIndex = 0;
+  renderMini();
+}
+
+function renderMini(){
+  const q = miniQuestions[miniIndex];
+  currentTrapOptions = shuffle(q.options);
+  trapAnswered = false;
+  app.innerHTML = `
+    <section class="panel">
+      ${renderProgress("Adaptive Mini C — Reinforcement",miniQuestions.length,miniIndex)}
+      <div class="kicker">Adaptive Mini C</div>
+      <h3>${escapeHTML(q.q)}</h3>
+      <div class="option-list">
+        ${currentTrapOptions.map((o,i)=>`<button class="option" id="miniOpt${i}" onclick="selectMini(${i})">${escapeHTML(o.text)}</button>`).join("")}
+      </div>
+      <div id="miniFeedback"></div>
+      <div class="actions">
+        <span></span>
+        <button id="miniNextBtn" class="btn primary" onclick="nextMini()" disabled>Continue</button>
+      </div>
+    </section>
+  `;
+}
+
+function selectMini(index){
+  const opt = currentTrapOptions[index];
+  const q = miniQuestions[miniIndex];
+
+  if(opt.value !== 1){
+    document.getElementById("miniFeedback").innerHTML = `
+      <div class="feedback">
+        <p><span class="bad">Try again — this answer does not explain the real confusion.</span></p>
+      </div>
+    `;
+    return;
+  }
+
+  currentTrapOptions.forEach((o,i)=>{
+    const btn = document.getElementById("miniOpt"+i);
+    btn.disabled = true;
+    if(o.value === 1) btn.classList.add("correct");
+  });
+
+  document.getElementById("miniFeedback").innerHTML = `
+    <div class="feedback">
+      <p><span class="ok">Correct reasoning.</span></p>
+      <p><strong>Why people think this:</strong> ${escapeHTML(q.correct)}</p>
+      <p><strong>What is actually true:</strong> ${escapeHTML(q.truth)}</p>
+      <div class="messer"><strong>Messer Insight:</strong> ${escapeHTML(q.messer)}</div>
+    </div>
+  `;
+  document.getElementById("miniNextBtn").disabled = false;
+}
+
+function nextMini(){
+  miniIndex++;
+  if(miniIndex < miniQuestions.length){
+    renderMini();
+  } else {
+    showResult(false);
+  }
+}
+
+/* ===================== BOSS LEVEL ===================== */
+
+function showBossWelcome(){
+  app.innerHTML = `
+    <section class="panel boss">
+      <div class="kicker">Flawless Run Detected</div>
+      <div class="boss-title">Welcome to the Boss Level.</div>
+      <p>You completed every scoring phase without mistakes. Now we test your real level.</p>
+      <div class="messer" style="border-left-color:var(--gold);color:var(--gold);background:rgba(255,211,106,.08)">
+        <strong>Unlocked:</strong> ⚠️ THE BOSS LEVEL ⚠️
+      </div>
+      <div class="actions">
+        <span></span>
+        <button class="btn gold" onclick="startBoss()">Enter Boss Level</button>
+      </div>
+    </section>
+  `;
+}
+
+function startBoss(){
+  phase = "boss";
+  bossIndex = 0;
+  bossScore = 0;
+  renderBoss();
+}
+
+function renderBoss(){
+  const q = bossQuestions[bossIndex];
+  currentOptions = shuffle(q.options);
+  selectedOption = null;
+  app.innerHTML = `
+    <section class="panel boss">
+      ${renderProgress("Boss Level",bossQuestions.length,bossIndex)}
+      <div class="boss-title">⚠️ THE BOSS LEVEL ⚠️</div>
+      <h3>${escapeHTML(q.q)}</h3>
+      <div class="grid2">
+        ${q.visual.map(v=>`
+          <div class="visual-card">
+            <strong style="color:var(--gold)">${escapeHTML(v[0])}</strong>
+            <span>${escapeHTML(v[1])}</span>
+          </div>
+        `).join("")}
+      </div>
+      <div class="option-list">
+        ${currentOptions.map((o,i)=>`<button class="option" id="bossOpt${i}" onclick="selectBoss(${i})">${escapeHTML(o.text)}</button>`).join("")}
+      </div>
+      <div id="bossFeedback"></div>
+      <div class="actions">
+        <span></span>
+        <button id="bossNextBtn" class="btn gold" onclick="nextBoss()" disabled>Continue</button>
+      </div>
+    </section>
+  `;
+}
+
+function selectBoss(index){
+  if(selectedOption !== null) return;
+  selectedOption = currentOptions[index];
+
+  if(selectedOption.value === 1){
+    bossScore++;
+  }
+
+  currentOptions.forEach((o,i)=>{
+    const btn = document.getElementById("bossOpt"+i);
+    btn.disabled = true;
+    if(o.value === 1) btn.classList.add("correct");
+    else if(i === index) btn.classList.add("wrong");
+  });
+
+  const q = bossQuestions[bossIndex];
+  const correct = getCorrectOption(q.options);
+
+  document.getElementById("bossFeedback").innerHTML = `
+    <div class="feedback">
+      <p>${selectedOption.value === 1 ? `<span class="ok">Correct.</span>` : `<span class="bad">Trap selected.</span>`}</p>
+      <p><strong>Correct answer:</strong> ${escapeHTML(correct.text)}</p>
+      <p><strong>Explanation:</strong> ${escapeHTML(q.explanation)}</p>
+      <div class="messer" style="border-left-color:var(--gold);color:var(--gold);background:rgba(255,211,106,.08)">
+        <strong>Messer Insight:</strong> ${escapeHTML(q.messer)}
+      </div>
+    </div>
+  `;
+  document.getElementById("bossNextBtn").disabled = false;
+}
+
+function nextBoss(){
+  bossIndex++;
+  if(bossIndex < bossQuestions.length){
+    renderBoss();
+  } else {
+    showResult(true);
+  }
+}
+
+/* ===================== RESULT ===================== */
+
+function showResult(boss=false){
+  const percent = totalQuestions === 0 ? 0 : (score / totalQuestions) * 100;
+  let message = "";
+  let resultClass = "";
+
+  if(boss){
+    message = "Boss Level Completed";
+    resultClass = "boss";
+  } else if(percent >= PASSING_SCORE){
+    message = "Passed";
+  } else {
+    message = "Retry required";
+  }
+
+  app.innerHTML = `
+    <section class="panel ${resultClass}">
+      <div class="kicker">Final Result</div>
+      <h2>${message}</h2>
+      <div class="stat-row">
+        <div class="stat"><strong>${percent.toFixed(0)}%</strong><span>Scoring phase result</span></div>
+        <div class="stat"><strong>${score}/${totalQuestions}</strong><span>Score points</span></div>
+        <div class="stat"><strong>${totalErrors}</strong><span>Total errors tracked</span></div>
+      </div>
+      ${boss ? `
+        <div class="messer" style="border-left-color:var(--gold);color:var(--gold);background:rgba(255,211,106,.08)">
+          <strong>Boss Performance:</strong> ${bossScore}/${bossQuestions.length} hard scenarios correct.
+        </div>
+      ` : ""}
+      ${!boss && percent < PASSING_SCORE ? `
+        <div class="feedback">
+          <p><span class="bad">Retry required.</span></p>
+          <p>You need at least ${PASSING_SCORE}% to pass this phase.</p>
+        </div>
+      ` : ""}
+      ${!boss && percent >= PASSING_SCORE ? `
+        <div class="messer"><strong>Passed:</strong> You reached the required score. Boss Level still requires a flawless run with zero tracked errors.</div>
+      ` : ""}
+      <div class="actions">
+        <button class="btn" onclick="location.reload()">Retry Phase 2</button>
+        <button class="btn primary" onclick="goBack()">Back to Week 2</button>
+      </div>
+    </section>
+  `;
+}
+
+renderIntro();
 </script>
-
 </body>
 </html>
-    
