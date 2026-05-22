@@ -1,208 +1,377 @@
-Actúa como senior frontend developer, creador experto de simuladores educativos, diseñador UI/UX y especialista en CompTIA Security+ SY0-701.
 
-OBJETIVO:
-Crear un mock exam interactivo avanzado para CompTIA Security+ SY0-701 en HTML/CSS/JavaScript puro, listo para GitHub Pages.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security+ SY0-701 Mock Exam 02</title>
+  <style>
+    :root{
+      --bg:#07111f;--panel:#0d1b2f;--panel2:#10243e;--text:#e9f2ff;--muted:#9fb3ca;
+      --accent:#39d98a;--accent2:#5cc8ff;--warn:#ffd166;--danger:#ff6b6b;--line:#243b59;
+      --shadow:0 18px 45px rgba(0,0,0,.35);--radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:
+      radial-gradient(circle at 20% 10%,rgba(92,200,255,.18),transparent 28%),
+      radial-gradient(circle at 80% 0%,rgba(57,217,138,.14),transparent 30%),var(--bg);color:var(--text)}
+    button,input,select{font:inherit}
+    .app{max-width:1120px;margin:0 auto;padding:24px}
+    .hero,.card{background:linear-gradient(180deg,rgba(16,36,62,.96),rgba(13,27,47,.96));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .hero{padding:28px;display:grid;gap:18px}
+    .top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+    h1{margin:0;font-size:clamp(28px,4vw,44px);letter-spacing:-.03em}
+    h2,h3{margin:.2rem 0 .8rem}
+    p{color:var(--muted);line-height:1.55}
+    .badge{display:inline-flex;gap:8px;align-items:center;padding:7px 11px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:rgba(255,255,255,.03);font-size:13px;margin:3px}
+    .btn{border:0;border-radius:14px;padding:12px 16px;background:var(--accent);color:#03110a;font-weight:800;cursor:pointer;transition:.18s transform,.18s opacity}
+    .btn:hover{transform:translateY(-1px)}
+    .btn.secondary{background:#182b47;color:var(--text);border:1px solid var(--line)}
+    .btn.danger{background:var(--danger);color:#1a0303}
+    .btn.warn{background:var(--warn);color:#1d1400}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:18px}
+    .card{padding:22px}
+    .hidden{display:none!important}
+    .progressWrap{height:12px;background:#071629;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+    .progress{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+    .meta{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+    .questionText{font-size:20px;line-height:1.45;margin:12px 0 18px}
+    pre{white-space:pre-wrap;background:#06101d;border:1px solid var(--line);border-radius:14px;padding:14px;color:#d7e8ff;overflow:auto}
+    .options{display:grid;gap:10px}
+    .option{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:14px;padding:14px;cursor:pointer}
+    .option:hover{border-color:var(--accent2)}
+    .option.selected{border-color:var(--accent);background:rgba(57,217,138,.1)}
+    .letter{min-width:30px;height:30px;border-radius:10px;background:#162d4d;display:grid;place-items:center;font-weight:900;color:var(--accent2)}
+    .nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap}
+    .qgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+    .qdot{border:1px solid var(--line);background:#071629;color:var(--muted);border-radius:10px;padding:9px;cursor:pointer}
+    .qdot.answered{background:rgba(57,217,138,.14);color:var(--text);border-color:rgba(57,217,138,.5)}
+    .qdot.marked{box-shadow:inset 0 0 0 2px var(--warn)}
+    .qdot.active{border-color:var(--accent2);color:#fff}
+    .timer{font-size:28px;font-weight:900}
+    .timer.low{color:var(--warn)}
+    .reviewItem{border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0;background:rgba(255,255,255,.035)}
+    .correct{color:var(--accent);font-weight:800}.wrong{color:var(--danger);font-weight:800}.partial{color:var(--warn);font-weight:800}
+    .domainRow{display:grid;grid-template-columns:1fr auto;gap:12px;border-bottom:1px solid var(--line);padding:10px 0}
+    .pbqGrid{display:grid;gap:12px}
+    .pbqRow{display:grid;grid-template-columns:1fr 240px;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px;background:rgba(255,255,255,.03)}
+    select{background:#071629;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%}
+    .footerNote{font-size:13px;color:var(--muted)}
+    @media(max-width:880px){.grid{grid-template-columns:1fr}.pbqRow{grid-template-columns:1fr}.app{padding:14px}.qgrid{grid-template-columns:repeat(8,1fr)}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <section id="startScreen" class="hero">
+    <div class="top">
+      <div>
+        <span class="badge">CompTIA Security+ SY0-701</span>
+        <span class="badge">Real Exam Mode</span>
+        <h1>Mock Exam 02</h1>
+        <p>40 high-difficulty questions: single answer, Choose TWO, and mini PBQs. No feedback until submission. Score, domain breakdown, and trap review at the end.</p>
+      </div>
+      <div>
+        <div class="timer">60:00</div>
+        <p class="footerNote">Auto-submit at zero. Saved in localStorage.</p>
+      </div>
+    </div>
+    <div>
+      <button class="btn" id="startBtn">Start Exam</button>
+      <button class="btn secondary" id="resumeBtn">Resume Exam</button>
+      <button class="btn danger" id="resetBtn">Reset Exam</button>
+    </div>
+    <div>
+      <span class="badge">Passing: 83%</span>
+      <span class="badge">Close: 75–82%</span>
+      <span class="badge">Partial multi-select: 0.5</span>
+      <span class="badge">PBQ partial scoring</span>
+    </div>
+  </section>
 
-ARCHIVO:
-index.html
+  <section id="examScreen" class="hidden">
+    <div class="grid">
+      <main class="card">
+        <div class="top">
+          <div>
+            <div class="badge" id="domainBadge"></div>
+            <div class="badge" id="typeBadge"></div>
+          </div>
+          <div class="timer" id="timer">60:00</div>
+        </div>
+        <div class="progressWrap"><div class="progress" id="progress"></div></div>
+        <div class="meta">
+          <span class="badge" id="counter"></span>
+          <span class="badge" id="markState">Not marked</span>
+        </div>
+        <div id="questionArea"></div>
+        <div class="nav">
+          <button class="btn secondary" id="prevBtn">Previous</button>
+          <button class="btn warn" id="markBtn">Mark for Review</button>
+          <button class="btn secondary" id="nextBtn">Next</button>
+          <button class="btn danger" id="finishBtn">Finish Exam</button>
+        </div>
+      </main>
+      <aside class="card">
+        <h3>Question Navigator</h3>
+        <div class="qgrid" id="qgrid"></div>
+        <p class="footerNote">Marked questions have a yellow border. Answered questions turn green-ish, because apparently colors must carry civilization.</p>
+      </aside>
+    </div>
+  </section>
 
-TECNOLOGÍA:
-- HTML5
-- CSS3
-- JavaScript vanilla
-- Sin frameworks
-- Sin backend
-- Todo en un solo archivo index.html
+  <section id="resultScreen" class="hidden card">
+    <h2>Final Results</h2>
+    <div id="summary"></div>
+    <h3>Domain Breakdown</h3>
+    <div id="domainBreakdown"></div>
+    <h3>Incorrect / Partial Review</h3>
+    <div id="review"></div>
+    <button class="btn danger" id="resetFromResults">Reset Exam</button>
+  </section>
+</div>
 
-IDIOMA:
-Todo el contenido dentro de la app debe estar en inglés:
-questions, answers, buttons, labels, explanations, results, categories, feedback.
+<script>
+const STORAGE_KEY = "secplus_mock_exam_02_v1";
+const letters = ["A","B","C","D","E","F"];
 
-MODO DE EXAMEN:
-Real Exam Mode.
-- No mostrar feedback inmediato.
-- No revelar respuestas correctas durante el examen.
-- Guardar respuestas del usuario.
-- Mostrar score solo al final.
-- Mostrar revisión completa solo después de finalizar.
+const questions = [
+{type:"single",domain:"Threats, Vulnerabilities & Mitigations",prompt:"A SIEM shows failed logins against 40 different users from the same IP. Each attempt uses the same password: Winter2026!. Which attack is MOST likely occurring?",options:["Brute force","Password spraying","Credential stuffing","Pass-the-hash"],answer:["Password spraying"],explanation:"Many accounts with one common password indicates password spraying.",wrong:"Brute force usually targets one account with many passwords. Credential stuffing uses known breached username/password pairs.",clue:"Many users + one password.",trap:"Brute force vs password spraying"},
+{type:"single",domain:"Security Operations",prompt:"A workstation sends small HTTPS requests every five minutes to an unfamiliar external host. No user is logged in. What is the MOST likely activity?",options:["Normal browser telemetry","C2 beaconing","DNS zone transfer","Port scanning"],answer:["C2 beaconing"],explanation:"Periodic small outbound connections commonly indicate malware beaconing to command and control.",wrong:"HTTPS alone is not suspicious; the timing, consistency, and no-user context are the clue.",clue:"Small, periodic, outbound traffic.",trap:"Normal HTTPS vs beaconing"},
+{type:"multi",choose:2,domain:"Security Architecture",prompt:"A company wants to reduce the blast radius of a compromised cloud workload. Which TWO controls BEST support this goal?",options:["Network segmentation","Least privilege IAM roles","Password complexity banners","Public object storage","Disabling logging"],answer:["Network segmentation","Least privilege IAM roles"],explanation:"Segmentation limits movement; least privilege limits what the workload can access.",wrong:"Password complexity does not limit workload blast radius, and public storage increases exposure.",clue:"Blast radius = limit movement and permissions.",trap:"General hardening vs direct impact reduction"},
+{type:"single",domain:"Security Operations",prompt:"An analyst needs to detect unauthorized changes to critical operating system binaries. Which control BEST meets the requirement?",options:["DLP","File Integrity Monitoring","NAC","WAF"],answer:["File Integrity Monitoring"],explanation:"FIM detects unauthorized file changes.",wrong:"DLP focuses on data leaving the environment, not critical binary modification.",clue:"Unauthorized changes to files.",trap:"DLP vs FIM"},
+{type:"single",domain:"Threats, Vulnerabilities & Mitigations",prompt:"A user is logged into a banking site. After clicking a malicious link, the browser sends an unauthorized transfer request. The attacker never obtains credentials. Which attack occurred?",options:["Stored XSS","CSRF","SQL injection","Session fixation"],answer:["CSRF"],explanation:"CSRF abuses the victim browser's authenticated session to submit a request.",wrong:"SQL injection targets database queries; XSS executes scripts in the browser.",clue:"Logged-in browser sends forged request.",trap:"CSRF vs XSS"},
+{type:"single",domain:"Security Program Management",prompt:"A BIA identifies that a payment platform can be offline for no more than 30 minutes and can lose no more than 5 minutes of transactions. Which metric represents the 5-minute value?",options:["RTO","RPO","MTTR","MTBF"],answer:["RPO"],explanation:"RPO is the maximum acceptable data loss measured in time.",wrong:"RTO is how quickly service must be restored.",clue:"Data loss measured in time.",trap:"RTO vs RPO"},
+{type:"multi",choose:2,domain:"Security Operations",prompt:"A ransomware response team has contained infected hosts. Which TWO actions should come NEXT before returning systems to production?",options:["Eradicate malware and patch root cause","Restore from clean verified backups","Conduct lessons learned immediately","Pay the ransom","Disable all monitoring"],answer:["Eradicate malware and patch root cause","Restore from clean verified backups"],explanation:"After containment, eradicate the cause and recover from clean backups.",wrong:"Lessons learned occurs after recovery; paying ransom is not the preferred recovery control.",clue:"After containment, before production.",trap:"IR sequence"},
+{type:"single",domain:"General Security Concepts",prompt:"A company uses a password and a fingerprint scan for VPN access. Which factor types are used?",options:["Something you know + something you have","Something you know + something you are","Something you have + somewhere you are","Two instances of something you know"],answer:["Something you know + something you are"],explanation:"Password is knowledge; fingerprint is inherence.",wrong:"A fingerprint is not something you have.",clue:"Fingerprint = inherence.",trap:"MFA factor confusion"},
+{type:"single",domain:"Threats, Vulnerabilities & Mitigations",prompt:"Event logs show Kerberos service ticket requests for an SPN account using RC4. Analysts suspect offline cracking of the ticket hash. Which attack is MOST likely?",options:["Pass-the-hash","Kerberoasting","Password spraying","Golden ticket"],answer:["Kerberoasting"],explanation:"Kerberoasting requests service tickets and cracks them offline.",wrong:"Pass-the-hash reuses NTLM hashes directly without cracking.",clue:"Service ticket + offline cracking.",trap:"Kerberoasting vs pass-the-hash"},
+{type:"single",domain:"Security Architecture",prompt:"A public web application is placed between two firewalls, separated from the internal database network. Which zone is this?",options:["Internal network","DMZ","Air gap","Management VLAN"],answer:["DMZ"],explanation:"A DMZ hosts public-facing services between untrusted and trusted zones.",wrong:"Air gaps are physically isolated, not internet-facing.",clue:"Public-facing between firewalls.",trap:"DMZ vs internal"},
+{type:"pbq",pbqType:"classification",domain:"Security Operations",prompt:"PBQ: Classify each control by PRIMARY function.",items:["Firewall blocking known malicious inbound traffic","IDS alerting on suspicious traffic","Login warning banner","Restoring from backups after ransomware","Security cameras recording entrances"],choices:["Preventive","Detective","Deterrent","Corrective"],answer:["Preventive","Detective","Deterrent","Corrective","Detective"],explanation:"Blocking prevents; IDS/cameras detect; banner deters; backups correct after impact.",wrong:"Ask what the control primarily does: block, detect, restore, or discourage.",clue:"Primary function, not technology category.",trap:"Control classification"},
+{type:"single",domain:"Security Operations",prompt:"A packet capture tool is needed to inspect raw network traffic for protocol analysis. Which tool is BEST?",options:["Nmap","Wireshark/tcpdump","SIEM","Metasploit"],answer:["Wireshark/tcpdump"],explanation:"Wireshark and tcpdump capture and inspect packets.",wrong:"Nmap identifies hosts/services; SIEM correlates logs.",clue:"Raw packets.",trap:"Scanner vs sniffer"},
+{type:"single",domain:"Security Program Management",prompt:"A vendor assessment reviews SOC 2 reports, security questionnaires, data handling terms, and audit rights. What process is this?",options:["Penetration testing","Third-party risk management","Data minimization","Vulnerability disclosure"],answer:["Third-party risk management"],explanation:"Reviewing vendor controls and contracts is third-party risk management.",wrong:"A penetration test attempts exploitation; this is governance and oversight.",clue:"Vendor + reports + questionnaires.",trap:"Assessment type"},
+{type:"multi",choose:2,domain:"Security Operations",prompt:"A SOC wants to improve detection of credential attacks across the enterprise. Which TWO log sources are MOST useful?",options:["Identity provider authentication logs","Domain controller security logs","Printer toner status logs","Public marketing website images","Archived backup tapes"],answer:["Identity provider authentication logs","Domain controller security logs"],explanation:"Credential attacks are most visible in authentication and directory logs.",wrong:"Backups and printer logs do not show enterprise authentication patterns.",clue:"Credential attacks = authentication telemetry.",trap:"Useful logs vs unrelated logs"},
+{type:"single",domain:"Security Architecture",prompt:"A remote access solution grants per-session access only after validating identity, device posture, and risk. Which architecture BEST matches this?",options:["ZTNA/Software-defined perimeter","Traditional site-to-site VPN","NAT gateway","Screened subnet"],answer:["ZTNA/Software-defined perimeter"],explanation:"ZTNA validates identity and posture per access request.",wrong:"Traditional VPN often grants broader network access after connection.",clue:"Identity + device posture + per-session.",trap:"VPN vs ZTNA"},
+{type:"single",domain:"Threats, Vulnerabilities & Mitigations",prompt:"A software vendor's build pipeline is compromised, and signed malicious updates are pushed to customers. What type of attack is this?",options:["Watering hole","Supply chain","Replay","Evil twin"],answer:["Supply chain"],explanation:"Compromising a trusted vendor or update path is a supply chain attack.",wrong:"Watering hole compromises a site visited by the target population.",clue:"Trusted vendor update path.",trap:"Supply chain vs watering hole"},
+{type:"single",domain:"General Security Concepts",prompt:"A sender cannot deny sending a digitally signed message. Which concept is provided?",options:["Confidentiality","Availability","Non-repudiation","Obfuscation"],answer:["Non-repudiation"],explanation:"Digital signatures support non-repudiation.",wrong:"Confidentiality protects secrecy; it does not prove who sent something.",clue:"Cannot deny sending.",trap:"CIA vs non-repudiation"},
+{type:"pbq",pbqType:"ordering",domain:"Security Operations",prompt:"PBQ: Order the incident response actions.",items:["Prepare IR plans and tooling","Detect and validate alert","Isolate affected systems","Analyze scope and affected assets","Remove malware and patch root cause","Restore from clean backups","Monitor for reinfection","Conduct lessons learned"],answer:["Prepare IR plans and tooling","Detect and validate alert","Isolate affected systems","Analyze scope and affected assets","Remove malware and patch root cause","Restore from clean backups","Monitor for reinfection","Conduct lessons learned"],explanation:"Preparation happens before incidents; then detection/analysis, containment, eradication, recovery, lessons learned.",wrong:"Do not restore before eradication, and do not lessons-learn before recovery.",clue:"NIST IR lifecycle.",trap:"IR ordering"},
+{type:"single",domain:"Security Operations",prompt:"A company wants to prevent outbound emails containing customer credit card numbers. Which solution BEST fits?",options:["EDR","DLP","WAF","Honeypot"],answer:["DLP"],explanation:"DLP detects and can block sensitive data leaving through channels such as email.",wrong:"EDR focuses endpoint behavior, not content-based data leakage prevention.",clue:"Outbound sensitive data.",trap:"DLP vs EDR"},
+{type:"single",domain:"Security Architecture",prompt:"A system must remain physically isolated from external networks. Which design BEST meets this?",options:["DMZ","Air-gapped network","VLAN segmentation","Reverse proxy"],answer:["Air-gapped network"],explanation:"Air-gapped systems are physically/logically isolated from external networks.",wrong:"A DMZ is still network-connected and often internet-facing.",clue:"Physically isolated.",trap:"Isolation degree"},
+{type:"multi",choose:2,domain:"Threats, Vulnerabilities & Mitigations",prompt:"An attacker steals NTLM hashes from LSASS and uses them to authenticate to SMB shares without knowing plaintext passwords. Which TWO terms are MOST relevant?",options:["Pass-the-hash","Lateral movement","Password spraying","CSRF","DLP"],answer:["Pass-the-hash","Lateral movement"],explanation:"Reusing NTLM hashes is pass-the-hash; accessing SMB shares across systems is lateral movement.",wrong:"Password spraying uses common passwords against many users.",clue:"NTLM hash reused + SMB movement.",trap:"Hash attacks"},
+{type:"single",domain:"Security Program Management",prompt:"A security audit differs from a security assessment PRIMARILY because an audit:",options:["Evaluates posture informally","Verifies compliance against defined criteria","Never produces findings","Only uses vulnerability scanners"],answer:["Verifies compliance against defined criteria"],explanation:"Audits check compliance against standards or requirements.",wrong:"Assessments evaluate posture more broadly.",clue:"Compliance against defined criteria.",trap:"Audit vs assessment"},
+{type:"single",domain:"Security Operations",prompt:"A scanner is configured with domain credentials to check patch levels and configuration from the inside. What type of scan is this?",options:["Passive scan","Credentialed scan","Black-box test","Packet capture"],answer:["Credentialed scan"],explanation:"Using valid credentials makes it an authenticated/credentialed scan.",wrong:"Passive scanning does not authenticate or actively inspect systems.",clue:"Scanner has valid credentials.",trap:"Scan types"},
+{type:"single",domain:"Security Architecture",prompt:"A cloud engineer accidentally allows public read access to an object storage bucket with customer records. What is the PRIMARY issue?",options:["Weak encryption algorithm","Cloud misconfiguration","On-path attack","DDoS amplification"],answer:["Cloud misconfiguration"],explanation:"Public exposure caused by incorrect storage permissions is a cloud misconfiguration.",wrong:"Encryption strength is not the main issue if access is public.",clue:"Public bucket permissions.",trap:"Misconfiguration vs crypto"},
+{type:"pbq",pbqType:"matching",domain:"Security Architecture",prompt:"PBQ: Assign each asset to the MOST appropriate zone.",items:["Public web server","Domain controller","VPN concentrator","Internal HR database","Reverse proxy/load balancer","Backup repository","Bastion/jump host","Public MX/mail gateway"],choices:["Internet","DMZ","Internal Network"],answer:["DMZ","Internal Network","DMZ","Internal Network","DMZ","Internal Network","DMZ","DMZ"],explanation:"Public-facing controlled services belong in the DMZ; sensitive core systems and backups remain internal.",wrong:"Internet is untrusted external space, not where company-owned exposed servers should usually be placed.",clue:"Company public-facing services = DMZ.",trap:"Internet vs DMZ"},
+{type:"single",domain:"Threats, Vulnerabilities & Mitigations",prompt:"A legitimate website frequently visited by employees of a defense contractor is compromised to silently infect visitors. Which attack is this?",options:["Typosquatting","Watering hole","Credential stuffing","Pharming"],answer:["Watering hole"],explanation:"Watering hole attacks compromise sites already visited by the target group.",wrong:"Typosquatting uses lookalike domains.",clue:"Legitimate site visited by target group.",trap:"Watering hole vs typo"},
+{type:"single",domain:"Security Operations",prompt:"Windows Event ID 4625 appears repeatedly for one account with many different passwords from one IP. Which attack is MOST likely?",options:["Password spraying","Brute force","Kerberoasting","Golden ticket"],answer:["Brute force"],explanation:"One account with many password attempts indicates brute force.",wrong:"Password spraying uses one/few passwords across many accounts.",clue:"One account + many passwords.",trap:"Brute force vs spraying"},
+{type:"single",domain:"Security Program Management",prompt:"Management decides not to implement a control because the cost is greater than the expected annualized loss, and documents the decision. Which risk response is this?",options:["Avoidance","Acceptance","Transference","Mitigation"],answer:["Acceptance"],explanation:"Documented decision to tolerate risk is risk acceptance.",wrong:"Transference would shift risk, often through insurance.",clue:"Documented decision not to implement.",trap:"Risk response"},
+{type:"multi",choose:2,domain:"Security Architecture",prompt:"Which TWO controls BEST protect data at rest on lost or stolen laptops?",options:["Full disk encryption","TPM-backed key protection","WAF","DNSSEC","SIEM correlation"],answer:["Full disk encryption","TPM-backed key protection"],explanation:"FDE protects stored data; TPM can protect keys from extraction.",wrong:"WAF and DNSSEC do not protect local laptop storage.",clue:"Lost/stolen laptop + data at rest.",trap:"Data-at-rest controls"},
+{type:"single",domain:"Security Operations",prompt:"An organization requires temporary admin access that expires automatically after a task is complete. Which control BEST fits?",options:["PAM with JIT access","RBAC only","Mandatory vacation","Password spraying"],answer:["PAM with JIT access"],explanation:"Privileged Access Management with Just-in-Time grants temporary elevation.",wrong:"RBAC assigns roles but does not automatically time-bound elevation by itself.",clue:"Temporary elevated privileges.",trap:"PAM/JIT vs RBAC"},
+{type:"single",domain:"Threats, Vulnerabilities & Mitigations",prompt:"An attacker uses breached username/password pairs from one service to try logging into another service. What is this?",options:["Credential stuffing","Password spraying","Pass-the-hash","Rainbow table attack"],answer:["Credential stuffing"],explanation:"Credential stuffing reuses known breached credentials across services.",wrong:"Password spraying uses common passwords, not known pairs.",clue:"Breached pairs reused elsewhere.",trap:"Credential attacks"},
+{type:"single",domain:"General Security Concepts",prompt:"A company requires two people to approve and execute wire transfers so no single employee can complete the whole process. Which concept is this?",options:["Least privilege","Separation of duties","Job rotation","Mandatory vacation"],answer:["Separation of duties"],explanation:"Separation of duties divides critical tasks among multiple people.",wrong:"Least privilege limits permissions but does not specifically require multiple people.",clue:"Two people split one critical process.",trap:"SoD vs least privilege"},
+{type:"pbq",pbqType:"classification",domain:"Security Operations",prompt:"PBQ: Match each log clue to the MOST likely attack or activity.",items:["Many users, same password attempt","One user, many password attempts","Random-looking domains every minute","Service ticket requests for SPN accounts then offline cracking","Valid NTLM hash reused against SMB"],choices:["Password spraying","Brute force","DGA/C2 beaconing","Kerberoasting","Pass-the-hash"],answer:["Password spraying","Brute force","DGA/C2 beaconing","Kerberoasting","Pass-the-hash"],explanation:"These are classic recognition patterns for Security+ scenario questions.",wrong:"Focus on the pattern, not just the technology name.",clue:"Pattern recognition.",trap:"Similar attack names"},
+{type:"single",domain:"Security Operations",prompt:"An EDR detects PowerShell launching with encoded commands from a user's Downloads folder after opening an attachment. What should the analyst do FIRST?",options:["Delete all logs","Validate and contain the endpoint","Conduct lessons learned","Rebuild every server"],answer:["Validate and contain the endpoint"],explanation:"First validate the alert and contain the potentially compromised endpoint.",wrong:"Lessons learned comes after recovery; rebuilding everything is not the first validated action.",clue:"FIRST + active suspicious endpoint.",trap:"IR priority"},
+{type:"single",domain:"Security Program Management",prompt:"A regulation requires protection of EU residents' personal data and breach notification within 72 hours under certain conditions. Which regulation is this?",options:["HIPAA","GDPR","PCI DSS","SOX"],answer:["GDPR"],explanation:"GDPR covers EU personal data and includes a 72-hour breach notification requirement when applicable.",wrong:"PCI DSS is for payment cardholder data.",clue:"EU residents + 72 hours.",trap:"Regulation scope"},
+{type:"multi",choose:2,domain:"Security Operations",prompt:"A SOC is building detections for DNS tunneling and DGA malware. Which TWO data sources are MOST useful?",options:["DNS query logs","Network traffic metadata","HR onboarding forms","Building access badges","Laptop screen brightness"],answer:["DNS query logs","Network traffic metadata"],explanation:"DNS logs and network metadata reveal query patterns, domains, timing, and destinations.",wrong:"Physical and HR data do not directly show DNS behavior.",clue:"DNS behavior detection.",trap:"Telemetry selection"},
+{type:"single",domain:"Security Architecture",prompt:"A WAF is deployed in front of a web app. Which attack is it MOST directly designed to mitigate?",options:["SQL injection","Bluetooth jamming","ARP spoofing","Evil twin Wi-Fi"],answer:["SQL injection"],explanation:"WAFs inspect HTTP/application-layer traffic and can block SQLi and XSS patterns.",wrong:"ARP spoofing is a local network attack, not web application-layer traffic.",clue:"Web app + application-layer attack.",trap:"Layer confusion"},
+{type:"single",domain:"Security Program Management",prompt:"A legal hold notice is issued for records that would otherwise be deleted under retention policy. What should happen FIRST?",options:["Delete the records as scheduled","Suspend deletion and preserve relevant data","Encrypt then delete the records","Move records to public archive"],answer:["Suspend deletion and preserve relevant data"],explanation:"Legal hold overrides normal deletion so relevant data must be preserved.",wrong:"Following normal retention after legal hold can destroy evidence.",clue:"Legal hold.",trap:"Retention vs preservation"},
+{type:"single",domain:"Security Operations",prompt:"A threat hunter compares current outbound traffic levels to a normal baseline and alerts on deviations. Which detection method is used?",options:["Signature-based","Anomaly-based","Hash matching","Static allowlisting"],answer:["Anomaly-based"],explanation:"Anomaly-based detection compares current behavior to a baseline.",wrong:"Signature-based detection matches known patterns, not deviations from baseline.",clue:"Baseline + deviations.",trap:"Detection methods"},
+{type:"single",domain:"General Security Concepts",prompt:"A certificate authority validates a certificate and a browser uses it to establish HTTPS. Which infrastructure supports this trust model?",options:["PKI","NAT","RAID","SNMP"],answer:["PKI"],explanation:"PKI provides certificates, certificate authorities, and trust chains.",wrong:"NAT translates addresses; it does not validate certificates.",clue:"CA + certificates + trust.",trap:"Infrastructure acronyms"},
+{type:"single",domain:"Security Operations",prompt:"An IDS alerts after suspicious traffic, but it does not block the traffic. What type of control is it primarily?",options:["Preventive","Detective","Corrective","Deterrent"],answer:["Detective"],explanation:"An IDS detects and alerts; it does not prevent by itself.",wrong:"Preventive controls block or stop activity.",clue:"Alerts only.",trap:"IDS vs IPS"}
+];
 
-ESTRUCTURA:
-Crear 40 preguntas totales de dificultad alta:
-- Multiple choice de una sola respuesta.
-- Multi-select tipo “Choose TWO”.
-- Mini PBQs interactivos.
-- Preguntas mezcladas aleatoriamente.
-- Dificultad máxima desde el inicio.
-- Todas las preguntas deben ser estilo CompTIA Security+ SY0-701.
+let state = null;
 
-TIPOS DE PREGUNTAS:
-1. Single answer:
-   - Solo una respuesta correcta.
-   - Debe haber mínimo dos opciones plausibles.
-   - Siempre debe existir una BEST answer.
-   - Usar wording tipo BEST, MOST likely, FIRST, PRIMARY.
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+  return a;
+}
+function initState(){
+  const order = shuffle([...Array(questions.length).keys()]);
+  const optionOrders = {};
+  questions.forEach((q,i)=>{
+    if(q.options) optionOrders[i] = shuffle([...Array(q.options.length).keys()]);
+  });
+  return {started:true,completed:false,current:0,order,optionOrders,answers:{},marked:{},remaining:3600,startTime:Date.now()};
+}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null}}
+function reset(){localStorage.removeItem(STORAGE_KEY);state=null;location.reload();}
+function formatTime(s){s=Math.max(0,s);const m=String(Math.floor(s/60)).padStart(2,"0");const sec=String(s%60).padStart(2,"0");return `${m}:${sec}`;}
 
-2. Multi-select:
-   - Preguntas tipo “Choose TWO”.
-   - Permitir seleccionar exactamente dos opciones.
-   - Scoring:
-     - 1 punto si ambas son correctas.
-     - 0.5 puntos si selecciona una correcta y una incorrecta.
-     - 0 puntos si ambas son incorrectas.
-   - No permitir seleccionar más opciones de las indicadas.
+const startScreen=document.getElementById("startScreen"), examScreen=document.getElementById("examScreen"), resultScreen=document.getElementById("resultScreen");
+document.getElementById("startBtn").onclick=()=>{state=initState();save();showExam();};
+document.getElementById("resumeBtn").onclick=()=>{state=load(); if(state?.completed) showResults(); else if(state?.started) showExam();};
+document.getElementById("resetBtn").onclick=reset;
+document.getElementById("resetFromResults").onclick=reset;
 
-3. Mini PBQs:
-   - Matching.
-   - Ordering.
-   - Classification.
-   - Network/security zone assignment.
-   - Incident response sequencing.
-   - Control classification.
-   - Log interpretation.
+function showExam(){
+  startScreen.classList.add("hidden"); resultScreen.classList.add("hidden"); examScreen.classList.remove("hidden");
+  renderQuestion(); startTimer();
+}
+function currentQ(){return questions[state.order[state.current]];}
+function currentRealIndex(){return state.order[state.current];}
 
-CONTENIDO:
-Las preguntas deben cubrir todos los dominios de Security+ SY0-701:
-- General Security Concepts
-- Threats, Vulnerabilities, and Mitigations
-- Security Architecture
-- Security Operations
-- Security Program Management and Oversight
+function renderQuestion(){
+  const q = currentQ(), realIndex=currentRealIndex();
+  document.getElementById("domainBadge").textContent=q.domain;
+  document.getElementById("typeBadge").textContent=q.type==="multi"?`Choose ${q.choose}`:q.type==="pbq"?"Mini PBQ":"Single Answer";
+  document.getElementById("counter").textContent=`Question ${state.current+1} of ${questions.length}`;
+  document.getElementById("progress").style.width=`${((state.current+1)/questions.length)*100}%`;
+  document.getElementById("markState").textContent=state.marked[realIndex]?"Marked for review":"Not marked";
+  const area=document.getElementById("questionArea");
+  let html = `<div class="questionText">${q.prompt}</div>`;
+  if(q.type==="single"||q.type==="multi"){
+    html += `<div class="options">`;
+    const order = state.optionOrders[realIndex] || [...Array(q.options.length).keys()];
+    order.forEach((oi,displayIdx)=>{
+      const val=q.options[oi], selected=(state.answers[realIndex]||[]).includes(val);
+      html += `<div class="option ${selected?'selected':''}" data-value="${escapeAttr(val)}"><div class="letter">${letters[displayIdx]}</div><div>${val}</div></div>`;
+    });
+    html += `</div>`;
+  } else {
+    const ans = state.answers[realIndex] || {};
+    html += `<div class="pbqGrid">`;
+    q.items.forEach((item,idx)=>{
+      html += `<div class="pbqRow"><div>${idx+1}. ${item}</div><select data-pbq="${idx}"><option value="">Select...</option>`;
+      const choices = q.pbqType==="ordering" ? q.items : q.choices;
+      choices.forEach(c=> html += `<option value="${escapeAttr(c)}" ${ans[idx]===c?'selected':''}>${c}</option>`);
+      html += `</select></div>`;
+    });
+    html += `</div>`;
+  }
+  area.innerHTML=html;
 
-NIVEL:
-Alto.
-Evitar preguntas básicas tipo “What is ransomware?”
-Usar escenarios realistas con:
-- logs
-- SIEM alerts
-- Windows Event IDs
-- DNS behavior
-- PowerShell activity
-- cloud IAM scenarios
-- Zero Trust access
-- incident response
-- DLP vs FIM
-- EDR vs SIEM
-- preventive/detective/corrective/deterrent controls
-- brute force vs password spraying
-- CSRF vs XSS
-- Kerberoasting vs pass-the-hash
-- C2 beaconing vs normal HTTPS
-- ransomware recovery
-- supply chain attacks
-- business impact analysis
-- RTO/RPO
-- third-party risk
+  document.querySelectorAll(".option").forEach(el=>{
+    el.onclick=()=>{
+      const val=el.dataset.value;
+      let arr=state.answers[realIndex]||[];
+      if(q.type==="single"){ arr=[val]; }
+      else{
+        if(arr.includes(val)) arr=arr.filter(x=>x!==val);
+        else if(arr.length<q.choose) arr=[...arr,val];
+      }
+      state.answers[realIndex]=arr; save(); renderQuestion();
+    }
+  });
+  document.querySelectorAll("select[data-pbq]").forEach(sel=>{
+    sel.onchange=()=>{
+      const ans=state.answers[realIndex]||{};
+      ans[sel.dataset.pbq]=sel.value;
+      state.answers[realIndex]=ans; save(); renderNav();
+    }
+  });
+  renderNav();
+}
+function escapeAttr(s){return String(s).replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;");}
 
-REGLA DE CALIDAD DE PREGUNTAS:
-Cada pregunta debe tener:
-- escenario realista
-- una trampa tipo Messer
-- distractores creíbles
-- una keyword crítica
-- explicación final corta
-- dominio asociado
-- categoría de error posible
+document.getElementById("prevBtn").onclick=()=>{if(state.current>0){state.current--;save();renderQuestion();}};
+document.getElementById("nextBtn").onclick=()=>{if(state.current<questions.length-1){state.current++;save();renderQuestion();}};
+document.getElementById("markBtn").onclick=()=>{const idx=currentRealIndex();state.marked[idx]=!state.marked[idx];save();renderQuestion();};
+document.getElementById("finishBtn").onclick=()=>{if(confirm("Submit exam now? You will not be able to change answers.")) submitExam();};
 
-NO HACER:
-- No usar preguntas demasiado obvias.
-- No hacer respuestas incorrectas ridículas.
-- No hacer que siempre la opción C sea correcta.
-- No mostrar feedback antes del final.
-- No depender de internet.
-- No usar librerías externas.
+function renderNav(){
+  const grid=document.getElementById("qgrid");
+  grid.innerHTML="";
+  state.order.forEach((realIdx,pos)=>{
+    const b=document.createElement("button"); b.className="qdot";
+    const ans=state.answers[realIdx];
+    if(ans && ((Array.isArray(ans)&&ans.length)||(typeof ans==="object"&&Object.values(ans).some(Boolean)))) b.classList.add("answered");
+    if(state.marked[realIdx]) b.classList.add("marked");
+    if(pos===state.current) b.classList.add("active");
+    b.textContent=pos+1; b.onclick=()=>{state.current=pos;save();renderQuestion();};
+    grid.appendChild(b);
+  });
+}
 
-SCORING:
-- Single answer: 1 punto correcta, 0 incorrecta.
-- Multi-select: 1 completa, 0.5 parcial, 0 incorrecta.
-- PBQ: scoring parcial por ítem correcto.
-- Mostrar:
-  - total score
-  - percentage
-  - pass/fail
-  - domain breakdown
-  - incorrect questions
-  - partially correct questions
-  - final recommendation
+let timerInt=null;
+function startTimer(){
+  if(timerInt) clearInterval(timerInt);
+  timerInt=setInterval(()=>{
+    state.remaining--;
+    if(state.remaining<=0){state.remaining=0;save();submitExam();}
+    save();
+    document.getElementById("timer").textContent=formatTime(state.remaining);
+    document.getElementById("timer").classList.toggle("low",state.remaining<=600);
+  },1000);
+  document.getElementById("timer").textContent=formatTime(state.remaining);
+}
 
-PASSING:
-Aproximar passing score a 83%.
-Mostrar:
-- PASS si >= 83%
-- CLOSE si 75–82%
-- FAIL si < 75%
+function scoreQuestion(q,ans){
+  if(q.type==="single"){
+    return {score:(ans?.[0]===q.answer[0]?1:0),max:1,status:(ans?.[0]===q.answer[0]?"correct":"wrong")};
+  }
+  if(q.type==="multi"){
+    const selected=Array.isArray(ans)?ans:[];
+    const correct = selected.filter(x=>q.answer.includes(x)).length;
+    const wrong = selected.filter(x=>!q.answer.includes(x)).length;
+    let score = (correct===q.answer.length && wrong===0) ? 1 : (correct===1 ? 0.5 : 0);
+    return {score,max:1,status:score===1?"correct":score>0?"partial":"wrong"};
+  }
+  let score=0;
+  q.items.forEach((_,i)=>{ if(ans && ans[i]===q.answer[i]) score++; });
+  return {score,max:q.items.length,status:score===q.items.length?"correct":score>0?"partial":"wrong"};
+}
+function submitExam(){
+  if(timerInt) clearInterval(timerInt);
+  state.completed=true; save(); showResults();
+}
+function showResults(){
+  startScreen.classList.add("hidden"); examScreen.classList.add("hidden"); resultScreen.classList.remove("hidden");
+  let total=0,max=0, correct=0, partial=0, wrong=0;
+  const domains={};
+  const rows=[];
+  state.order.forEach((realIdx,pos)=>{
+    const q=questions[realIdx], ans=state.answers[realIdx], res=scoreQuestion(q,ans);
+    total+=res.score; max+=res.max;
+    if(res.status==="correct") correct++; else if(res.status==="partial") partial++; else wrong++;
+    domains[q.domain] ||= {score:0,max:0};
+    domains[q.domain].score += res.score; domains[q.domain].max += res.max;
+    rows.push({pos:pos+1,q,ans,res});
+  });
+  const pct=Math.round((total/max)*100);
+  const verdict=pct>=83?"PASS":pct>=75?"CLOSE":"FAIL";
+  document.getElementById("summary").innerHTML=`
+    <div class="meta">
+      <span class="badge">Score: ${total.toFixed(1)} / ${max}</span>
+      <span class="badge">Percentage: ${pct}%</span>
+      <span class="badge">Result: ${verdict}</span>
+      <span class="badge">Correct: ${correct}</span>
+      <span class="badge">Partial: ${partial}</span>
+      <span class="badge">Wrong: ${wrong}</span>
+    </div>
+    <p>${verdict==="PASS"?"Strong result. You survived the corporate vocabulary dungeon.":verdict==="CLOSE"?"Close. Your issue is likely precision, not lack of knowledge. Very annoying, very fixable.":"Not yet. Focus on trap patterns, control classification, and BEST/FIRST wording."}</p>`;
+  document.getElementById("domainBreakdown").innerHTML=Object.entries(domains).map(([d,v])=>`<div class="domainRow"><span>${d}</span><strong>${v.score.toFixed(1)} / ${v.max} (${Math.round(v.score/v.max*100)}%)</strong></div>`).join("");
+  document.getElementById("review").innerHTML=rows.filter(r=>r.res.status!=="correct").map(r=>{
+    const user=formatAnswer(r.q,r.ans);
+    const corr=formatCorrect(r.q);
+    return `<div class="reviewItem">
+      <h3>Q${r.pos} <span class="${r.res.status==='partial'?'partial':'wrong'}">${r.res.status.toUpperCase()}</span></h3>
+      <p><strong>Question:</strong> ${r.q.prompt}</p>
+      <p><strong>Your answer:</strong> ${user}</p>
+      <p><strong>Correct answer:</strong> ${corr}</p>
+      <p><strong>Explanation:</strong> ${r.q.explanation}</p>
+      <p><strong>Why yours is wrong:</strong> ${r.q.wrong}</p>
+      <p><strong>Key exam clue:</strong> ${r.q.clue}</p>
+      <p><strong>Trap:</strong> ${r.q.trap}</p>
+      <p><strong>Domain:</strong> ${r.q.domain}</p>
+    </div>`;
+  }).join("") || "<p class='correct'>No incorrect or partial questions. Suspiciously competent.</p>";
+}
+function formatAnswer(q,ans){
+  if(!ans) return "<em>No answer</em>";
+  if(Array.isArray(ans)) return ans.length?ans.join(", "):"<em>No answer</em>";
+  return q.items.map((it,i)=>`${i+1}. ${ans[i]||"No answer"}`).join("<br>");
+}
+function formatCorrect(q){
+  if(q.type==="pbq") return q.items.map((it,i)=>`${i+1}. ${q.answer[i]}`).join("<br>");
+  return q.answer.join(", ");
+}
 
-RESULT REVIEW:
-Al finalizar, mostrar por cada pregunta fallada:
-- Question number
-- User answer
-- Correct answer
-- Short explanation
-- Why the user answer is wrong
-- How to identify it next time
-- Key exam clue
-- Domain
-
-UX/UI:
-Diseño profesional dark cybersecurity:
-- clean dashboard
-- progress bar
-- question counter
-- timer
-- answer selection cards
-- marked-for-review option
-- navigation previous/next
-- finish exam button
-- confirmation before submit
-- result dashboard
-- responsive mobile-friendly design
-- accessible contrast
-- clear visual states
-
-TIMER:
-- 60 minutes for 40 questions.
-- Timer visible.
-- Warning when 10 minutes remain.
-- Auto-submit when timer reaches 0.
-
-PERSISTENCE:
-Use localStorage to save:
-- current question
-- selected answers
-- marked questions
-- timer remaining
-- exam started state
-- exam completed state
-- final score
-
-Include buttons:
-- Start Exam
-- Resume Exam
-- Reset Exam
-- Finish Exam
-
-RANDOMIZATION:
-- Shuffle question order on first start.
-- Shuffle answer options where possible.
-- Keep answer mapping correct after shuffle.
-- Store shuffled order in localStorage.
-
-MINI PBQ REQUIREMENTS:
-Include at least:
-1. Incident response ordering PBQ.
-2. Control classification PBQ.
-3. Network segmentation PBQ.
-4. Log analysis PBQ.
-
-CODE QUALITY:
-- Clean semantic HTML.
-- CSS variables.
-- Modular JavaScript functions.
-- Clear data structure for questions.
-- No broken navigation.
-- No console errors.
-- Works directly by opening index.html.
-- Compatible with GitHub Pages.
-
-OUTPUT:
-Return the complete index.html file only.
-No extra explanation.
+const existing=load();
+if(existing?.completed){state=existing;showResults();}
+else if(existing?.started){document.getElementById("resumeBtn").disabled=false;}
+else{document.getElementById("resumeBtn").disabled=true;}
+</script>
+</body>
+</html>
