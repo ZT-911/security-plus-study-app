@@ -1,0 +1,208 @@
+Actúa como senior frontend developer, creador experto de simuladores educativos, diseñador UI/UX y especialista en CompTIA Security+ SY0-701.
+
+OBJETIVO:
+Crear un mock exam interactivo avanzado para CompTIA Security+ SY0-701 en HTML/CSS/JavaScript puro, listo para GitHub Pages.
+
+ARCHIVO:
+index.html
+
+TECNOLOGÍA:
+- HTML5
+- CSS3
+- JavaScript vanilla
+- Sin frameworks
+- Sin backend
+- Todo en un solo archivo index.html
+
+IDIOMA:
+Todo el contenido dentro de la app debe estar en inglés:
+questions, answers, buttons, labels, explanations, results, categories, feedback.
+
+MODO DE EXAMEN:
+Real Exam Mode.
+- No mostrar feedback inmediato.
+- No revelar respuestas correctas durante el examen.
+- Guardar respuestas del usuario.
+- Mostrar score solo al final.
+- Mostrar revisión completa solo después de finalizar.
+
+ESTRUCTURA:
+Crear 40 preguntas totales de dificultad alta:
+- Multiple choice de una sola respuesta.
+- Multi-select tipo “Choose TWO”.
+- Mini PBQs interactivos.
+- Preguntas mezcladas aleatoriamente.
+- Dificultad máxima desde el inicio.
+- Todas las preguntas deben ser estilo CompTIA Security+ SY0-701.
+
+TIPOS DE PREGUNTAS:
+1. Single answer:
+   - Solo una respuesta correcta.
+   - Debe haber mínimo dos opciones plausibles.
+   - Siempre debe existir una BEST answer.
+   - Usar wording tipo BEST, MOST likely, FIRST, PRIMARY.
+
+2. Multi-select:
+   - Preguntas tipo “Choose TWO”.
+   - Permitir seleccionar exactamente dos opciones.
+   - Scoring:
+     - 1 punto si ambas son correctas.
+     - 0.5 puntos si selecciona una correcta y una incorrecta.
+     - 0 puntos si ambas son incorrectas.
+   - No permitir seleccionar más opciones de las indicadas.
+
+3. Mini PBQs:
+   - Matching.
+   - Ordering.
+   - Classification.
+   - Network/security zone assignment.
+   - Incident response sequencing.
+   - Control classification.
+   - Log interpretation.
+
+CONTENIDO:
+Las preguntas deben cubrir todos los dominios de Security+ SY0-701:
+- General Security Concepts
+- Threats, Vulnerabilities, and Mitigations
+- Security Architecture
+- Security Operations
+- Security Program Management and Oversight
+
+NIVEL:
+Alto.
+Evitar preguntas básicas tipo “What is ransomware?”
+Usar escenarios realistas con:
+- logs
+- SIEM alerts
+- Windows Event IDs
+- DNS behavior
+- PowerShell activity
+- cloud IAM scenarios
+- Zero Trust access
+- incident response
+- DLP vs FIM
+- EDR vs SIEM
+- preventive/detective/corrective/deterrent controls
+- brute force vs password spraying
+- CSRF vs XSS
+- Kerberoasting vs pass-the-hash
+- C2 beaconing vs normal HTTPS
+- ransomware recovery
+- supply chain attacks
+- business impact analysis
+- RTO/RPO
+- third-party risk
+
+REGLA DE CALIDAD DE PREGUNTAS:
+Cada pregunta debe tener:
+- escenario realista
+- una trampa tipo Messer
+- distractores creíbles
+- una keyword crítica
+- explicación final corta
+- dominio asociado
+- categoría de error posible
+
+NO HACER:
+- No usar preguntas demasiado obvias.
+- No hacer respuestas incorrectas ridículas.
+- No hacer que siempre la opción C sea correcta.
+- No mostrar feedback antes del final.
+- No depender de internet.
+- No usar librerías externas.
+
+SCORING:
+- Single answer: 1 punto correcta, 0 incorrecta.
+- Multi-select: 1 completa, 0.5 parcial, 0 incorrecta.
+- PBQ: scoring parcial por ítem correcto.
+- Mostrar:
+  - total score
+  - percentage
+  - pass/fail
+  - domain breakdown
+  - incorrect questions
+  - partially correct questions
+  - final recommendation
+
+PASSING:
+Aproximar passing score a 83%.
+Mostrar:
+- PASS si >= 83%
+- CLOSE si 75–82%
+- FAIL si < 75%
+
+RESULT REVIEW:
+Al finalizar, mostrar por cada pregunta fallada:
+- Question number
+- User answer
+- Correct answer
+- Short explanation
+- Why the user answer is wrong
+- How to identify it next time
+- Key exam clue
+- Domain
+
+UX/UI:
+Diseño profesional dark cybersecurity:
+- clean dashboard
+- progress bar
+- question counter
+- timer
+- answer selection cards
+- marked-for-review option
+- navigation previous/next
+- finish exam button
+- confirmation before submit
+- result dashboard
+- responsive mobile-friendly design
+- accessible contrast
+- clear visual states
+
+TIMER:
+- 60 minutes for 40 questions.
+- Timer visible.
+- Warning when 10 minutes remain.
+- Auto-submit when timer reaches 0.
+
+PERSISTENCE:
+Use localStorage to save:
+- current question
+- selected answers
+- marked questions
+- timer remaining
+- exam started state
+- exam completed state
+- final score
+
+Include buttons:
+- Start Exam
+- Resume Exam
+- Reset Exam
+- Finish Exam
+
+RANDOMIZATION:
+- Shuffle question order on first start.
+- Shuffle answer options where possible.
+- Keep answer mapping correct after shuffle.
+- Store shuffled order in localStorage.
+
+MINI PBQ REQUIREMENTS:
+Include at least:
+1. Incident response ordering PBQ.
+2. Control classification PBQ.
+3. Network segmentation PBQ.
+4. Log analysis PBQ.
+
+CODE QUALITY:
+- Clean semantic HTML.
+- CSS variables.
+- Modular JavaScript functions.
+- Clear data structure for questions.
+- No broken navigation.
+- No console errors.
+- Works directly by opening index.html.
+- Compatible with GitHub Pages.
+
+OUTPUT:
+Return the complete index.html file only.
+No extra explanation.
